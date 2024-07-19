@@ -28,24 +28,7 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import classes from "@/components/HeaderMain/styles.module.css";
-
-const user = {
-  name: "Jane Spoonfighter",
-  email: "janspoon@fighter.dev",
-  image:
-    "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
-};
-
-const tabs = [
-  "Home",
-  "Orders",
-  "Education",
-  "Community",
-  "Forums",
-  "Support",
-  "Account",
-  "Helpdesk",
-];
+import { tabs, user } from "@/mocks";
 
 export default function HeaderMain() {
   const theme = useMantineTheme();

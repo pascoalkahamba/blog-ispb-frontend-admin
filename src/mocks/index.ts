@@ -7,6 +7,15 @@ const links = [
   { link: "/college", label: "Higenhiaria" },
 ];
 
+const user = {
+  name: "Jane Spoonfighter",
+  email: "janspoon@fighter.dev",
+  image:
+    "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
+};
+
+const tabs = ["Página inicial", "Engenharia", "Educação", "Gestão", "Saúde"];
+
 const data = [
   {
     title: "About",
@@ -83,13 +92,13 @@ const carouselData = [
 ];
 
 const searchData = [
-  "React",
-  "Angular",
-  "Vue",
-  "Next.js",
-  "Riot.js",
-  "Svelte",
-  "Blitz.js",
+  " Engenharia informatica",
+  "Pré-Escolar",
+  "Contabilidade",
+  "Engenharia Mecanica",
+  "Analises clinicas",
+  "Enfermagem geral",
+  "Auditoria",
 ];
 
-export { links, data, searchData, carouselData };
+export { links, data, searchData, carouselData, user, tabs };
