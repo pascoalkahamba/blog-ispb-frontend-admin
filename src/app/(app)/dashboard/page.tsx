@@ -1,7 +1,9 @@
+import RichTextDemo from "@/components/RichText";
+
 export default function Dashboard() {
   return (
-    <section>
-      <h1>Dasboard</h1>
+    <section className="flex justify-center items-center ">
+      <RichTextDemo />
     </section>
   );
 }

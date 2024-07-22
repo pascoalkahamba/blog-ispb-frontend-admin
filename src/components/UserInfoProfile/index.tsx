@@ -9,6 +9,7 @@ import {
   Group,
 } from "@mantine/core";
 import classes from "./styles.module.css";
+import { useRouter } from "next/navigation";
 import {
   IconAt,
   IconHeart,
@@ -16,12 +17,12 @@ import {
   IconPhoneCall,
   IconStar,
 } from "@tabler/icons-react";
-import { useAtom } from "jotai";
-import { modalAtom } from "@/storage/atom";
 import { ModalDemo } from "../Modal";
+import Link from "next/link";
 
 export function UserInfoProfile() {
   const theme = useMantineTheme();
+  const router = useRouter();
   return (
     <Paper radius="md" withBorder p="lg" bg="var(--mantine-color-body)">
       <Avatar
@@ -110,12 +111,8 @@ export function UserInfoProfile() {
           Editar Informações
         </Button>
         <ModalDemo title="Eliminar conta" />
-        <Button
-          variant="default"
-          className="px-5"
-          onClick={() => alert("Hello")}
-        >
-          Sair
+        <Button variant="default" className="px-5">
+          <Link href="/signin">Sair</Link>
         </Button>
       </Group>
     </Paper>

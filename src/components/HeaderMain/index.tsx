@@ -27,7 +27,7 @@ import {
 } from "@tabler/icons-react";
 import classes from "@/components/HeaderMain/styles.module.css";
 import { tabs, user, searchData } from "@/mocks";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
 export default function HeaderMain() {
@@ -36,6 +36,7 @@ export default function HeaderMain() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab} key={tab}>
       {tab}
