@@ -13,12 +13,8 @@ import {
   Button,
   Divider,
   Checkbox,
-  Anchor,
   Stack,
-  Select,
 } from "@mantine/core";
-import classes from "./styles.module.css";
-import { useState } from "react";
 import Link from "next/link";
 
 export default function AuthSignin(props: PaperProps) {
@@ -52,13 +48,17 @@ export default function AuthSignin(props: PaperProps) {
       p="xl"
       withBorder
       {...props}
-      className=" w-[35%] flex flex-col justify-center"
+      className=" w-[40%] flex flex-col justify-center gap-1"
     >
+      <Text size="lg" fw={500} className="self-center mb-5">
+        Bem-vindo a Vitrine online do ISPB
+      </Text>
+
       <Text size="lg" fw={500} className="text-center font-bold">
         Fazer Login
       </Text>
 
-      <Divider label="Blog do ISPB" labelPosition="center" my="lg" />
+      <Divider label="Vitrine do ISPB" labelPosition="center" my="lg" />
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>

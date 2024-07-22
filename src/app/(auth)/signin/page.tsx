@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Page to user creates your account on the website.",
 };
 
-export default function CreatedAccount() {
+export default function Signin() {
   const cookiesStore = cookies();
 
   console.log(cookiesStore.get("validateCode"));

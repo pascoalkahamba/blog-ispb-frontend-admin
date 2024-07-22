@@ -21,20 +21,21 @@ import {
   IconStar,
   IconMessage,
   IconSettings,
-  IconPlayerPause,
   IconTrash,
-  IconSwitchHorizontal,
   IconChevronDown,
   IconSearch,
 } from "@tabler/icons-react";
 import classes from "@/components/HeaderMain/styles.module.css";
-import { tabs, user } from "@/mocks";
+import { tabs, user, searchData } from "@/mocks";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function HeaderMain() {
   const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
+  const router = useRouter();
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab} key={tab}>
       {tab}
@@ -89,7 +90,7 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Liked posts
+                posts gostados
               </Menu.Item>
               <Menu.Item
                 leftSection={
@@ -100,7 +101,7 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Saved posts
+                posts salvos
               </Menu.Item>
               <Menu.Item
                 leftSection={
@@ -111,10 +112,10 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Your comments
+                Seus comentarios
               </Menu.Item>
 
-              <Menu.Label>Settings</Menu.Label>
+              <Menu.Label>Configurações</Menu.Label>
               <Menu.Item
                 leftSection={
                   <IconSettings
@@ -123,18 +124,9 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Account settings
+                <Link href="/profile">Definições da conta</Link>
               </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconSwitchHorizontal
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Change account
-              </Menu.Item>
+
               <Menu.Item
                 leftSection={
                   <IconLogout
@@ -143,22 +135,12 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Logout
+                <Link href="/signin">Sair</Link>
               </Menu.Item>
 
               <Menu.Divider />
 
-              <Menu.Label>Danger zone</Menu.Label>
-              <Menu.Item
-                leftSection={
-                  <IconPlayerPause
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Pause subscription
-              </Menu.Item>
+              <Menu.Label>zona de perigo</Menu.Label>
               <Menu.Item
                 color="red"
                 leftSection={
@@ -168,7 +150,7 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Delete account
+                Eliminar conta
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -196,15 +178,7 @@ export default function HeaderMain() {
                   stroke={1.5}
                 />
               }
-              data={[
-                "React",
-                "Angular",
-                "Vue",
-                "Next.js",
-                "Riot.js",
-                "Svelte",
-                "Blitz.js",
-              ]}
+              data={searchData}
               visibleFrom="xs"
             />
           </Tabs.List>

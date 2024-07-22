@@ -42,6 +42,7 @@
   &::before {
     display: none;
   }
+  gap: 0.5rem;
 }
 
 .tab {

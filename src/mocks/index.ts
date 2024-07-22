@@ -92,7 +92,7 @@ const carouselData = [
 ];
 
 const searchData = [
-  " Engenharia informatica",
+  "Engenharia informatica",
   "Pré-Escolar",
   "Contabilidade",
   "Engenharia Mecanica",

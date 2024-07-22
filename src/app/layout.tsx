@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import Providers from "@/utils/provider";
+import { ModalsProvider } from "@mantine/modals";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,9 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <MantineProvider>
-          <Providers>{children}</Providers>
+          <ModalsProvider labels={{ confirm: "Submit", cancel: "Cancel" }}>
+            <Providers>{children}</Providers>
+          </ModalsProvider>
         </MantineProvider>
       </body>
     </html>

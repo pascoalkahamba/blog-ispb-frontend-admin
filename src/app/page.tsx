@@ -1,5 +1,5 @@
-import HeaderMain from "@/components/HeaderMain";
+import Signin from "./(auth)/signin/page";
 
 export default function HomePage() {
-  return <section></section>;
+  return <Signin />;
 }
