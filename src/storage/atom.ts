@@ -1,4 +1,4 @@
 import { atom } from "jotai";
-const modalAtom = atom(false);
+const dropzoneAtom = atom(false);
 
-export { modalAtom };
+export { dropzoneAtom };

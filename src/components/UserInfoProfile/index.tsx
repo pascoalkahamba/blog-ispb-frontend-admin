@@ -8,7 +8,7 @@ import {
   rem,
   Group,
 } from "@mantine/core";
-import classes from "./styles.module.css";
+import classes from "@/components/UserInfoProfile/styles.module.css";
 import { useRouter } from "next/navigation";
 import {
   IconAt,
@@ -17,7 +17,7 @@ import {
   IconPhoneCall,
   IconStar,
 } from "@tabler/icons-react";
-import { ModalDemo } from "../Modal";
+import { ModalDemo } from "@/components/Modal";
 import Link from "next/link";
 
 export function UserInfoProfile() {
