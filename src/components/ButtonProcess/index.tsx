@@ -40,7 +40,7 @@ export function ButtonProgress() {
       <Button
         className={classes.button}
         onClick={chooseFile}
-        onBlur={() => setDropzone(false)}
+        onBlur={() => console.log("chose dropzone")}
         color={loaded ? "teal" : theme.primaryColor}
       >
         <div className={classes.label}>

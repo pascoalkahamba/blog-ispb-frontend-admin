@@ -11,11 +11,19 @@ import TextStyle from "@tiptap/extension-text-style";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { IconColorPicker } from "@tabler/icons-react";
+import { useState } from "react";
+import { HandleChangePostProps } from "@/@types";
 
-const content =
-  '<h2 style="text-align: center;">Welcome to Mantine rich text editor</h2><p><code>RichTextEditor</code> component focuses on usability and is designed to be as simple as possible to bring a familiar editing experience to regular users. <code>RichTextEditor</code> is based on <a href="https://tiptap.dev/" rel="noopener noreferrer" target="_blank">Tiptap.dev</a> and supports all of its features:</p><ul><li>General text formatting: <strong>bold</strong>, <em>italic</em>, <u>underline</u>, <s>strike-through</s> </li><li>Headings (h1-h6)</li><li>Sub and super scripts (<sup>&lt;sup /&gt;</sup> and <sub>&lt;sub /&gt;</sub> tags)</li><li>Ordered and bullet lists</li><li>Text align&nbsp;</li><li>And all <a href="https://tiptap.dev/extensions" target="_blank" rel="noopener noreferrer">other extensions</a></li></ul>';
-const contents = "";
 export default function RichTextDemo() {
+  const [postInfo, setPostInfo] = useState({
+    title: "",
+    content: "",
+  });
+
+  function handleChangePost(richText: string) {
+    setPostInfo({ title: "New Post", content: richText });
+  }
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -29,11 +37,20 @@ export default function RichTextDemo() {
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    content,
+    content: postInfo.content,
+    editorProps: {
+      attributes: {
+        class: "text-slate-100 w-[50%] h-[20%] p-12",
+      },
+    },
+    onUpdate({ editor }) {
+      handleChangePost(editor.getHTML());
+      console.log("texto editado", editor.getHTML());
+    },
   });
 
   return (
-    <RichTextEditor editor={editor} className="w-[60%] mt-0">
+    <RichTextEditor editor={editor} id="content" className="w-[60%] mt-0">
       <RichTextEditor.Toolbar sticky stickyOffset={60}>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />

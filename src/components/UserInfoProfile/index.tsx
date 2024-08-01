@@ -24,7 +24,14 @@ export function UserInfoProfile() {
   const theme = useMantineTheme();
   const router = useRouter();
   return (
-    <Paper radius="md" withBorder p="lg" bg="var(--mantine-color-body)">
+    <Paper
+      radius="md"
+      withBorder
+      p="lg"
+      bg="var(--mantine-color-body)"
+      data-aos="fade-right"
+      data-aos-duration="160"
+    >
       <Avatar
         src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
         size={150}

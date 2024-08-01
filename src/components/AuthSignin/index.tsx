@@ -1,7 +1,8 @@
 "use client";
 
-import { useToggle, upperFirst } from "@mantine/hooks";
+import { useToggle } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { zodResolver } from "mantine-form-zod-resolver";
 import { useRouter } from "next/navigation";
 import {
   TextInput,
@@ -16,6 +17,8 @@ import {
   Stack,
 } from "@mantine/core";
 import Link from "next/link";
+import { signinSchemas } from "@/schemas";
+import { TSigninProps } from "@/@types";
 
 export default function AuthSignin(props: PaperProps) {
   const [type, toggle] = useToggle(["login", "register"]);
@@ -27,18 +30,11 @@ export default function AuthSignin(props: PaperProps) {
       password: "",
       terms: true,
     },
-
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
-          : null,
-    },
+    validate: zodResolver(signinSchemas),
   });
 
-  const handleSubmit = () => {
-    console.log("Everything is good.");
+  const handleSubmit = (values: TSigninProps) => {
+    console.log("Everything is good.", values);
     router.push("/dashboard");
   };
 
@@ -71,7 +67,7 @@ export default function AuthSignin(props: PaperProps) {
             onChange={(event) =>
               form.setFieldValue("email", event.currentTarget.value)
             }
-            error={form.errors.email && "Invalid email"}
+            error={form.errors.email}
             radius="md"
           />
 
@@ -83,10 +79,7 @@ export default function AuthSignin(props: PaperProps) {
             onChange={(event) =>
               form.setFieldValue("password", event.currentTarget.value)
             }
-            error={
-              form.errors.password &&
-              "Password should include at least 6 characters"
-            }
+            error={form.errors.password}
             radius="md"
           />
           <Link

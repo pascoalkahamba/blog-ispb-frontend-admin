@@ -9,7 +9,7 @@ export default function LayoutApp({ children }: LayoutAppProps) {
   return (
     <section>
       <HeaderMain />
-      {children}
+      <div className="pt-36">{children}</div>
       <FooterMain />
     </section>
   );

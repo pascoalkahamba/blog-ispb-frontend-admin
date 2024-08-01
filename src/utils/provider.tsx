@@ -1,6 +1,7 @@
 "use client";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Aos from "aos";
 import AOS from "aos";
 import { useEffect } from "react";
 
@@ -13,12 +14,16 @@ export default function Providers({ children }: ProvidersProps) {
 
   useEffect(() => {
     AOS.init();
+
+    () => {
+      Aos.refresh();
+    };
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <section>{children}</section>
+      {children}
     </QueryClientProvider>
   );
 }

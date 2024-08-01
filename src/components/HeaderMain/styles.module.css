@@ -7,6 +7,10 @@
   border-bottom: rem(1px) solid
     light-dark(var(--mantine-color-gray-2), transparent);
   margin-bottom: rem(120px);
+  position: fixed;
+  height: 6.4rem;
+  width: 100%;
+  z-index: 999999;
 }
 
 .mainSection {
