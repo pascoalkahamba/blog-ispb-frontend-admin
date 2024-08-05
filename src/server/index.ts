@@ -1,15 +1,16 @@
 import { appAxios } from "@/axios";
-import { ICreatePost, ISignin } from "@/interfaces";
+import { ISignin } from "@/interfaces";
 
-export async function createPost({ content, file, title }: ICreatePost) {
-  const response = await appAxios.post<ICreatePost>(
-    "/user",
+export async function createPost(formData: FormData) {
+  const response = await appAxios.post<FormData>(
+    "/post/create",
+    formData,
+
     {
-      title,
-      content,
-      file,
-    },
-    { withCredentials: true }
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
 
   const posted = response.data;

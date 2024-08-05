@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInterval } from "@mantine/hooks";
 import { Button, Progress, useMantineTheme, rgba } from "@mantine/core";
 import classes from "@/components/ButtonProcess/styles.module.css";
-import { useAtom } from "jotai";
-import { dropzoneAtom } from "@/storage/atom";
+import { useAtom, useAtomValue } from "jotai";
+import { dropzoneAtom, selectFileAtom } from "@/storage/atom";
 import { DropzoneFile } from "../DropzoneFile";
 
 export function ButtonProgress() {
@@ -12,6 +12,7 @@ export function ButtonProgress() {
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [dropzone, setDropzone] = useAtom(dropzoneAtom);
+  const [selectFile, setSelectFile] = useAtom(selectFileAtom);
 
   const interval = useInterval(
     () =>
@@ -27,26 +28,40 @@ export function ButtonProgress() {
     20
   );
 
+  useEffect(() => {
+    if (progress === 100) interval.stop();
+    dropzone && selectFile
+      ? setLoaded(false)
+      : !interval.active && selectFile && interval.start();
+
+    () => {
+      interval.stop();
+    };
+  }, [selectFile, dropzone, progress]);
+
   function chooseFile() {
     setDropzone(true);
-
-    !dropzone && loaded
-      ? setLoaded(false)
-      : !interval.active && interval.start();
+    setSelectFile("");
   }
-
+  console.log("process", progress);
+  console.log("selectFile", selectFile);
   return (
     <section>
       <Button
         className={classes.button}
         onClick={chooseFile}
-        onBlur={() => console.log("chose dropzone")}
-        color={loaded ? "teal" : theme.primaryColor}
+        color={
+          selectFile && progress === 100
+            ? "teal"
+            : !selectFile && progress === 100
+            ? theme.colors.red[6]
+            : theme.primaryColor
+        }
       >
         <div className={classes.label}>
-          {progress !== 0
+          {progress !== 0 && progress !== 100
             ? "Carregando ficheiro"
-            : loaded
+            : selectFile
             ? "Ficheiro carregado"
             : "Carregar ficheiro"}
         </div>

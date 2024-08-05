@@ -16,18 +16,25 @@ export function DropzoneFile() {
     if (selectFile) {
       setDropzone((dropzone) => !dropzone);
     }
-  }, [selectFile]);
+  }, [selectFile, setDropzone]);
+
+  function closeDropzone() {
+    setSelectFile("");
+    setDropzone(false);
+  }
 
   return (
     <div
       className={classes.wrapper}
       data-aos="zoom-in-up"
       data-aos-duration="1400"
+      onClick={closeDropzone}
     >
-      <div>
+      <div onClick={(event) => event.stopPropagation()}>
         <Dropzone
           openRef={openRef}
-          onBlur={() => setDropzone(false)}
+          itemType="file"
+          name="file"
           onDrop={(files) => {
             if (files) {
               setSelectFile(files[0]);
@@ -78,10 +85,11 @@ export function DropzoneFile() {
         <Button
           className={classes.control}
           size="md"
+          name="file"
           radius="xl"
           onClick={() => openRef.current?.()}
         >
-          Select files
+          Selecione o ficheiro
         </Button>
       </div>
     </div>

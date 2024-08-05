@@ -2,7 +2,7 @@ import { z as zod } from "zod";
 
 const postInfoSchema = zod.object({
   title: zod.string().min(6),
-  description: zod.string().min(6),
+  content: zod.string().min(6),
 });
 
 const signinSchemas = zod.object({
