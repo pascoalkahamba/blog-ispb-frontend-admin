@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { useInterval } from "@mantine/hooks";
 import { Button, Progress, useMantineTheme, rgba } from "@mantine/core";
 import classes from "@/components/ButtonProcess/styles.module.css";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { dropzoneAtom, selectFileAtom } from "@/storage/atom";
 import { DropzoneFile } from "../DropzoneFile";
 
 export function ButtonProgress() {
   const theme = useMantineTheme();
   const [progress, setProgress] = useState(0);
-  const [loaded, setLoaded] = useState(false);
   const [dropzone, setDropzone] = useAtom(dropzoneAtom);
   const [selectFile, setSelectFile] = useAtom(selectFileAtom);
 
@@ -22,7 +21,6 @@ export function ButtonProgress() {
         }
 
         interval.stop();
-        setLoaded(true);
         return 0;
       }),
     20
@@ -31,7 +29,7 @@ export function ButtonProgress() {
   useEffect(() => {
     if (progress === 100) interval.stop();
     dropzone && selectFile
-      ? setLoaded(false)
+      ? false
       : !interval.active && selectFile && interval.start();
 
     () => {
