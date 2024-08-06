@@ -5,10 +5,10 @@ import { ICreatePost } from "@/interfaces";
 import { postInfoSchema } from "@/schemas";
 import { toast } from "react-toastify";
 import { createPost } from "@/server";
-import { selectFileAtom } from "@/storage/atom";
+import { errorAtom, selectFileAtom } from "@/storage/atom";
 import { Button, Group } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
 
 export default function Dashboard() {
@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [content, setContent] = useState("");
   const [nameOfDepartment, setNameOfDepartment] = useState("");
   const file = useAtomValue(selectFileAtom);
+  const setError = useSetAtom(errorAtom);
 
   function handlePost() {
     const formData = new FormData();
@@ -29,7 +30,8 @@ export default function Dashboard() {
     formData.append("whoPosted", "admin");
     formData.append("file", file);
     console.log("Postar");
-
+    setContent("");
+    setError(true);
     mutate(formData);
 
     if (isSuccess) {

@@ -12,8 +12,11 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { IconColorPicker } from "@tabler/icons-react";
 import InputWithIcon from "../InputWithIcon";
-import { Dispatch, SetStateAction } from "react";
-import { describe } from "node:test";
+import { Dispatch, SetStateAction, useRef } from "react";
+
+import { useField } from "@mantine/form";
+import { useAtomValue } from "jotai";
+import { errorAtom } from "@/storage/atom";
 
 interface RichTextDemoProps {
   title: string;
@@ -31,6 +34,8 @@ export default function RichTextDemo({
   title,
   nameOfDepartamnet,
 }: RichTextDemoProps) {
+  const error = useAtomValue(errorAtom);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -54,6 +59,7 @@ export default function RichTextDemo({
       setContent(editor.getHTML());
       console.log("content", content);
       console.log("title", title);
+      console.log("nameOfDepartament", nameOfDepartamnet);
       console.log("texto editado", editor.getHTML());
     },
   });
@@ -61,6 +67,7 @@ export default function RichTextDemo({
   return (
     <section className="w-[70%] mt-0 flex flex-col gap-3 justify-center items-center">
       <InputWithIcon
+        type="title"
         errorMessage="Digite o titulo"
         label="Titulo:"
         placeholder="Escreva o titulo"
@@ -68,21 +75,31 @@ export default function RichTextDemo({
         className="self-start w-full"
         setTitle={setTitle}
         title={title}
+        setDepartament={setNameOfDepartament}
+        nameOfDepartament={nameOfDepartamnet}
       />
 
       <InputWithIcon
+        type="departament"
         errorMessage="Digite o nome do departamento"
         label="Nome do departamento:"
         placeholder="Escreva o titulo"
         target="Titulo interessante"
         className="self-start w-full"
-        setTitle={setNameOfDepartament}
-        title={nameOfDepartamnet}
+        setTitle={setTitle}
+        title={title}
+        setDepartament={setNameOfDepartament}
+        nameOfDepartament={nameOfDepartamnet}
       />
       <label htmlFor="content" className="self-start">
         Descrição:
       </label>
-      <RichTextEditor editor={editor} id="content">
+      <RichTextEditor
+        editor={editor}
+        id="content"
+        aria-required="true"
+        className="border-xs border-red-500 border-solid"
+      >
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
@@ -158,9 +175,9 @@ export default function RichTextDemo({
           ]}
         />
       </RichTextEditor>
-      {!content && (
-        <span className="text-red-500 self-start italic">
-          Escreva uma descrição do seu post
+      {error && content.trim().length < 20 && (
+        <span className="italic text-red-600 self-start">
+          Escreva um um post com mais de 20 caracteres
         </span>
       )}
     </section>

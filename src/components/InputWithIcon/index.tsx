@@ -1,15 +1,23 @@
 import { Dispatch, SetStateAction } from "react";
 import { TextInput, Tooltip, Center, Text, rem } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { useField } from "@mantine/form";
+import { TtypeInput } from "@/@types";
+import { title } from "process";
+import { deprecate } from "util";
 
 interface InputWithIconProps {
   label: string;
   placeholder: string;
+  type: TtypeInput;
   target: string;
   errorMessage: string;
   title: string;
+  nameOfDepartament: string;
   className: string;
+
   setTitle: Dispatch<SetStateAction<string>>;
+  setDepartament: Dispatch<SetStateAction<string>>;
 }
 
 export default function InputWithIcon({
@@ -17,10 +25,16 @@ export default function InputWithIcon({
   placeholder,
   target,
   className,
-  errorMessage,
-  setTitle,
+  type,
   title,
+  nameOfDepartament,
+  setDepartament,
+  setTitle,
 }: InputWithIconProps) {
+  function handleChangeValue(value: string) {
+    if (type === "title") setTitle(value);
+    if (type === "departament") setDepartament(value);
+  }
   const rightSection = (
     <Tooltip
       label={`${target}`}
@@ -39,16 +53,29 @@ export default function InputWithIcon({
     </Tooltip>
   );
 
+  const field = useField({
+    initialValue: "",
+
+    onValueChange: (value) => {
+      handleChangeValue(value);
+    },
+    validateOnBlur: true,
+    validate: (value) =>
+      value.trim().length < 6
+        ? `${
+            type === "title" ? "Titulo" : "Nome do departamento"
+          } deve ter mais de seis caracteres`
+        : null,
+  });
+
   return (
     <TextInput
+      {...field.getInputProps()}
       rightSection={rightSection}
       required
       label={`${label}`}
-      value={title}
-      error={!title && errorMessage}
       className={`${className}`}
       placeholder={`${placeholder}`}
-      onChange={(event) => setTitle(event.target.value)}
     />
   );
 }

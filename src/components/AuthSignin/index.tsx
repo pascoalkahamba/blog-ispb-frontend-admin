@@ -1,6 +1,5 @@
 "use client";
 
-import { useToggle } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useRouter } from "next/navigation";
@@ -21,12 +20,10 @@ import { signinSchemas } from "@/schemas";
 import { TSigninProps } from "@/@types";
 
 export default function AuthSignin(props: PaperProps) {
-  const [type, toggle] = useToggle(["login", "register"]);
   const router = useRouter();
   const form = useForm({
     initialValues: {
       email: "",
-      name: "",
       password: "",
       terms: true,
     },
