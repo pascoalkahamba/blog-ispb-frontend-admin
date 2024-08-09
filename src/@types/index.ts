@@ -8,5 +8,6 @@ export type HandleChangePostProps =
 
 export type TSigninProps = zod.infer<typeof signinSchemas>;
 export type TCreatePost = zod.infer<typeof postInfoSchema>;
-export type TwhoPosted = "admin" | "coordinator";
-export type TtypeInput = "title" | "departament";
+export type TWhoPosted = "admin" | "coordinator";
+export type TTypeInput = "title" | "departament";
+export type TTypeButton = "button" | "submit" | "reset" | undefined;

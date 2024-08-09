@@ -1,10 +1,10 @@
-import { TwhoPosted } from "@/@types";
+import { TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
   title: string;
   content: string;
   file: IFile;
-  whoPosted: TwhoPosted;
+  whoPosted: TWhoPosted;
   nameOfDepartment: string;
 }
 
@@ -21,4 +21,15 @@ export interface IFile {
 export interface ISignin {
   email: string;
   password: string;
+  terms: boolean;
+}
+
+export interface ILoggedInfo {
+  user: {
+    id: number;
+    email: string;
+    contact: string;
+    username: string;
+  };
+  token: string;
 }

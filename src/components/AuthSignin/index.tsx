@@ -18,8 +18,17 @@ import {
 import Link from "next/link";
 import { signinSchemas } from "@/schemas";
 import { TSigninProps } from "@/@types";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { signin } from "@/server";
+import { ISignin } from "@/interfaces";
+import CustomButton from "../CustomButton";
 
 export default function AuthSignin(props: PaperProps) {
+  const { data, isPending, isError, isSuccess, mutate } = useMutation({
+    mutationFn: (newUser: ISignin) => signin(newUser),
+  });
+
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -30,9 +39,23 @@ export default function AuthSignin(props: PaperProps) {
     validate: zodResolver(signinSchemas),
   });
 
-  const handleSubmit = (values: TSigninProps) => {
-    console.log("Everything is good.", values);
-    router.push("/dashboard");
+  const handleSubmit = ({ email, password, terms }: TSigninProps) => {
+    console.log("Clicked.");
+
+    mutate({ email, password, terms });
+
+    if (isSuccess) {
+      toast.success("login feito com succeso.");
+      console.log("user ", data);
+      router.push("/dashboard");
+      form.reset();
+      return;
+    }
+
+    if (isError) {
+      toast.error("Email não cadastrado vou senha incorreta.");
+      return;
+    }
   };
 
   return (
@@ -96,9 +119,14 @@ export default function AuthSignin(props: PaperProps) {
             }
           />
 
-          <Button type="submit" radius="lg" size="sm">
-            Entrar
-          </Button>
+          <CustomButton
+            target="Entrar"
+            targetPedding="Entrando..."
+            isPending={isPending}
+            size="sm"
+            radius="lg"
+            type="submit"
+          />
         </Group>
       </form>
     </Paper>

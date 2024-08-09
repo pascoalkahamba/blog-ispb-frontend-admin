@@ -5,7 +5,6 @@ import "aos/dist/aos.css";
 import "@mantine/tiptap/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/dropzone/styles.css";
-import "react-toastify/dist/ReactToastify.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";

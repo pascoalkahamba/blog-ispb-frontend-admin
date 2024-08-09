@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@mantine/carousel": "^7.10.2",
     "@mantine/core": "^7.11.2",
     "@mantine/dates": "^7.11.1",

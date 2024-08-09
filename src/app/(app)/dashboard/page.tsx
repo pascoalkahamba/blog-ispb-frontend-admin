@@ -1,8 +1,6 @@
 "use client";
 import { ButtonProgress } from "@/components/ButtonProcess";
 import RichTextDemo from "@/components/RichText";
-import { ICreatePost } from "@/interfaces";
-import { postInfoSchema } from "@/schemas";
 import { toast } from "react-toastify";
 import { createPost } from "@/server";
 import { errorAtom, selectFileAtom } from "@/storage/atom";
@@ -10,6 +8,7 @@ import { Button, Group } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
+import CustomButton from "@/components/CustomButton";
 
 export default function Dashboard() {
   const { data, isPending, isError, isSuccess, mutate } = useMutation({
@@ -29,19 +28,16 @@ export default function Dashboard() {
     formData.append("nameOfDepartment", nameOfDepartment);
     formData.append("whoPosted", "admin");
     formData.append("file", file);
-    console.log("Postar");
     setContent("");
     setError(true);
     mutate(formData);
 
     if (isSuccess) {
       toast.success("Post criado com sucesso.");
-      console.log("postInfo", data);
       return;
     }
 
     if (isError) {
-      console.log("Algo deu errado");
       toast.error("Algo deu errado ");
     }
   }
@@ -58,9 +54,13 @@ export default function Dashboard() {
           setTitle={setTitle}
         />
         <div className="flex items-center gap-3">
-          <Button variant="primary" onClick={handlePost}>
-            Postar
-          </Button>
+          <CustomButton
+            target="Postar"
+            targetPedding="Postando..."
+            handleClick={handlePost}
+            isPending={isPending}
+            type="submit"
+          />
           <ButtonProgress />
           <Button variant="default">Cancelar</Button>
         </div>

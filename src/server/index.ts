@@ -1,5 +1,5 @@
 import { appAxios } from "@/axios";
-import { ISignin } from "@/interfaces";
+import { ILoggedInfo, ISignin } from "@/interfaces";
 
 export async function createPost(formData: FormData) {
   const response = await appAxios.post<FormData>(
@@ -18,9 +18,10 @@ export async function createPost(formData: FormData) {
   return posted;
 }
 
-export async function signin({ email, password }: ISignin) {
+export async function signin({ email, password, terms }: ISignin) {
+  const whichRoute = terms ? "admin" : "coordinator";
   const response = await appAxios.post<ISignin>(
-    "/user/login",
+    `/${whichRoute}/login`,
     {
       email,
       password,
@@ -28,7 +29,7 @@ export async function signin({ email, password }: ISignin) {
     { withCredentials: true }
   );
 
-  const logged = response.data;
+  const logged: ILoggedInfo = response.data as unknown as ILoggedInfo;
 
   return logged;
 }

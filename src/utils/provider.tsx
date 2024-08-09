@@ -1,7 +1,8 @@
 "use client";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import "react-toastify/dist/ReactToastify.css";
+
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Aos from "aos";
 import AOS from "aos";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
@@ -17,7 +18,7 @@ export default function Providers({ children }: ProvidersProps) {
     AOS.init();
 
     () => {
-      Aos.refresh();
+      AOS.refresh();
     };
   }, []);
 
