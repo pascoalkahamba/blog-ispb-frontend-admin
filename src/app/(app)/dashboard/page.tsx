@@ -9,9 +9,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
+import AllPosts from "@/components/AllPosts";
 
 export default function Dashboard() {
-  const { data, isPending, isError, isSuccess, mutate } = useMutation({
+  const { data, isPending, error, isSuccess, mutate } = useMutation({
     mutationFn: (newUser: FormData) => createPost(newUser),
   });
 
@@ -28,43 +29,51 @@ export default function Dashboard() {
     formData.append("nameOfDepartment", nameOfDepartment);
     formData.append("whoPosted", "admin");
     formData.append("file", file);
-    setContent("");
-    setError(true);
     mutate(formData);
+    setError(true);
 
     if (isSuccess) {
+      alert("Done");
       toast.success("Post criado com sucesso.");
+      console.log("post", data);
       return;
     }
 
-    if (isError) {
-      toast.error("Algo deu errado ");
+    if (error) {
+      alert("Errro");
+      console.log("erro titulo ja existe");
+      toast.error("Algo deu errado");
+      return;
     }
   }
 
   return (
-    <section className="flex justify-center items-center w-full">
-      <Group className="flex flex-col gap-2">
-        <RichTextDemo
-          content={content}
-          title={title}
-          nameOfDepartamnet={nameOfDepartment}
-          setNameOfDepartament={setNameOfDepartment}
-          setContent={setContent}
-          setTitle={setTitle}
-        />
-        <div className="flex items-center gap-3">
-          <CustomButton
-            target="Postar"
-            targetPedding="Postando..."
-            handleClick={handlePost}
-            isPending={isPending}
-            type="submit"
+    <section className="w-full flex items-center flex-col gap-3">
+      <div className="flex justify-center items-center w-full">
+        <Group className="flex flex-col gap-2">
+          <RichTextDemo
+            content={content}
+            title={title}
+            nameOfDepartamnet={nameOfDepartment}
+            setNameOfDepartament={setNameOfDepartment}
+            setContent={setContent}
+            setTitle={setTitle}
           />
-          <ButtonProgress />
-          <Button variant="default">Cancelar</Button>
-        </div>
-      </Group>
+          <div className="flex items-center gap-3">
+            <CustomButton
+              target="Postar"
+              targetPedding="Postando..."
+              handleClick={handlePost}
+              isPending={isPending}
+              type="submit"
+            />
+            <ButtonProgress />
+            <Button variant="default">Cancelar</Button>
+          </div>
+        </Group>
+      </div>
+
+      <AllPosts />
     </section>
   );
 }

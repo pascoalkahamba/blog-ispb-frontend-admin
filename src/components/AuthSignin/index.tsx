@@ -3,6 +3,7 @@
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useRouter } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 import {
   TextInput,
   PasswordInput,
@@ -10,10 +11,10 @@ import {
   Paper,
   Group,
   PaperProps,
-  Button,
   Divider,
   Checkbox,
   Stack,
+  Button,
 } from "@mantine/core";
 import Link from "next/link";
 import { signinSchemas } from "@/schemas";
@@ -21,7 +22,7 @@ import { TSigninProps } from "@/@types";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { signin } from "@/server";
-import { ISignin } from "@/interfaces";
+import { ICustomSession, ISignin } from "@/interfaces";
 import CustomButton from "../CustomButton";
 
 export default function AuthSignin(props: PaperProps) {
@@ -39,13 +40,14 @@ export default function AuthSignin(props: PaperProps) {
     validate: zodResolver(signinSchemas),
   });
 
-  const handleSubmit = ({ email, password, terms }: TSigninProps) => {
+  const handleSubmit = async ({ email, password, terms }: TSigninProps) => {
     console.log("Clicked.");
 
     mutate({ email, password, terms });
 
     if (isSuccess) {
       toast.success("login feito com succeso.");
+      localStorage.setItem("token", JSON.stringify(data.token));
       console.log("user ", data);
       router.push("/dashboard");
       form.reset();
@@ -54,6 +56,8 @@ export default function AuthSignin(props: PaperProps) {
 
     if (isError) {
       toast.error("Email não cadastrado vou senha incorreta.");
+      localStorage.removeItem("token");
+
       return;
     }
   };
@@ -118,7 +122,6 @@ export default function AuthSignin(props: PaperProps) {
               form.setFieldValue("terms", event.currentTarget.checked)
             }
           />
-
           <CustomButton
             target="Entrar"
             targetPedding="Entrando..."

@@ -1,8 +1,8 @@
-import { appAxios } from "@/axios";
-import { ILoggedInfo, ISignin } from "@/interfaces";
+import axios from "@/axios";
+import { ILoginResponse, IPost, ISignin } from "@/interfaces";
 
 export async function createPost(formData: FormData) {
-  const response = await appAxios.post<FormData>(
+  const response = await axios.post<FormData>(
     "/post/create",
     formData,
 
@@ -20,7 +20,7 @@ export async function createPost(formData: FormData) {
 
 export async function signin({ email, password, terms }: ISignin) {
   const whichRoute = terms ? "admin" : "coordinator";
-  const response = await appAxios.post<ISignin>(
+  const response = await axios.post<ISignin>(
     `/${whichRoute}/login`,
     {
       email,
@@ -29,7 +29,14 @@ export async function signin({ email, password, terms }: ISignin) {
     { withCredentials: true }
   );
 
-  const logged: ILoggedInfo = response.data as unknown as ILoggedInfo;
+  const logged: ILoginResponse = response.data as unknown as ILoginResponse;
 
   return logged;
+}
+
+export async function getAllPost() {
+  const response = await axios.get("/post/allPosts");
+  const allPosts = response.data as IPost[];
+
+  return allPosts;
 }

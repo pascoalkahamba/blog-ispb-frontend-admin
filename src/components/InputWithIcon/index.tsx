@@ -2,20 +2,17 @@ import { Dispatch, SetStateAction } from "react";
 import { TextInput, Tooltip, Center, Text, rem } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useField } from "@mantine/form";
-import { TtypeInput } from "@/@types";
-import { title } from "process";
-import { deprecate } from "util";
+import { TTypeInput } from "@/@types";
 
 interface InputWithIconProps {
   label: string;
   placeholder: string;
-  type: TtypeInput;
+  type: TTypeInput;
   target: string;
   errorMessage: string;
   title: string;
   nameOfDepartament: string;
   className: string;
-
   setTitle: Dispatch<SetStateAction<string>>;
   setDepartament: Dispatch<SetStateAction<string>>;
 }
@@ -26,8 +23,6 @@ export default function InputWithIcon({
   target,
   className,
   type,
-  title,
-  nameOfDepartament,
   setDepartament,
   setTitle,
 }: InputWithIconProps) {

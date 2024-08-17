@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import { TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
@@ -18,18 +19,55 @@ export interface IFile {
   webkitRelativePath: string;
 }
 
+export interface ICustomSession extends Session {
+  accessToken: string;
+  user: IUser;
+}
+
 export interface ISignin {
   email: string;
   password: string;
   terms: boolean;
 }
 
-export interface ILoggedInfo {
-  user: {
-    id: number;
-    email: string;
-    contact: string;
-    username: string;
-  };
+export interface ILoginResponse {
+  user: IUser;
   token: string;
+}
+
+export interface IDepartment {
+  id: number;
+  name: string;
+}
+
+export interface IPicture {
+  id: number;
+  name: string;
+  url: string;
+  adminId: null | number;
+  coordinatorId: null | number;
+  postId: number;
+  studentId: null | number;
+}
+export interface IPost {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  content: string;
+  departments: IDepartment[];
+  picture: IPicture;
+  views: number | null;
+  likes: number | null;
+  unlikes: number | null;
+  favorite: boolean | null;
+  adminId: number | null;
+  coordinatorId: number | null;
+}
+
+export interface IUser {
+  id: string;
+  email: string;
+  contact: string;
+  username: string;
 }

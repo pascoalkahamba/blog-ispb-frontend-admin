@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import Providers from "@/utils/provider";
+import { SessionProvider } from "next-auth/react";
 import { ModalsProvider } from "@mantine/modals";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,6 +29,7 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
+
       <body className={inter.className}>
         <MantineProvider>
           <ModalsProvider labels={{ confirm: "Submit", cancel: "Cancel" }}>

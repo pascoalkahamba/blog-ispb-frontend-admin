@@ -14,7 +14,6 @@ import { IconColorPicker } from "@tabler/icons-react";
 import InputWithIcon from "../InputWithIcon";
 import { Dispatch, SetStateAction, useRef } from "react";
 
-import { useField } from "@mantine/form";
 import { useAtomValue } from "jotai";
 import { errorAtom } from "@/storage/atom";
 
@@ -57,7 +56,7 @@ export default function RichTextDemo({
     },
     onUpdate({ editor }) {
       setContent(editor.getHTML());
-      console.log("content", content);
+      console.log("content", content.trim());
       console.log("title", title);
       console.log("nameOfDepartament", nameOfDepartamnet);
       console.log("texto editado", editor.getHTML());
