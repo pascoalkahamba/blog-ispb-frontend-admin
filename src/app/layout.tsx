@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import "@mantine/carousel/styles.css";
 import "aos/dist/aos.css";
 import "@mantine/tiptap/styles.css";
+import "react-toastify/dist/ReactToastify.css";
 import "@mantine/dates/styles.css";
 import "@mantine/dropzone/styles.css";
 import type { Metadata } from "next";

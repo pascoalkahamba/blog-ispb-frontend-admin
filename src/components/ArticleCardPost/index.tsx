@@ -12,6 +12,9 @@ import {
 } from "@mantine/core";
 import { IconHeart, IconBookmark, IconShare } from "@tabler/icons-react";
 import classes from "@/components/ArticleCardPost/styles.module.css";
+import { getOnePost } from "@/server";
+import { useQuery } from "@tanstack/react-query";
+import SkeletonComponent from "../Skeleton";
 
 interface ArticleCardPostProps {
   id: number;
@@ -19,6 +22,16 @@ interface ArticleCardPostProps {
 
 export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   const theme = useMantineTheme();
+  const { data, error, isPending } = useQuery({
+    queryKey: ["onePost"],
+    queryFn: () => getOnePost(id),
+  });
+
+  if (isPending)
+    return <SkeletonComponent isPending={isPending} skeletons={[1]} />;
+
+  console.log("data", data);
+  if (error) return "Algo deu errado tente novamente: " + error.message;
 
   return (
     <Card withBorder padding="lg" radius="md" className={classes.card}>

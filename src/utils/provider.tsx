@@ -1,6 +1,5 @@
 "use client";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import "react-toastify/dist/ReactToastify.css";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AOS from "aos";

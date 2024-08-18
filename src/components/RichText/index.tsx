@@ -12,7 +12,7 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { IconColorPicker } from "@tabler/icons-react";
 import InputWithIcon from "../InputWithIcon";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { useAtomValue } from "jotai";
 import { errorAtom } from "@/storage/atom";
@@ -48,7 +48,8 @@ export default function RichTextDemo({
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    content,
+    content: content,
+
     editorProps: {
       attributes: {
         class: "text-slate-100 p-12",
@@ -56,10 +57,6 @@ export default function RichTextDemo({
     },
     onUpdate({ editor }) {
       setContent(editor.getHTML());
-      console.log("content", content.trim());
-      console.log("title", title);
-      console.log("nameOfDepartament", nameOfDepartamnet);
-      console.log("texto editado", editor.getHTML());
     },
   });
 
@@ -94,10 +91,15 @@ export default function RichTextDemo({
         Descrição:
       </label>
       <RichTextEditor
+        defaultValue={content}
         editor={editor}
         id="content"
-        aria-required="true"
-        className="border-xs border-red-500 border-solid"
+        aria-required={true}
+        className={` ${
+          error && content.trim().length < 20
+            ? "border-xs border-red-500 border-solid"
+            : ""
+        }`}
       >
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
@@ -175,7 +177,7 @@ export default function RichTextDemo({
         />
       </RichTextEditor>
       {error && content.trim().length < 20 && (
-        <span className="italic text-red-600 self-start">
+        <span className="italic text-red-600 self-start text-sm">
           Escreva um um post com mais de 20 caracteres
         </span>
       )}

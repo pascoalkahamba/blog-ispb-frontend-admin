@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import { TWhoPosted } from "@/@types";
+import { TRole, TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
   title: string;
@@ -35,9 +35,20 @@ export interface ILoginResponse {
   token: string;
 }
 
+export interface IEspecialInfoAdminOrCoordinator {
+  username: string;
+  role: TRole;
+  profile: IProfile;
+}
+
 export interface IDepartment {
   id: number;
   name: string;
+}
+
+export interface IProfile {
+  bio: string;
+  photo: IPicture;
 }
 
 export interface IPicture {
@@ -59,6 +70,8 @@ export interface IPost {
   picture: IPicture;
   views: number | null;
   likes: number | null;
+  admin: IEspecialInfoAdminOrCoordinator | null;
+  coordinator: IEspecialInfoAdminOrCoordinator | null;
   unlikes: number | null;
   favorite: boolean | null;
   adminId: number | null;

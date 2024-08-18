@@ -2,46 +2,64 @@
 import { ButtonProgress } from "@/components/ButtonProcess";
 import RichTextDemo from "@/components/RichText";
 import { toast } from "react-toastify";
-import { createPost } from "@/server";
-import { errorAtom, selectFileAtom } from "@/storage/atom";
+import { createPost, getAllPost } from "@/server";
+import { errorAtom, selectFileAtom, whoCreatorAtom } from "@/storage/atom";
 import { Button, Group } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
-import { useAtomValue, useSetAtom } from "jotai";
+import {
+  useMutation,
+  RefetchQueryFilters,
+  QueryClient,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import AllPosts from "@/components/AllPosts";
 
 export default function Dashboard() {
-  const { data, isPending, error, isSuccess, mutate } = useMutation({
+  const queryClient = useQueryClient();
+  const { data, isPending, isError, isSuccess, mutate } = useMutation({
     mutationFn: (newUser: FormData) => createPost(newUser),
+    onSuccess: (data) => {
+      queryClient.fetchQuery({ queryKey: ["allPosts"], queryFn: getAllPost });
+    },
   });
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [nameOfDepartment, setNameOfDepartment] = useState("");
-  const file = useAtomValue(selectFileAtom);
+  const [file, setFile] = useAtom(selectFileAtom);
   const setError = useSetAtom(errorAtom);
+  const whoCreator = JSON.parse(localStorage.getItem("whoCreator") as string);
+
+  function cancelPost() {
+    setContent("");
+    setTitle("");
+    console.log("cancelar");
+    console.log("title", title);
+    setNameOfDepartment("");
+    setFile("");
+    setError(false);
+  }
+  console.log("whoCreator", whoCreator);
 
   function handlePost() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("nameOfDepartment", nameOfDepartment);
-    formData.append("whoPosted", "admin");
+    formData.append("whoPosted", whoCreator);
     formData.append("file", file);
     mutate(formData);
     setError(true);
 
     if (isSuccess) {
-      alert("Done");
       toast.success("Post criado com sucesso.");
-      console.log("post", data);
+      cancelPost();
       return;
     }
 
-    if (error) {
-      alert("Errro");
-      console.log("erro titulo ja existe");
+    if (isError) {
       toast.error("Algo deu errado");
       return;
     }
@@ -68,7 +86,9 @@ export default function Dashboard() {
               type="submit"
             />
             <ButtonProgress />
-            <Button variant="default">Cancelar</Button>
+            <Button variant="default" onClick={cancelPost}>
+              Cancelar
+            </Button>
           </div>
         </Group>
       </div>

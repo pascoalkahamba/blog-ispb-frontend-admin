@@ -22,6 +22,8 @@ export default function InputWithIcon({
   placeholder,
   target,
   className,
+  title,
+  nameOfDepartament,
   type,
   setDepartament,
   setTitle,
@@ -50,7 +52,6 @@ export default function InputWithIcon({
 
   const field = useField({
     initialValue: "",
-
     onValueChange: (value) => {
       handleChangeValue(value);
     },
@@ -68,6 +69,7 @@ export default function InputWithIcon({
       {...field.getInputProps()}
       rightSection={rightSection}
       required
+      value={type === "title" ? title : nameOfDepartament}
       label={`${label}`}
       className={`${className}`}
       placeholder={`${placeholder}`}

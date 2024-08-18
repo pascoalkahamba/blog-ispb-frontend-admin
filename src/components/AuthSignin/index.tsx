@@ -22,7 +22,7 @@ import { TSigninProps } from "@/@types";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { signin } from "@/server";
-import { ICustomSession, ISignin } from "@/interfaces";
+import { ISignin } from "@/interfaces";
 import CustomButton from "../CustomButton";
 
 export default function AuthSignin(props: PaperProps) {
@@ -48,6 +48,10 @@ export default function AuthSignin(props: PaperProps) {
     if (isSuccess) {
       toast.success("login feito com succeso.");
       localStorage.setItem("token", JSON.stringify(data.token));
+      localStorage.setItem(
+        "whoCreator",
+        JSON.stringify(terms ? "admin" : "coordinator")
+      );
       console.log("user ", data);
       router.push("/dashboard");
       form.reset();

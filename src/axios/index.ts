@@ -3,6 +3,7 @@ import Axios from "axios";
 // Instância do Axios para fazer requisições
 const axios = Axios.create({
   baseURL: "http://localhost:3001", // Define a baseURL diretamente aqui
+  timeout: 20000,
 });
 
 axios.interceptors.request.use(

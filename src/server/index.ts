@@ -40,3 +40,10 @@ export async function getAllPost() {
 
   return allPosts;
 }
+
+export async function getOnePost(id: number) {
+  const response = await axios.get(`/post/onePost/${id}`);
+  const onePosts = response.data as IPost;
+
+  return onePosts;
+}
