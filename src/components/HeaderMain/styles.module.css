@@ -10,7 +10,7 @@
   position: fixed;
   height: 6.4rem;
   width: 100%;
-  z-index: 999999;
+  z-index: 40;
 }
 
 .mainSection {

@@ -2,7 +2,7 @@ import axios from "@/axios";
 import { ILoginResponse, IPost, ISignin } from "@/interfaces";
 
 export async function createPost(formData: FormData) {
-  const response = await axios.post<FormData>(
+  const response = await axios.post<IPost>(
     "/post/create",
     formData,
 
@@ -46,4 +46,11 @@ export async function getOnePost(id: number) {
   const onePosts = response.data as IPost;
 
   return onePosts;
+}
+
+export async function deletePost(id: number) {
+  const response = await axios.delete<IPost>(`/post/delete/${id}`);
+  const postDeleted = response.data;
+
+  return postDeleted;
 }

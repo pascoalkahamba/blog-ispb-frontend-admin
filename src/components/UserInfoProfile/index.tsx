@@ -20,9 +20,14 @@ import {
 import { ModalDemo } from "@/components/Modal";
 import Link from "next/link";
 
-export function UserInfoProfile() {
+interface UserInfoProfileProps {
+  id: number;
+}
+
+export function UserInfoProfile({ id }: UserInfoProfileProps) {
   const theme = useMantineTheme();
   const router = useRouter();
+  console.log("profile id", id);
   return (
     <Paper
       radius="md"

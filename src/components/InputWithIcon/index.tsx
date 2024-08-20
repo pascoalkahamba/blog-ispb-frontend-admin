@@ -69,6 +69,7 @@ export default function InputWithIcon({
       {...field.getInputProps()}
       rightSection={rightSection}
       required
+      maxLength={30}
       value={type === "title" ? title : nameOfDepartament}
       label={`${label}`}
       className={`${className}`}

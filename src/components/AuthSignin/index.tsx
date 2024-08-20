@@ -20,7 +20,7 @@ import Link from "next/link";
 import { signinSchemas } from "@/schemas";
 import { TSigninProps } from "@/@types";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
+import { notifications } from "@mantine/notifications";
 import { signin } from "@/server";
 import { ISignin } from "@/interfaces";
 import CustomButton from "../CustomButton";
@@ -46,20 +46,32 @@ export default function AuthSignin(props: PaperProps) {
     mutate({ email, password, terms });
 
     if (isSuccess) {
-      toast.success("login feito com succeso.");
+      notifications.show({
+        title: "Login autorizado.",
+        message: "Login feito com succeso.",
+        position: "top-right",
+        className: "bg-blue-400",
+        color: "blue",
+        loading: true,
+      });
       localStorage.setItem("token", JSON.stringify(data.token));
-      localStorage.setItem(
-        "whoCreator",
-        JSON.stringify(terms ? "admin" : "coordinator")
-      );
+
       console.log("user ", data);
+      localStorage.setItem("userId", JSON.stringify(data.user.id));
       router.push("/dashboard");
       form.reset();
       return;
     }
 
     if (isError) {
-      toast.error("Email não cadastrado vou senha incorreta.");
+      notifications.show({
+        color: "red",
+        title: "Login não autorizado.",
+        message: "Email não cadastrado ou senha incorreta.",
+        position: "top-right",
+        loading: true,
+        className: "bg-red-400",
+      });
       localStorage.removeItem("token");
 
       return;

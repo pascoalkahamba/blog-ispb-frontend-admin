@@ -1,16 +1,16 @@
 import "@mantine/core/styles.css";
 import "@/app/globals.css";
 import "@mantine/carousel/styles.css";
+import "@mantine/notifications/styles.css";
 import "aos/dist/aos.css";
 import "@mantine/tiptap/styles.css";
-import "react-toastify/dist/ReactToastify.css";
 import "@mantine/dates/styles.css";
 import "@mantine/dropzone/styles.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import Providers from "@/utils/provider";
-import { SessionProvider } from "next-auth/react";
+import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,6 +34,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <MantineProvider>
           <ModalsProvider labels={{ confirm: "Submit", cancel: "Cancel" }}>
+            <Notifications />
             <Providers>{children}</Providers>
           </ModalsProvider>
         </MantineProvider>

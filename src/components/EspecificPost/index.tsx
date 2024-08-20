@@ -1,6 +1,5 @@
 import {
   Card,
-  Image,
   ActionIcon,
   Group,
   Text,
@@ -9,10 +8,21 @@ import {
   useMantineTheme,
   rem,
 } from "@mantine/core";
-import { IconHeart, IconBookmark, IconShare } from "@tabler/icons-react";
+import {
+  IconThumbUp,
+  IconThumbUpFilled,
+  IconThumbDown,
+  IconThumbDownFilled,
+  IconTrash,
+} from "@tabler/icons-react";
 import classes from "@/components/EspecificPost/styles.module.css";
 import { IEspecialInfoAdminOrCoordinator, IPicture } from "@/interfaces";
 import Link from "next/link";
+import Image from "next/image";
+import { useDeletePost } from "@/hooks/useDeletePost";
+import { deletePost } from "@/server";
+import { notifications } from "@mantine/notifications";
+import SkeletonComponent from "@/components/Skeleton";
 
 const dateNow = new Date();
 interface EspecificPostProps {
@@ -27,6 +37,15 @@ interface EspecificPostProps {
   unlikes: number | null;
 }
 
+const MAXLENGTH = 100;
+const lastData = [1, 2, 3, 3, 2, 1, 2, 2, 1, 4, 3, 2, 4, 3, 2];
+
+function extractTextFromHTML(html: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  return doc.body.textContent || "";
+}
+
 export default function EspecificPost({
   id,
   title,
@@ -39,18 +58,55 @@ export default function EspecificPost({
   createdAt,
 }: EspecificPostProps) {
   const theme = useMantineTheme();
+  const { mutation } = useDeletePost<number>(deletePost, "deletePost");
 
   const whoCreator = !admin ? coordinator : admin;
+  const plainText = extractTextFromHTML(content);
+  const truncated =
+    plainText.length > MAXLENGTH
+      ? plainText.substring(0, MAXLENGTH) + " Ler mais..."
+      : plainText;
+
+  function handleDeletePost() {
+    mutation.mutate(id);
+
+    if (mutation.isSuccess) {
+      notifications.show({
+        title: "Post eliminado",
+        message: "Post eliminado com sucesso.",
+        position: "top-right",
+        className: "bg-blue-400 z-50",
+        color: "blue",
+        loading: true,
+      });
+      return;
+    }
+    if (mutation.isError) {
+      notifications.show({
+        title: "Post não eliminado",
+        message: "Algo deu errado tente novamente.",
+        position: "top-right",
+        className: "bg-red-400 z-50",
+        color: "red",
+        loading: true,
+      });
+      return;
+    }
+  }
+  if (mutation.isPending)
+    return (
+      <SkeletonComponent isPending={mutation.isPending} skeletons={lastData} />
+    );
 
   return (
     <Card
       withBorder
       padding="lg"
       radius="md"
-      className={`${classes.card} w-[20%] flex-auto basis-64 h-[10%]`}
+      className={`${classes.card} w-[30%] flex-grow basis-64 h-[30%]`}
     >
-      <Link href={`post/${id}`}>
-        <Card.Section mb="sm">
+      <Card.Section mb="sm">
+        <Link href={`post/${id}`} className="w-full">
           <Image
             src={
               picture?.url
@@ -58,19 +114,27 @@ export default function EspecificPost({
                 : "https://images.unsplash.com/photo-1477554193778-9562c28588c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
             }
             alt="Imagem não carregada verifique a sua internet e tente novamente."
-            height={180}
+            height={400}
+            width={500}
+            className="w-full"
           />
-        </Card.Section>
+        </Link>
+      </Card.Section>
 
-        <Badge w="fit-content" variant="light">
-          {title}
-        </Badge>
+      <Badge w="fit-content" variant="light">
+        <Link href={`post/${id}`}>{title}</Link>
+      </Badge>
 
-        <Text fw={700} className={classes.title} mt="xs">
-          {content}{" "}
-        </Text>
+      <Text fw={700} className={classes.title} mt="xs">
+        {plainText.length > MAXLENGTH ? (
+          truncated
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: content }}></div>
+        )}
+      </Text>
 
-        <Group mt="lg">
+      <Group mt="lg">
+        <Link href={`profile/${id}`}>
           <Avatar
             src={
               whoCreator?.profile?.photo.url
@@ -79,45 +143,49 @@ export default function EspecificPost({
             }
             radius="sm"
           />
-          <div>
-            <Text fw={500}>{whoCreator?.username}</Text>
-            <Text fz="xs" c="dimmed">
-              posted 34 minutes ago
-            </Text>
-          </div>
-        </Group>
+        </Link>
+        <Link href={`profile/${id}`}>
+          <Text fw={500}>{whoCreator?.username}</Text>
+          <Text fz="xs" c="dimmed">
+            posted 34 minutes ago
+          </Text>
+        </Link>
+      </Group>
 
-        <Card.Section className={classes.footer}>
-          <Group justify="space-between">
-            <Text fz="xs" c="dimmed">
-              {likes ?? 0} people liked this
-            </Text>
-            <Group gap={0}>
-              <ActionIcon variant="subtle" color="gray">
-                <IconHeart
-                  style={{ width: rem(20), height: rem(20) }}
-                  color={theme.colors.red[6]}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-              <ActionIcon variant="subtle" color="gray">
-                <IconBookmark
-                  style={{ width: rem(20), height: rem(20) }}
-                  color={theme.colors.yellow[6]}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-              <ActionIcon variant="subtle" color="gray">
-                <IconShare
-                  style={{ width: rem(20), height: rem(20) }}
-                  color={theme.colors.blue[6]}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-            </Group>
+      <Card.Section className={classes.footer}>
+        <Group justify="space-between">
+          <Text fz="xs" c="dimmed">
+            {likes ?? 0} people liked this
+          </Text>
+          <Group gap={0}>
+            <ActionIcon variant="subtle" color="gray">
+              <IconThumbUp
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.blue[6]}
+                stroke={1.5}
+              />
+            </ActionIcon>
+            <ActionIcon variant="subtle" color="gray">
+              <IconThumbDown
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.yellow[6]}
+                stroke={1.5}
+              />
+            </ActionIcon>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              onClick={handleDeletePost}
+            >
+              <IconTrash
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.red[6]}
+                stroke={1.5}
+              />
+            </ActionIcon>
           </Group>
-        </Card.Section>
-      </Link>
+        </Group>
+      </Card.Section>
     </Card>
   );
 }
