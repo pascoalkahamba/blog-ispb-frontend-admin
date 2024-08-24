@@ -34,7 +34,7 @@ export default function HeaderMain() {
   const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-
+  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
   const router = useRouter();
   const pathname = usePathname();
   const items = tabs.map((tab) => (
@@ -125,7 +125,7 @@ export default function HeaderMain() {
                   />
                 }
               >
-                <Link href="/profile">Definições da conta</Link>
+                <Link href={`/profile/${userId}`}>Definições da conta</Link>
               </Menu.Item>
 
               <Menu.Item

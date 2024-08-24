@@ -8,6 +8,8 @@ interface CustomButtonProps {
   radius?: MantineRadius;
   size?: MantineSize;
   target: string;
+  isDirty: boolean;
+  isValid: boolean;
   type: TTypeButton;
 }
 
@@ -26,11 +28,12 @@ export default function CustomButton({
       variant="primary"
       radius={radius}
       size={size}
+      loading={isPending}
       onClick={handleClick}
       disabled={isPending}
       className={`${isPending && "bg-blue-400 text-white"}`}
     >
-      {isPending ? targetPedding : target}
+      {target}
     </Button>
   );
 }

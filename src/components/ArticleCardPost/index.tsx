@@ -1,7 +1,6 @@
 "use client";
 import {
   Card,
-  Image,
   ActionIcon,
   Group,
   Text,
@@ -9,12 +8,22 @@ import {
   Badge,
   useMantineTheme,
   rem,
+  Divider,
 } from "@mantine/core";
-import { IconHeart, IconBookmark, IconShare } from "@tabler/icons-react";
+import {
+  IconThumbUp,
+  IconThumbDown,
+  IconPencilMinus,
+  IconTrash,
+} from "@tabler/icons-react";
+
 import classes from "@/components/ArticleCardPost/styles.module.css";
 import { getOnePost } from "@/server";
 import { useQuery } from "@tanstack/react-query";
-import SkeletonComponent from "../Skeleton";
+import SkeletonComponent from "@/components/Skeleton";
+import Image from "next/image";
+import CommentSimple from "../CommentSimple";
+import TextareaComponent from "../TextariaComponent";
 
 interface ArticleCardPostProps {
   id: number;
@@ -34,21 +43,57 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   if (error) return "Algo deu errado tente novamente: " + error.message;
 
   return (
-    <Card withBorder padding="lg" radius="md" className={classes.card}>
+    <Card
+      withBorder
+      padding="lg"
+      radius="md"
+      className={`${classes.card} w-[60%]`}
+    >
       <Card.Section mb="sm">
         <Image
           src="https://images.unsplash.com/photo-1477554193778-9562c28588c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
           alt="Top 50 underrated plants for house decoration"
-          height={180}
+          height={80}
+          width={600}
+          className="w-full"
         />
       </Card.Section>
 
-      <Badge w="fit-content" variant="light">
-        decorations
+      <Badge w="fit-content" variant="light" className="text-center" size="xl">
+        Pascoal Kahamba Titulo
       </Badge>
 
       <Text fw={700} className={classes.title} mt="xs">
         Top 50 underrated plants for house decoration params id {id}
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
+        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
+        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
+        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
+        decoration params id {id}
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
+        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
+        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
+        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
+        decoration params id {id}
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
+        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
+        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
+        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
+        decoration params id {id}
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
+        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
+        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
+        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
+        decoration params id {id}
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
+        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
+        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
+        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
+        decoration params id {id}
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
+        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
+        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
+        ut eum ducimus praesentium quidem?
       </Text>
 
       <Group mt="lg">
@@ -66,34 +111,63 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
 
       <Card.Section className={classes.footer}>
         <Group justify="space-between">
-          <Text fz="xs" c="dimmed">
-            733 people liked this
-          </Text>
-          <Group gap={0}>
-            <ActionIcon variant="subtle" color="gray">
-              <IconHeart
+          <Group gap={2}>
+            <ActionIcon variant="subtle" color="blue">
+              <IconThumbUp
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.blue[6]}
+                stroke={1.5}
+              />
+            </ActionIcon>
+            <span className="text-xs italic">{20}</span>
+
+            <ActionIcon variant="subtle" color="red">
+              <IconThumbDown
                 style={{ width: rem(20), height: rem(20) }}
                 color={theme.colors.red[6]}
                 stroke={1.5}
               />
             </ActionIcon>
+            <span className="text-xs italic">{30}</span>
+          </Group>
+          <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">
-              <IconBookmark
+              <IconPencilMinus
                 style={{ width: rem(20), height: rem(20) }}
                 color={theme.colors.yellow[6]}
                 stroke={1.5}
               />
             </ActionIcon>
-            <ActionIcon variant="subtle" color="gray">
-              <IconShare
+            <ActionIcon variant="subtle" color="red">
+              <IconTrash
                 style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.blue[6]}
+                color={theme.colors.red[6]}
                 stroke={1.5}
               />
             </ActionIcon>
           </Group>
         </Group>
       </Card.Section>
+      <Divider size="xs" className="mx-[-5rem]" />
+      <TextareaComponent
+        labelTarget="Escreva um comentário"
+        errorTarget="Comentário invalido"
+        buttonTarget="Comentar"
+        placeholder="Escreva seu comentario"
+        className="p-2 w-full flex flex-col gap-2"
+        classNameButton="ml-2"
+      />
+      <Divider
+        size="xs"
+        className="mx-[-5rem]"
+        label={<Text fw={500}>Comentários</Text>}
+        labelPosition="center"
+      />
+      <Group className="w-full mt-3">
+        <CommentSimple />
+        <CommentSimple />
+        <CommentSimple />
+      </Group>
     </Card>
   );
 }

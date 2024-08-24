@@ -82,6 +82,8 @@ export default function DashboardChild() {
           />
           <div className="flex items-center gap-3">
             <CustomButton
+              isDirty={true}
+              isValid={false}
               target="Postar"
               targetPedding="Postando..."
               handleClick={handlePost}

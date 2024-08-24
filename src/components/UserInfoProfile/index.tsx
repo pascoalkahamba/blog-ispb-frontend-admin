@@ -28,6 +28,10 @@ export function UserInfoProfile({ id }: UserInfoProfileProps) {
   const theme = useMantineTheme();
   const router = useRouter();
   console.log("profile id", id);
+
+  function handleDeleteAccount() {
+    console.log("eliminar conta");
+  }
   return (
     <Paper
       radius="md"
@@ -122,7 +126,14 @@ export function UserInfoProfile({ id }: UserInfoProfileProps) {
         <Button variant="gradient" className="px-5">
           Editar Informações
         </Button>
-        <ModalDemo title="Eliminar conta" />
+        <ModalDemo
+          targetButton="Eliminar conta"
+          typeModal="deleteAccount"
+          handleClick={handleDeleteAccount}
+          content="Tem certesa que deseja mesmo eliminar sua conta está acção irá
+          eliminar permantemente a sua conta da vitrine online.
+"
+        />
         <Button variant="default" className="px-5">
           <Link href="/signin">Sair</Link>
         </Button>

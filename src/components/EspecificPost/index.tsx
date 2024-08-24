@@ -22,7 +22,7 @@ import Image from "next/image";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { deletePost } from "@/server";
 import { notifications } from "@mantine/notifications";
-import SkeletonComponent from "@/components/Skeleton";
+import { ModalDemo } from "@/components/Modal";
 
 const dateNow = new Date();
 interface EspecificPostProps {
@@ -58,8 +58,9 @@ export default function EspecificPost({
   createdAt,
 }: EspecificPostProps) {
   const theme = useMantineTheme();
-  const { mutation } = useDeletePost<number>(deletePost, "deletePost");
+  const { mutation } = useDeletePost<number>(deletePost, "allPosts");
 
+  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
   const whoCreator = !admin ? coordinator : admin;
   const plainText = extractTextFromHTML(content);
   const truncated =
@@ -81,6 +82,16 @@ export default function EspecificPost({
       });
       return;
     }
+    if (mutation.isPending) {
+      notifications.show({
+        title: "Carregando para eliminar",
+        message: "O Post esta no processo de eliminação.",
+        position: "top-right",
+        className: "bg-red-400 z-50",
+        color: "orange",
+        loading: true,
+      });
+    }
     if (mutation.isError) {
       notifications.show({
         title: "Post não eliminado",
@@ -93,11 +104,6 @@ export default function EspecificPost({
       return;
     }
   }
-  if (mutation.isPending)
-    return (
-      <SkeletonComponent isPending={mutation.isPending} skeletons={lastData} />
-    );
-
   return (
     <Card
       withBorder
@@ -134,7 +140,7 @@ export default function EspecificPost({
       </Text>
 
       <Group mt="lg">
-        <Link href={`profile/${id}`}>
+        <Link href={`profile/${userId}`}>
           <Avatar
             src={
               whoCreator?.profile?.photo.url
@@ -144,7 +150,7 @@ export default function EspecificPost({
             radius="sm"
           />
         </Link>
-        <Link href={`profile/${id}`}>
+        <Link href={`profile/${userId}`}>
           <Text fw={500}>{whoCreator?.username}</Text>
           <Text fz="xs" c="dimmed">
             posted 34 minutes ago
@@ -172,17 +178,12 @@ export default function EspecificPost({
                 stroke={1.5}
               />
             </ActionIcon>
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              onClick={handleDeletePost}
-            >
-              <IconTrash
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.red[6]}
-                stroke={1.5}
-              />
-            </ActionIcon>
+            <ModalDemo
+              typeModal="deletePost"
+              handleClick={handleDeletePost}
+              content="Você tem certeza que dejesas eliminar este post esta acção irá eliminar permantemente o post da vitrine online."
+              targetButton="Eliminar post"
+            />
           </Group>
         </Group>
       </Card.Section>

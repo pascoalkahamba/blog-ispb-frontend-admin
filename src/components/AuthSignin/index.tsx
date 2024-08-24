@@ -142,6 +142,8 @@ export default function AuthSignin(props: PaperProps) {
             target="Entrar"
             targetPedding="Entrando..."
             isPending={isPending}
+            isDirty={form.isDirty("email") && form.isDirty("password")}
+            isValid={false}
             size="sm"
             radius="lg"
             type="submit"

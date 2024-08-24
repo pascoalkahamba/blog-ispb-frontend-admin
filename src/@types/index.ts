@@ -11,5 +11,6 @@ export type TCreatePost = zod.infer<typeof postInfoSchema>;
 export type TWhoPosted = "admin" | "coordinator";
 export type TTypeInput = "title" | "departament";
 export type TRole = "USER" | "ADMIN" | "COORDINATOR";
+export type TModal = "deletePost" | "deleteAccount";
 
 export type TTypeButton = "button" | "submit" | "reset" | undefined;
