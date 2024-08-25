@@ -7,7 +7,11 @@ import { useAtom } from "jotai";
 import { dropzoneAtom, selectFileAtom } from "@/storage/atom";
 import { DropzoneFile } from "../DropzoneFile";
 
-export function ButtonProgress() {
+interface ButtonProgressProps {
+  targetButton: string;
+}
+
+export function ButtonProgress({ targetButton }: ButtonProgressProps) {
   const theme = useMantineTheme();
   const [progress, setProgress] = useState(0);
   const [dropzone, setDropzone] = useAtom(dropzoneAtom);
@@ -61,7 +65,7 @@ export function ButtonProgress() {
             ? "Carregando ficheiro"
             : selectFile
             ? "Ficheiro carregado"
-            : "Carregar ficheiro"}
+            : targetButton}
         </div>
         {progress !== 0 && (
           <Progress

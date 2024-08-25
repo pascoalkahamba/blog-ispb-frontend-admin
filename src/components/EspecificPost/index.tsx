@@ -23,6 +23,7 @@ import { useDeletePost } from "@/hooks/useDeletePost";
 import { deletePost } from "@/server";
 import { notifications } from "@mantine/notifications";
 import { ModalDemo } from "@/components/Modal";
+import { extractTextFromHTML, MAXLENGTH, messegeDate } from "@/utils";
 
 const dateNow = new Date();
 interface EspecificPostProps {
@@ -35,15 +36,6 @@ interface EspecificPostProps {
   admin: IEspecialInfoAdminOrCoordinator | null;
   coordinator: IEspecialInfoAdminOrCoordinator | null;
   unlikes: number | null;
-}
-
-const MAXLENGTH = 100;
-const lastData = [1, 2, 3, 3, 2, 1, 2, 2, 1, 4, 3, 2, 4, 3, 2];
-
-function extractTextFromHTML(html: string) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-  return doc.body.textContent || "";
 }
 
 export default function EspecificPost({
@@ -63,6 +55,7 @@ export default function EspecificPost({
   const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
   const whoCreator = !admin ? coordinator : admin;
   const plainText = extractTextFromHTML(content);
+  const { dateResult } = messegeDate(new Date(createdAt), new Date());
   const truncated =
     plainText.length > MAXLENGTH
       ? plainText.substring(0, MAXLENGTH) + " Ler mais..."
@@ -153,7 +146,7 @@ export default function EspecificPost({
         <Link href={`profile/${userId}`}>
           <Text fw={500}>{whoCreator?.username}</Text>
           <Text fz="xs" c="dimmed">
-            posted 34 minutes ago
+            postado {dateResult}
           </Text>
         </Link>
       </Group>

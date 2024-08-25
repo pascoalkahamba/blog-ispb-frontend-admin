@@ -40,6 +40,7 @@
     "@tiptap/starter-kit": "^2.5.5",
     "aos": "^3.0.0-beta.6",
     "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "embla-carousel-react": "^8.1.5",
     "jotai": "^2.8.3",

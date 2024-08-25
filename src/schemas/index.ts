@@ -11,6 +11,14 @@ const postInfoSchema = zod.object({
     message: "nome do departamento deve ter mais de seis caracteres",
   }),
 });
+const postInfoEditSchema = zod.object({
+  title: zod
+    .string()
+    .min(6, { message: "Titulo deve ter mais de seis caracteres" }),
+  nameOfDepartment: zod.string().min(6, {
+    message: "nome do departamento deve ter mais de seis caracteres",
+  }),
+});
 
 const signinSchemas = zod.object({
   email: zod.string().email({ message: "email invalido" }),
@@ -26,4 +34,4 @@ const signinSchema = zod.object({
     .min(6, { message: "Senha deve ter mais de 6 caracteres." }),
 });
 
-export { postInfoSchema, signinSchemas, signinSchema };
+export { postInfoSchema, signinSchemas, signinSchema, postInfoEditSchema };

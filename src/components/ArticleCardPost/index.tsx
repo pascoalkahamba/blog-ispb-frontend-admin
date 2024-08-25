@@ -22,8 +22,10 @@ import { getOnePost } from "@/server";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonComponent from "@/components/Skeleton";
 import Image from "next/image";
-import CommentSimple from "../CommentSimple";
-import TextareaComponent from "../TextariaComponent";
+import CommentSimple from "@/components/CommentSimple";
+import TextareaComponent from "@/components/TextariaComponent";
+import ModalEditPost from "@/components/ModalEditarPost";
+import { messegeDate } from "@/utils/index";
 
 interface ArticleCardPostProps {
   id: number;
@@ -42,6 +44,7 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   console.log("data", data);
   if (error) return "Algo deu errado tente novamente: " + error.message;
 
+  const { dateResult } = messegeDate(new Date(data.createdAt), new Date());
   return (
     <Card
       withBorder
@@ -51,7 +54,11 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
     >
       <Card.Section mb="sm">
         <Image
-          src="https://images.unsplash.com/photo-1477554193778-9562c28588c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+          src={
+            data.picture.url
+              ? data.picture.url
+              : "https://images.unsplash.com/photo-1477554193778-9562c28588c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+          }
           alt="Top 50 underrated plants for house decoration"
           height={80}
           width={600}
@@ -60,41 +67,15 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
       </Card.Section>
 
       <Badge w="fit-content" variant="light" className="text-center" size="xl">
-        Pascoal Kahamba Titulo
+        {data.title}
       </Badge>
 
-      <Text fw={700} className={classes.title} mt="xs">
-        Top 50 underrated plants for house decoration params id {id}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
-        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
-        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
-        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
-        decoration params id {id}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
-        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
-        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
-        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
-        decoration params id {id}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
-        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
-        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
-        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
-        decoration params id {id}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
-        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
-        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
-        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
-        decoration params id {id}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
-        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
-        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
-        ut eum ducimus praesentium quidem? Top 50 underrated plants for house
-        decoration params id {id}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae iure
-        voluptates esse unde dignissimos mollitia, voluptate suscipit ea
-        perferendis repellat quaerat, veritatis accusantium laborum! Voluptatum
-        ut eum ducimus praesentium quidem?
-      </Text>
+      <Text
+        fw={700}
+        className={classes.title}
+        mt="xs"
+        dangerouslySetInnerHTML={{ __html: data.content }}
+      ></Text>
 
       <Group mt="lg">
         <Avatar
@@ -102,9 +83,13 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
           radius="sm"
         />
         <div>
-          <Text fw={500}>Elsa Gardenowl</Text>
+          <Text fw={500}>
+            {data.admin?.username
+              ? data.admin.username
+              : data.coordinator?.username}
+          </Text>
           <Text fz="xs" c="dimmed">
-            posted 34 minutes ago
+            postado {dateResult}
           </Text>
         </div>
       </Group>
@@ -132,10 +117,12 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
           </Group>
           <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">
-              <IconPencilMinus
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.yellow[6]}
-                stroke={1.5}
+              <ModalEditPost
+                content={data.content}
+                title={data.title}
+                id={id}
+                file={data.picture.name}
+                nameOfDepartment={data.department.name}
               />
             </ActionIcon>
             <ActionIcon variant="subtle" color="red">

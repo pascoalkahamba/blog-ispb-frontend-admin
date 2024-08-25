@@ -3,9 +3,6 @@ import { TRole, TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
   title: string;
-  content: string;
-  file: IFile;
-  whoPosted: TWhoPosted;
   nameOfDepartment: string;
 }
 
@@ -66,7 +63,7 @@ export interface IPost {
   updatedAt: Date;
   title: string;
   content: string;
-  departments: IDepartment[];
+  department: IDepartment;
   picture: IPicture;
   views: number | null;
   likes: number | null;

@@ -26,7 +26,7 @@ import { ISignin } from "@/interfaces";
 import CustomButton from "../CustomButton";
 
 export default function AuthSignin(props: PaperProps) {
-  const { data, isPending, isError, isSuccess, mutate } = useMutation({
+  const { data, isPending, isSuccess, mutate, error, status } = useMutation({
     mutationFn: (newUser: ISignin) => signin(newUser),
   });
 
@@ -45,14 +45,12 @@ export default function AuthSignin(props: PaperProps) {
 
     mutate({ email, password, terms });
 
-    if (isSuccess) {
+    if (status === "success") {
       notifications.show({
         title: "Login autorizado.",
         message: "Login feito com succeso.",
         position: "top-right",
-        className: "bg-blue-400",
         color: "blue",
-        loading: true,
       });
       localStorage.setItem("token", JSON.stringify(data.token));
 
@@ -63,14 +61,12 @@ export default function AuthSignin(props: PaperProps) {
       return;
     }
 
-    if (isError) {
+    if (error) {
       notifications.show({
         color: "red",
         title: "Login não autorizado.",
         message: "Email não cadastrado ou senha incorreta.",
         position: "top-right",
-        loading: true,
-        className: "bg-red-400",
       });
       localStorage.removeItem("token");
 

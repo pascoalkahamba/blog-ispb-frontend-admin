@@ -18,6 +18,23 @@ export async function createPost(formData: FormData) {
   return posted;
 }
 
+export async function updatePost(formData: FormData, id: number) {
+  const response = await axios.post<IPost>(
+    `/post/update/${id}`,
+    formData,
+
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  const postUpdated = response.data;
+
+  return postUpdated;
+}
+
 export async function signin({ email, password, terms }: ISignin) {
   const whichRoute = terms ? "admin" : "coordinator";
   const response = await axios.post<ISignin>(
