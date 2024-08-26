@@ -18,9 +18,7 @@ export function useUpdatePost<T>(
 
   const mutation = useMutation({
     mutationFn: (postId: T) => mutationFunction(postId, id),
-    onSuccess: async () => {
-      await queryClient.refetchQueries();
-    },
+    onSuccess: () => queryClient.refetchQueries(),
   });
 
   return { mutation };

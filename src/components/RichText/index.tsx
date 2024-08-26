@@ -61,7 +61,7 @@ export default function RichTextDemo({
   });
 
   return (
-    <section className="w-[70%] mt-0 flex flex-col gap-3 justify-center items-center">
+    <section className="max-w-[70%] mt-0 flex flex-col gap-3 justify-center items-center">
       <InputWithIcon
         type="title"
         errorMessage="Digite o titulo"

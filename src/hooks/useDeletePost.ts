@@ -22,6 +22,7 @@ export function useDeletePost<T>(
         [queryKey, `${userId}`],
         (oldData = []) => oldData.filter((post) => post.id !== deletedPost.id)
       );
+      queryClient.refetchQueries();
     },
   });
 

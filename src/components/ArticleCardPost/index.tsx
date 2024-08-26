@@ -18,7 +18,7 @@ import {
 } from "@tabler/icons-react";
 
 import classes from "@/components/ArticleCardPost/styles.module.css";
-import { getOnePost } from "@/server";
+import { deletePost, getOnePost } from "@/server";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonComponent from "@/components/Skeleton";
 import Image from "next/image";
@@ -26,6 +26,8 @@ import CommentSimple from "@/components/CommentSimple";
 import TextareaComponent from "@/components/TextariaComponent";
 import ModalEditPost from "@/components/ModalEditarPost";
 import { messegeDate } from "@/utils/index";
+import { ModalDemo } from "../Modal";
+import { useDeletePost } from "@/hooks/useDeletePost";
 
 interface ArticleCardPostProps {
   id: number;
@@ -33,16 +35,26 @@ interface ArticleCardPostProps {
 
 export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   const theme = useMantineTheme();
+  const { mutation } = useDeletePost(deletePost, "onePost");
+
+  const handleDeletePost = () => mutation.mutate(id);
   const { data, error, isPending } = useQuery({
     queryKey: ["onePost"],
     queryFn: () => getOnePost(id),
   });
 
   if (isPending)
-    return <SkeletonComponent isPending={isPending} skeletons={[1]} />;
+    return (
+      <SkeletonComponent
+        isPending={isPending}
+        skeletons={[1]}
+        width={50}
+        height={500}
+      />
+    );
 
   console.log("data", data);
-  if (error) return "Algo deu errado tente novamente: " + error.message;
+  if (error) return "Algo deu errado tente novamente: Post não encontrado";
 
   const { dateResult } = messegeDate(new Date(data.createdAt), new Date());
   return (
@@ -125,13 +137,12 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
                 nameOfDepartment={data.department.name}
               />
             </ActionIcon>
-            <ActionIcon variant="subtle" color="red">
-              <IconTrash
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.red[6]}
-                stroke={1.5}
-              />
-            </ActionIcon>
+            <ModalDemo
+              targetButton="Eliminar"
+              content="Você tem certeza que deseja eliminar este post esta acção irá eliminar o post da vetrine para sempre."
+              handleClick={handleDeletePost}
+              typeModal="deletePost"
+            />
           </Group>
         </Group>
       </Card.Section>

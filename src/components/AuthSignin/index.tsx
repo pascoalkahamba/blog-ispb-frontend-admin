@@ -3,7 +3,6 @@
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useRouter } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
 import {
   TextInput,
   PasswordInput,
@@ -26,7 +25,7 @@ import { ISignin } from "@/interfaces";
 import CustomButton from "../CustomButton";
 
 export default function AuthSignin(props: PaperProps) {
-  const { data, isPending, isSuccess, mutate, error, status } = useMutation({
+  const { data, isPending, mutate, error, status } = useMutation({
     mutationFn: (newUser: ISignin) => signin(newUser),
   });
 
@@ -52,7 +51,9 @@ export default function AuthSignin(props: PaperProps) {
         position: "top-right",
         color: "blue",
       });
+      const whoCreator = terms ? "admin" : "coordinator";
       localStorage.setItem("token", JSON.stringify(data.token));
+      localStorage.setItem("whoCreator", JSON.stringify(whoCreator));
 
       console.log("user ", data);
       localStorage.setItem("userId", JSON.stringify(data.user.id));

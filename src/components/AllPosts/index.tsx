@@ -13,7 +13,12 @@ export default function AllPosts() {
 
   if (query.isPending)
     return (
-      <SkeletonComponent isPending={query.isPending} skeletons={lastData} />
+      <SkeletonComponent
+        isPending={query.isPending}
+        skeletons={lastData}
+        width={200}
+        height={300}
+      />
     );
 
   console.log("allPosts", query.data);

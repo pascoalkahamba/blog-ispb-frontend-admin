@@ -13,10 +13,14 @@ import { useForm } from "@mantine/form";
 import SimpleRichText from "../SimpleRichText";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { postInfoEditSchema } from "@/schemas";
-import { ICreatePost, IPost } from "@/interfaces";
-import { useAtomValue } from "jotai";
-import { contentAtom, selectFileAtom } from "@/storage/atom";
-import { useMutation } from "@tanstack/react-query";
+import { ICreatePost } from "@/interfaces";
+import { useAtom, useSetAtom } from "jotai";
+import {
+  contentAtom,
+  errorAtom,
+  nameOfDepartamentAtom,
+  selectFileAtom,
+} from "@/storage/atom";
 import { updatePost } from "@/server";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
 import { notifications } from "@mantine/notifications";
@@ -39,8 +43,11 @@ export default function ModalEditPost({
 }: ModalEditPostProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const theme = useMantineTheme();
-  const currentContent = useAtomValue(contentAtom);
-  const currentFile = useAtomValue(selectFileAtom);
+  const [currentContent, setCurrentContent] = useAtom(contentAtom);
+  const [currentFile, setCurrentFile] = useAtom(selectFileAtom);
+  const setCurrentNameOfDepartment = useSetAtom(nameOfDepartamentAtom);
+  const setCurrentTitle = useSetAtom(selectFileAtom);
+  const setError = useSetAtom(errorAtom);
   const { mutation } = useUpdatePost(updatePost, id, "postUpdated");
   const whoCreator = JSON.parse(
     localStorage.getItem("whoCreator") as string
@@ -57,11 +64,25 @@ export default function ModalEditPost({
 
   const formData = new FormData();
 
+  function onCancelEdit() {
+    close();
+    cancelPost();
+  }
+
+  function cancelPost() {
+    setCurrentContent("");
+    setCurrentTitle("");
+    setCurrentNameOfDepartment("");
+    setError(false);
+    setCurrentFile("");
+  }
+
   function handleSubmit(value: ICreatePost) {
     if (currentContent.trim().length < 20) {
       notifications.show({
         title: "Conteúdo invalido",
-        message: "Escreva um conteúdo com mais de 20 caracteres.",
+        message:
+          "Escreva um conteúdo com mais de 20 caracteres ou edite o existente.",
         position: "top-right",
         color: "red",
       });
@@ -74,18 +95,17 @@ export default function ModalEditPost({
     formData.append("whoPosted", whoCreator);
     formData.append("file", currentFile);
 
-    console.log("formdata", formData);
-
     mutation.mutate(formData);
 
     if (mutation.isSuccess) {
+      close();
+      cancelPost();
       notifications.show({
         title: "Edição do post",
         message: "Post editado com sucesso.",
         position: "top-right",
         color: "blue",
       });
-      console.log("post updated", mutation.data);
       return;
     }
 
@@ -136,7 +156,9 @@ export default function ModalEditPost({
           <SimpleRichText defaultContent={content} />
           <Group justify="flex-end" mt="md">
             <Button type="submit">Editar</Button>
-            <Button onClick={close}>Cancelar</Button>
+            <Button onClick={onCancelEdit} color="red">
+              Cancelar
+            </Button>
           </Group>
         </form>
       </Modal>

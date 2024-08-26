@@ -2,11 +2,15 @@ import { Skeleton } from "@mantine/core";
 
 interface SkeletonComponentProps {
   isPending: boolean;
+  width: number;
+  height: number;
   skeletons: number[];
 }
 export default function SkeletonComponent({
   isPending,
   skeletons,
+  width,
+  height,
 }: SkeletonComponentProps) {
   return (
     <section className="flex justify-center items-center w-full flex-wrap gap-2 px-12 py-4">
@@ -14,8 +18,8 @@ export default function SkeletonComponent({
         <Skeleton
           visible={isPending}
           key={index}
-          height={300}
-          width={200}
+          height={height}
+          width={width}
           className="flex-auto"
           radius="sm"
         />
