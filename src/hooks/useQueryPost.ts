@@ -1,4 +1,6 @@
+import { fetchDoneAtom, fetchErrorAtom } from "@/storage/atom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSetAtom } from "jotai";
 
 export default function useQueryPost<T>(
   queryFunction: () => Promise<T[]>,

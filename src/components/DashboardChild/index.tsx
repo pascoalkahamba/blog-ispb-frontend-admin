@@ -9,6 +9,7 @@ import {
   titleAtom,
   nameOfDepartamentAtom,
   contentAtom,
+  fetchDoneAtom,
 } from "@/storage/atom";
 import { Button, Group } from "@mantine/core";
 import { useAtom, useSetAtom } from "jotai";
@@ -83,7 +84,7 @@ export default function DashboardChild() {
               isDirty={true}
               isValid={false}
               target="Postar"
-              targetPedding="Postando..."
+              targetPedding="Postando"
               handleClick={handlePost}
               isPending={mutation.isPending}
               type="submit"

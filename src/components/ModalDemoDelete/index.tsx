@@ -1,18 +1,27 @@
 import { TModal } from "@/@types";
-import { ActionIcon, Button, rem, Text, useMantineTheme } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Menu,
+  rem,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconTrash } from "@tabler/icons-react";
 
 interface ModalDemoProps {
-  targetButton: string;
+  targetButton?: string;
   content: string;
+  trashTarget?: string;
   typeModal: TModal;
   handleClick: () => void;
 }
 
-export function ModalDemo({
+export default function ModalDemoDelete({
   targetButton,
   content,
+  trashTarget,
   typeModal,
   handleClick,
 }: ModalDemoProps) {
@@ -56,5 +65,21 @@ export function ModalDemo({
       >
         {targetButton}
       </Button>
+    );
+
+  if (typeModal === "deleteComment")
+    return (
+      <Menu.Item
+        onClick={openModal}
+        leftSection={
+          <IconTrash
+            style={{ width: rem(16), height: rem(16) }}
+            stroke={1.5}
+            color={theme.colors.red[5]}
+          />
+        }
+      >
+        {trashTarget}
+      </Menu.Item>
     );
 }

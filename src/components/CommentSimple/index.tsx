@@ -15,37 +15,59 @@ import { SplitButton } from "../SplitButton";
 import { IconThumbDown, IconThumbUp } from "@tabler/icons-react";
 import { useState } from "react";
 import TextareaComponent from "../TextariaComponent";
+import { ICommentDataResult, ISimpleUser } from "@/interfaces";
+import { messegeDate, showNameOfUser } from "@/utils";
 
-export default function CommentSimple() {
+export default function CommentSimple({
+  id,
+  content,
+  coordinator,
+  admin,
+  createdAt,
+  student,
+}: ICommentDataResult) {
   const [seeReply, setSeeReply] = useState(false);
   const theme = useMantineTheme();
+  const user = (
+    !showNameOfUser(admin)
+      ? !showNameOfUser(coordinator)
+        ? showNameOfUser(student)
+        : showNameOfUser(coordinator)
+      : showNameOfUser(admin)
+  ) as ISimpleUser;
+
+  const { dateResult } = messegeDate(new Date(createdAt), new Date());
   return (
     <div>
       <div className="w-full flex justify-between items-center">
         <Group className="w-full flex gap-3 items-center">
           <Avatar
-            src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
-            alt="Jacob Warnhalter"
+            src={
+              user.photoUrl
+                ? user.photoUrl
+                : "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
+            }
+            alt={user.username}
             radius="xl"
             className="block"
           />
           <div>
-            <Text size="sm">Jacob Warnhalter</Text>
+            <Text size="sm">{user.username}</Text>
             <Text size="xs" c="dimmed">
-              10 minutes ago
+              comentado {dateResult}
             </Text>
           </div>
         </Group>
         <SplitButton
+          commentId={id}
+          replyId={null}
+          content={content}
           editTarget="Editar Comentario"
           trashTarget="Excluir Comentario"
         />
       </div>
       <Text pl={54} pt="sm" size="sm" mb={3}>
-        This Pokémon likes to lick its palms that are sweetened by being soaked
-        in honey. Teddiursa concocts its own honey by blending fruits and pollen
-        collected by Beedrill. Blastoise has water spouts that protrude from its
-        shell. The water spouts are very accurate.
+        {content}
       </Text>
       <Group gap={2} className="ml-14">
         <ActionIcon variant="subtle" color="blue">
@@ -74,12 +96,19 @@ export default function CommentSimple() {
       </Group>
       {seeReply && (
         <TextareaComponent
+          eventType="reply"
+          editButtonPendingTarget="Editando"
+          editButtonTarget="Editar"
+          buttonPendingTarget="Respondendo"
+          postId={null}
+          replyId={null}
+          commentId={id}
           labelTarget="Responder"
           buttonTarget="Responder"
           placeholder="Escreva sua resposta"
           errorTarget="Resposta invalida"
           className="w-[90%] ml-10 flex flex-col gap-3"
-          classNameButton="ml-10"
+          classNameButton="ml-10 flex gap-3 items-center"
         />
       )}
 

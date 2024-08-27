@@ -1,4 +1,6 @@
+import { fetchDoneAtom, fetchErrorAtom } from "@/storage/atom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSetAtom } from "jotai";
 
 // interface UserMutationPostProps {
 //   mutationFunction: (data: T) => Promise<K>;

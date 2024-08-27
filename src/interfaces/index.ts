@@ -16,10 +16,27 @@ export interface IFile {
   webkitRelativePath: string;
 }
 
-export interface ICustomSession extends Session {
-  accessToken: string;
-  user: IUser;
+export interface ICommentDataResult {
+  id: number;
+  createdAt: Date;
+  likes: number;
+  unlikes: number;
+  updatedAt: Date;
+  content: string;
+  replies: IReply[];
+  postId: number;
+  admin: IUser | null;
+  coordinator: IUser | null;
+  student: IUser | null;
+  adminId: number | null;
+  studentId: number | null;
+  coordinatorId: number | null;
 }
+
+// export interface ICustomSession extends Session {
+//   accessToken: string;
+//   user: IUser;
+// }
 
 export interface ISignin {
   email: string;
@@ -44,8 +61,12 @@ export interface IDepartment {
 }
 
 export interface IProfile {
+  id: number;
   bio: string;
   photo: IPicture;
+  studentId: number | null;
+  adminId: number | null;
+  coordinatorId: number | null;
 }
 
 export interface IPicture {
@@ -64,9 +85,10 @@ export interface IPost {
   title: string;
   content: string;
   department: IDepartment;
+  comments: ICommentDataResult[];
   picture: IPicture;
-  views: number | null;
-  likes: number | null;
+  views: number;
+  likes: number;
   admin: IEspecialInfoAdminOrCoordinator | null;
   coordinator: IEspecialInfoAdminOrCoordinator | null;
   unlikes: number | null;
@@ -75,9 +97,37 @@ export interface IPost {
   coordinatorId: number | null;
 }
 
-export interface IUser {
-  id: string;
-  email: string;
-  contact: string;
+export interface ISimpleUser {
   username: string;
+  photoUrl: string;
+}
+
+export interface IReply {
+  id: number;
+  createdAt: Date;
+  likes: number;
+  unlikes: number;
+  updatedAt: Date;
+  content: string;
+  admin: IUser | null;
+  coordinator: IUser | null;
+  student: IUser | null;
+  adminId: number | null;
+  studentId: number | null;
+  coordinatorId: number | null;
+}
+export interface ICreateCommentData {
+  content: string;
+  postId: number;
+  whoCreator: TWhoPosted;
+}
+
+export interface IUser {
+  id: number;
+  username: string;
+  email: string;
+  profile: IProfile;
+  role: string;
+  registrationNumber: string | null;
+  contact: string;
 }

@@ -1,5 +1,5 @@
 import { TTypeButton } from "@/@types";
-import { Button, MantineRadius, MantineSize } from "@mantine/core";
+import { Button, Loader, MantineRadius, MantineSize } from "@mantine/core";
 
 interface CustomButtonProps {
   handleClick?: () => void;
@@ -28,12 +28,12 @@ export default function CustomButton({
       variant="primary"
       radius={radius}
       size={size}
-      loading={isPending}
+      rightSection={isPending ? <Loader size={18} /> : null}
       onClick={handleClick}
       disabled={isPending}
       className={`${isPending && "bg-blue-400 text-white"}`}
     >
-      {target}
+      {isPending ? targetPedding : target}
     </Button>
   );
 }

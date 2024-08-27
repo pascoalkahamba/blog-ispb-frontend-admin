@@ -22,7 +22,7 @@ import Image from "next/image";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { deletePost } from "@/server";
 import { notifications } from "@mantine/notifications";
-import { ModalDemo } from "@/components/Modal";
+import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { extractTextFromHTML, MAXLENGTH, messegeDate } from "@/utils";
 
 const dateNow = new Date();
@@ -69,9 +69,7 @@ export default function EspecificPost({
         title: "Post eliminado",
         message: "Post eliminado com sucesso.",
         position: "top-right",
-        className: "bg-blue-400 z-50",
         color: "blue",
-        loading: true,
       });
       return;
     }
@@ -80,9 +78,7 @@ export default function EspecificPost({
         title: "Carregando para eliminar",
         message: "O Post esta no processo de eliminação.",
         position: "top-right",
-        className: "bg-red-400 z-50",
         color: "orange",
-        loading: true,
       });
     }
     if (mutation.isError) {
@@ -90,9 +86,7 @@ export default function EspecificPost({
         title: "Post não eliminado",
         message: "Algo deu errado tente novamente.",
         position: "top-right",
-        className: "bg-red-400 z-50",
         color: "red",
-        loading: true,
       });
       return;
     }
@@ -138,7 +132,7 @@ export default function EspecificPost({
             src={
               whoCreator?.profile?.photo.url
                 ? whoCreator.profile.photo.url
-                : "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png"
+                : "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
             }
             radius="sm"
           />
@@ -171,11 +165,10 @@ export default function EspecificPost({
                 stroke={1.5}
               />
             </ActionIcon>
-            <ModalDemo
+            <ModalDemoDelete
               typeModal="deletePost"
               handleClick={handleDeletePost}
               content="Você tem certeza que dejesas eliminar este post esta acção irá eliminar permantemente o post da vitrine online."
-              targetButton="Eliminar post"
             />
           </Group>
         </Group>

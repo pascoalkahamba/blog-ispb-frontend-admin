@@ -10,12 +10,7 @@ import {
   rem,
   Divider,
 } from "@mantine/core";
-import {
-  IconThumbUp,
-  IconThumbDown,
-  IconPencilMinus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconThumbUp, IconThumbDown } from "@tabler/icons-react";
 
 import classes from "@/components/ArticleCardPost/styles.module.css";
 import { deletePost, getOnePost } from "@/server";
@@ -26,7 +21,7 @@ import CommentSimple from "@/components/CommentSimple";
 import TextareaComponent from "@/components/TextariaComponent";
 import ModalEditPost from "@/components/ModalEditarPost";
 import { messegeDate } from "@/utils/index";
-import { ModalDemo } from "../Modal";
+import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { useDeletePost } from "@/hooks/useDeletePost";
 
 interface ArticleCardPostProps {
@@ -91,7 +86,7 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
 
       <Group mt="lg">
         <Avatar
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png"
+          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
           radius="sm"
         />
         <div>
@@ -137,7 +132,7 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
                 nameOfDepartment={data.department.name}
               />
             </ActionIcon>
-            <ModalDemo
+            <ModalDemoDelete
               targetButton="Eliminar"
               content="Você tem certeza que deseja eliminar este post esta acção irá eliminar o post da vetrine para sempre."
               handleClick={handleDeletePost}
@@ -148,12 +143,19 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
       </Card.Section>
       <Divider size="xs" className="mx-[-5rem]" />
       <TextareaComponent
+        buttonPendingTarget="Comentando"
+        editButtonPendingTarget="Editando"
+        editButtonTarget="Editar"
+        eventType="comment"
+        commentId={null}
+        replyId={null}
+        postId={id}
         labelTarget="Escreva um comentário"
-        errorTarget="Comentário invalido"
+        errorTarget="Comentário muito curto"
         buttonTarget="Comentar"
-        placeholder="Escreva seu comentario"
-        className="p-2 w-full flex flex-col gap-2"
-        classNameButton="ml-2"
+        placeholder="Escreva seu comentário"
+        className="p-2 w-full flex flex-col gap-1"
+        classNameButton="ml-2 flex gap-3 items-center"
       />
       <Divider
         size="xs"
@@ -162,9 +164,15 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
         labelPosition="center"
       />
       <Group className="w-full mt-3">
-        <CommentSimple />
-        <CommentSimple />
-        <CommentSimple />
+        {data.comments.length === 0 ? (
+          <p className="font-bold text-center w-full">
+            Nenhum comentário encontrado seja o primeiro a criar o comentário.
+          </p>
+        ) : (
+          data.comments.map((comment) => (
+            <CommentSimple key={comment.id} {...comment} />
+          ))
+        )}
       </Group>
     </Card>
   );

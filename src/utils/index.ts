@@ -1,3 +1,4 @@
+import { IUser } from "@/interfaces";
 import { formatDistance } from "date-fns";
 import { pt } from "date-fns/locale/pt";
 
@@ -13,10 +14,24 @@ function messegeDate(datePosted: typeof date, dateNow: typeof date) {
   return { dateResult };
 }
 
+function showNameOfUser(user: null | IUser) {
+  if (!user) return false;
+  return {
+    username: user.username,
+    photoUrl: user.profile?.photo.url || null,
+  };
+}
+
 function extractTextFromHTML(html: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
   return doc.body.textContent || "";
 }
 
-export { extractTextFromHTML, messegeDate, MAXLENGTH, lastData };
+export {
+  extractTextFromHTML,
+  messegeDate,
+  MAXLENGTH,
+  lastData,
+  showNameOfUser,
+};

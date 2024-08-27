@@ -17,7 +17,7 @@ import {
   IconPhoneCall,
   IconStar,
 } from "@tabler/icons-react";
-import { ModalDemo } from "@/components/Modal";
+import { ModalDemo } from "@/components/ModalDemoDelete";
 import Link from "next/link";
 
 interface UserInfoProfileProps {

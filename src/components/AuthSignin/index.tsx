@@ -137,7 +137,7 @@ export default function AuthSignin(props: PaperProps) {
           />
           <CustomButton
             target="Entrar"
-            targetPedding="Entrando..."
+            targetPedding="Entrando"
             isPending={isPending}
             isDirty={form.isDirty("email") && form.isDirty("password")}
             isValid={false}

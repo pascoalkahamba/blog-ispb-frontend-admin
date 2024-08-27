@@ -1,5 +1,11 @@
 import axios from "@/axios";
-import { ILoginResponse, IPost, ISignin } from "@/interfaces";
+import {
+  ICommentDataResult,
+  ICreateCommentData,
+  ILoginResponse,
+  IPost,
+  ISignin,
+} from "@/interfaces";
 
 export async function createPost(formData: FormData) {
   const response = await axios.post<IPost>(
@@ -16,6 +22,44 @@ export async function createPost(formData: FormData) {
   const posted = response.data;
 
   return posted;
+}
+
+export async function createComment({
+  content,
+  postId,
+  whoCreator,
+}: ICreateCommentData) {
+  const response = await axios.post<ICommentDataResult>(
+    `/comment/create/${postId}`,
+    {
+      content,
+      whoCreator,
+    }
+  );
+
+  const commentCreated = response.data;
+
+  return commentCreated;
+}
+
+export async function deleteComment(id: number) {
+  const response = await axios.delete<ICommentDataResult>(
+    `/comment/delete/${id}`
+  );
+  const commentDeleted = response.data;
+
+  return commentDeleted;
+}
+export async function editComment(content: string, id: number) {
+  const response = await axios.post<ICommentDataResult>(
+    `/comment/update/${id}`,
+    {
+      content,
+    }
+  );
+  const commentUpdated = response.data;
+
+  return commentUpdated;
 }
 
 export async function updatePost(formData: FormData, id: number) {

@@ -31,6 +31,9 @@ export default function ReplySimple() {
             </div>
           </Group>
           <SplitButton
+            commentId={null}
+            content=""
+            replyId={4}
             editTarget="Editar Resposta"
             trashTarget="Excluir Resposta"
           />
