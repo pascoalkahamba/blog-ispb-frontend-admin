@@ -1,4 +1,3 @@
-import { Session } from "next-auth";
 import { TEventType, TRole, TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
@@ -23,7 +22,7 @@ export interface ICommentDataResult {
   unlikes: number;
   updatedAt: Date;
   content: string;
-  replies: IReply[];
+  replies: IReplyDataResult[];
   postId: number;
   admin: IUser | null;
   coordinator: IUser | null;
@@ -31,6 +30,27 @@ export interface ICommentDataResult {
   adminId: number | null;
   studentId: number | null;
   coordinatorId: number | null;
+}
+export interface IReplyDataResult {
+  id: number;
+  createdAt: Date;
+  likes: number;
+  unlikes: number;
+  updatedAt: Date;
+  content: string;
+  commentId: number;
+  admin: IUser | null;
+  coordinator: IUser | null;
+  student: IUser | null;
+  adminId: number | null;
+  studentId: number | null;
+  coordinatorId: number | null;
+}
+
+export interface ICreatedReplyData {
+  commentId: number;
+  content: string;
+  whoCreator: TWhoPosted;
 }
 
 // export interface ICustomSession extends Session {

@@ -1,4 +1,3 @@
-import { IPost } from "@/interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // interface UserMutationPostProps {

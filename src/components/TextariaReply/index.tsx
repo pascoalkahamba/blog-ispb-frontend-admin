@@ -2,12 +2,12 @@
 import { Button, Textarea } from "@mantine/core";
 import CustomButton from "@/components/CustomButton";
 import { useField } from "@mantine/form";
-import { TEventType, TWhoPosted } from "@/@types";
+import { TWhoPosted } from "@/@types";
 import { useCreateComment } from "@/hooks/useCreateComment";
-import { createComment, editComment } from "@/server";
+import { createReply, editReply } from "@/server";
 import { notifications } from "@mantine/notifications";
 import { useAtom, useAtomValue } from "jotai";
-import { commentAtom, editAtom, replyAtom } from "@/storage/atom";
+import { editAtom, replyAtom } from "@/storage/atom";
 import { useEffect } from "react";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
 
@@ -35,12 +35,12 @@ export default function TextareaReply({
   buttonTarget,
   labelTarget,
 }: TextareaReplyProps) {
-  const { mutation } = useCreateComment(createComment);
+  const { mutation } = useCreateComment(createReply);
   const reply = useAtomValue(replyAtom);
-  const { mutation: mutationUpdateComment } = useUpdatePost(
-    editComment,
+  const { mutation: mutationUpdateReply } = useUpdatePost(
+    editReply,
     reply.id,
-    "UpdateComment"
+    "UpdateReply"
   );
 
   const [edit, setEdit] = useAtom(editAtom);
@@ -74,7 +74,7 @@ export default function TextareaReply({
     const errorMessage = await field.validate();
     if (errorMessage) return;
 
-    if (!edit.status && edit.type === "reply") {
+    if (!edit.status) {
       mutation.mutate({
         content: field.getValue(),
         commentId,
@@ -82,24 +82,25 @@ export default function TextareaReply({
       });
     }
 
-    if (edit.status && edit.type === "reply") {
-      mutationUpdateComment.mutate(field.getValue());
+    if (edit.status) {
+      mutationUpdateReply.mutate(field.getValue());
     }
 
     if (mutation.isSuccess) {
       notifications.show({
-        title: "Criação de comentário",
-        message: "Comentário criado com sucesso.",
+        title: "Criação de resposta",
+        message: "Resposta criado com sucesso.",
         position: "top-right",
         color: "blue",
       });
+      console.log("reply", mutation.data);
       field.reset();
       return;
     }
-    if (mutationUpdateComment.isSuccess) {
+    if (mutationUpdateReply.isSuccess) {
       notifications.show({
-        title: "Edição de comentário",
-        message: "Comentário editado com sucesso.",
+        title: "Edição de resposta",
+        message: "Resposta editado com sucesso.",
         position: "top-right",
         color: "blue",
       });
@@ -109,17 +110,17 @@ export default function TextareaReply({
     }
     if (mutation.isError) {
       notifications.show({
-        title: "Criação de comentário",
-        message: "Comentário não criado algo deu errado.",
+        title: "Criação de resposta",
+        message: "Resposta não criado algo deu errado.",
         position: "top-right",
         color: "red",
       });
       return;
     }
-    if (mutationUpdateComment.isError) {
+    if (mutationUpdateReply.isError) {
       notifications.show({
-        title: "Edição de comentário",
-        message: "Comentário não editado algo deu errado.",
+        title: "Edição de resposta",
+        message: "Resposta não editado algo deu errado.",
         position: "top-right",
         color: "red",
       });
@@ -140,7 +141,7 @@ export default function TextareaReply({
       <div className={classNameButton}>
         <CustomButton
           isDirty={true}
-          isPending={mutation.isPending || mutationUpdateComment.isPending}
+          isPending={mutation.isPending || mutationUpdateReply.isPending}
           isValid={false}
           handleClick={handleClick}
           target={

@@ -2,8 +2,10 @@ import axios from "@/axios";
 import {
   ICommentDataResult,
   ICreateCommentData,
+  ICreatedReplyData,
   ILoginResponse,
   IPost,
+  IReplyDataResult,
   ISignin,
 } from "@/interfaces";
 
@@ -41,6 +43,23 @@ export async function createComment({
 
   return commentCreated;
 }
+export async function createReply({
+  content,
+  commentId,
+  whoCreator,
+}: ICreatedReplyData) {
+  const response = await axios.post<IReplyDataResult>(
+    `/reply/create/${commentId}`,
+    {
+      content,
+      whoCreator,
+    }
+  );
+
+  const replyCreated = response.data;
+
+  return replyCreated;
+}
 
 export async function deleteComment(id: number) {
   const response = await axios.delete<ICommentDataResult>(
@@ -50,6 +69,14 @@ export async function deleteComment(id: number) {
 
   return commentDeleted;
 }
+
+export async function deleteReply(id: number) {
+  const response = await axios.delete<IReplyDataResult>(`/reply/delete/${id}`);
+  const replyDeleted = response.data;
+
+  return replyDeleted;
+}
+
 export async function editComment(content: string, id: number) {
   const response = await axios.post<ICommentDataResult>(
     `/comment/update/${id}`,
@@ -60,6 +87,14 @@ export async function editComment(content: string, id: number) {
   const commentUpdated = response.data;
 
   return commentUpdated;
+}
+export async function editReply(content: string, id: number) {
+  const response = await axios.post<IReplyDataResult>(`/reply/update/${id}`, {
+    content,
+  });
+  const replyUpdated = response.data;
+
+  return replyUpdated;
 }
 
 export async function updatePost(formData: FormData, id: number) {

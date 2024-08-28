@@ -22,6 +22,7 @@ export default function CommentSimple({
   id,
   content,
   coordinator,
+  replies,
   admin,
   createdAt,
   student,
@@ -38,7 +39,7 @@ export default function CommentSimple({
 
   const { dateResult } = messegeDate(new Date(createdAt), new Date());
   return (
-    <div>
+    <div className="w-full">
       <div className="w-full flex justify-between items-center">
         <Group className="w-full flex gap-3 items-center">
           <Avatar
@@ -92,7 +93,7 @@ export default function CommentSimple({
           variant="transparent"
           onClick={() => setSeeReply(!seeReply)}
         >
-          {seeReply ? "Não respontar mais" : "Responder"}
+          {seeReply ? "Não ver mais respostas" : "Ver respostas"}
         </Button>
       </Group>
       {seeReply && (
@@ -112,7 +113,8 @@ export default function CommentSimple({
 
       {/* <Divider size="xs" className="mx-[-5rem]" /> */}
 
-      <ReplySimple />
+      {seeReply &&
+        replies.map((reply) => <ReplySimple key={reply.id} {...reply} />)}
     </div>
   );
 }

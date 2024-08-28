@@ -3,7 +3,7 @@ import { IconPencilMinus, IconGripVertical } from "@tabler/icons-react";
 import classes from "@/components/SplitButton/styles.module.css";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
-import { deleteComment, editComment } from "@/server";
+import { deleteComment, deleteReply, editComment } from "@/server";
 import { notifications } from "@mantine/notifications";
 import { useAtom, useSetAtom } from "jotai";
 import { commentAtom, editAtom, replyAtom } from "@/storage/atom";
@@ -29,6 +29,8 @@ export function SplitButton({
 }: SplitButtonProps) {
   const theme = useMantineTheme();
   const { mutation } = useDeleteCommentOrReply(deleteComment);
+  const { mutation: mutationDeleteReply } =
+    useDeleteCommentOrReply(deleteReply);
   const setComment = useSetAtom(commentAtom);
   const setReply = useSetAtom(replyAtom);
   const [edit, setEdit] = useAtom(editAtom);
@@ -51,7 +53,11 @@ export function SplitButton({
     if (commentId) {
       mutation.mutate(commentId);
     }
-    if (mutation.isSuccess) {
+
+    if (replyId) {
+      mutationDeleteReply.mutate(replyId);
+    }
+    if (mutation.isSuccess || mutationDeleteReply.isSuccess) {
       notifications.show({
         title: `Eliminar ${commentId ? "comentário" : "resposta"}`,
         message: `${
@@ -63,7 +69,7 @@ export function SplitButton({
       return;
     }
 
-    if (mutation.isError) {
+    if (mutation.isError || mutationDeleteReply.isError) {
       notifications.show({
         title: `Eliminar ${commentId ? "comentário" : "resposta"}`,
         message: `${
@@ -77,7 +83,7 @@ export function SplitButton({
   }
 
   return (
-    <Group wrap="nowrap" gap={0}>
+    <Group wrap="nowrap" gap={0} className="w-[15%]">
       <Menu
         transitionProps={{ transition: "pop" }}
         position="bottom-end"
@@ -109,7 +115,11 @@ export function SplitButton({
             {editTarget}
           </Menu.Item>
           <ModalDemoDelete
-            content="Tem certeza que desejas eliminar este comentário está acção irá eliminar permanente o comentário da Vitrine online."
+            content={`Tem certeza que desejas eliminar ${
+              commentId ? " este comentário" : "esta resposta"
+            } está acção irá eliminar permanente ${
+              commentId ? "o comentário" : "a resposta"
+            } da Vitrine online.`}
             trashTarget={trashTarget}
             handleClick={handleDelete}
             typeModal="deleteComment"
