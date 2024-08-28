@@ -10,7 +10,7 @@ export type TCreatePost = zod.infer<typeof postInfoSchema>;
 export type TWhoPosted = "admin" | "coordinator" | "student";
 export type TTypeInput = "title" | "departament";
 export type TRole = "USER" | "ADMIN" | "COORDINATOR";
-export type TEventType = "comment" | "reply";
+export type TEventType = "comment" | "reply" | "nothing";
 export type TModal =
   | "deletePost"
   | "deleteAccount"

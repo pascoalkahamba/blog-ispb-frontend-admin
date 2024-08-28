@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import { TRole, TWhoPosted } from "@/@types";
+import { TEventType, TRole, TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
   title: string;
@@ -100,6 +100,11 @@ export interface IPost {
 export interface ISimpleUser {
   username: string;
   photoUrl: string;
+}
+
+export interface IEdit {
+  type: TEventType;
+  status: boolean;
 }
 
 export interface IReply {

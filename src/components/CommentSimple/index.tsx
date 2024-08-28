@@ -14,9 +14,9 @@ import ReplySimple from "@/components/ReplySimple";
 import { SplitButton } from "../SplitButton";
 import { IconThumbDown, IconThumbUp } from "@tabler/icons-react";
 import { useState } from "react";
-import TextareaComponent from "../TextariaComponent";
 import { ICommentDataResult, ISimpleUser } from "@/interfaces";
 import { messegeDate, showNameOfUser } from "@/utils";
+import TextareaReply from "@/components/TextariaReply";
 
 export default function CommentSimple({
   id,
@@ -60,6 +60,7 @@ export default function CommentSimple({
         </Group>
         <SplitButton
           commentId={id}
+          editType="comment"
           replyId={null}
           content={content}
           editTarget="Editar Comentario"
@@ -95,13 +96,10 @@ export default function CommentSimple({
         </Button>
       </Group>
       {seeReply && (
-        <TextareaComponent
-          eventType="reply"
+        <TextareaReply
           editButtonPendingTarget="Editando"
           editButtonTarget="Editar"
           buttonPendingTarget="Respondendo"
-          postId={null}
-          replyId={null}
           commentId={id}
           labelTarget="Responder"
           buttonTarget="Responder"

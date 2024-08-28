@@ -5,13 +5,15 @@ import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
 import { deleteComment, editComment } from "@/server";
 import { notifications } from "@mantine/notifications";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { commentAtom, editAtom, replyAtom } from "@/storage/atom";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
+import { TEventType } from "@/@types";
 
 interface SplitButtonProps {
   trashTarget: string;
   editTarget: string;
+  editType: TEventType;
   commentId: number | null;
   replyId: number | null;
   content: string;
@@ -21,6 +23,7 @@ export function SplitButton({
   trashTarget,
   editTarget,
   content,
+  editType,
   replyId,
   commentId,
 }: SplitButtonProps) {
@@ -28,12 +31,20 @@ export function SplitButton({
   const { mutation } = useDeleteCommentOrReply(deleteComment);
   const setComment = useSetAtom(commentAtom);
   const setReply = useSetAtom(replyAtom);
-  const setEdit = useSetAtom(editAtom);
+  const [edit, setEdit] = useAtom(editAtom);
 
   function handleEdit() {
-    setEdit(true);
-    if (commentId) setComment({ id: commentId, content });
-    if (replyId) setReply({ id: replyId, content });
+    if (commentId && editType === "comment") {
+      setComment({ id: commentId, content });
+      setEdit({ type: "comment", status: true });
+      console.log("edit", edit);
+      return;
+    }
+    if (replyId && editType === "reply") {
+      setReply({ id: replyId, content });
+      setEdit({ type: "reply", status: true });
+      return;
+    }
   }
 
   function handleDelete() {

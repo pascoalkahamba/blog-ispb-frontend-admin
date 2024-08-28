@@ -1,8 +1,9 @@
 import { TWhoPosted } from "@/@types";
+import { IEdit } from "@/interfaces";
 import { FileWithPath } from "@mantine/dropzone";
 import { atom } from "jotai";
 const dropzoneAtom = atom(false);
-const editAtom = atom(false);
+const editAtom = atom<IEdit>({ type: "nothing", status: false });
 const titleAtom = atom("");
 const commentAtom = atom({ id: 0, content: "" });
 const replyAtom = atom({ id: 0, content: "" });

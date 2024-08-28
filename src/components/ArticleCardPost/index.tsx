@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import SkeletonComponent from "@/components/Skeleton";
 import Image from "next/image";
 import CommentSimple from "@/components/CommentSimple";
-import TextareaComponent from "@/components/TextariaComponent";
+import TextareaComment from "@/components/TextariaComment";
 import ModalEditPost from "@/components/ModalEditarPost";
 import { messegeDate } from "@/utils/index";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
@@ -142,13 +142,10 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
         </Group>
       </Card.Section>
       <Divider size="xs" className="mx-[-5rem]" />
-      <TextareaComponent
+      <TextareaComment
         buttonPendingTarget="Comentando"
         editButtonPendingTarget="Editando"
         editButtonTarget="Editar"
-        eventType="comment"
-        commentId={null}
-        replyId={null}
         postId={id}
         labelTarget="Escreva um comentário"
         errorTarget="Comentário muito curto"

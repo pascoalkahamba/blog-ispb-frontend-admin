@@ -7,7 +7,7 @@ import {
   rem,
   useMantineTheme,
 } from "@mantine/core";
-import { SplitButton } from "../SplitButton";
+import { SplitButton } from "@/components/SplitButton";
 import { IconThumbDown, IconThumbUp } from "@tabler/icons-react";
 
 export default function ReplySimple() {
@@ -32,6 +32,7 @@ export default function ReplySimple() {
           </Group>
           <SplitButton
             commentId={null}
+            editType="reply"
             content=""
             replyId={4}
             editTarget="Editar Resposta"

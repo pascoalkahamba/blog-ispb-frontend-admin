@@ -11,78 +11,78 @@ import { commentAtom, editAtom, replyAtom } from "@/storage/atom";
 import { useEffect } from "react";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
 
-interface TextareaComponentProps {
+interface TextareaReplyProps {
   labelTarget: string;
   errorTarget: string;
   buttonPendingTarget: string;
   editButtonTarget: string;
   editButtonPendingTarget: string;
-  postId: number | null;
-  replyId: number | null;
-  commentId: number | null;
-  eventType: TEventType;
+  commentId: number;
   className: string;
   buttonTarget: string;
   classNameButton: string;
   placeholder: string;
 }
-export default function TextareaComponent({
+export default function TextareaReply({
   errorTarget,
   placeholder,
   editButtonPendingTarget,
   editButtonTarget,
   className,
-  replyId,
   classNameButton,
-  postId,
   commentId,
   buttonPendingTarget,
-  eventType,
   buttonTarget,
   labelTarget,
-}: TextareaComponentProps) {
+}: TextareaReplyProps) {
   const { mutation } = useCreateComment(createComment);
-  const comment = useAtomValue(commentAtom);
+  const reply = useAtomValue(replyAtom);
   const { mutation: mutationUpdateComment } = useUpdatePost(
     editComment,
-    comment.id,
+    reply.id,
     "UpdateComment"
   );
 
-  const reply = useAtomValue(replyAtom);
   const [edit, setEdit] = useAtom(editAtom);
   const whoCreator = JSON.parse(
     localStorage.getItem("whoCreator") as string
   ) as TWhoPosted;
   const field = useField({
+    mode: "controlled",
     initialValue: "",
     validate: (value) => (value.trim().length < 2 ? errorTarget : null),
   });
 
+  console.log("textareReply");
+
   function cancelEdit() {
-    setEdit(false);
+    setEdit({ type: "nothing", status: false });
+    console.log("edit", edit);
+    field.reset();
   }
 
   useEffect(() => {
-    if (edit) {
-      if (eventType === "comment") field.setValue(comment.content);
-      if (eventType === "reply") field.setValue(reply.content);
+    if (edit.status) {
+      if (edit.type === "reply") {
+        field.setValue(reply.content);
+        return;
+      }
     }
-  }, [edit, comment, reply, eventType]);
+  }, [reply, edit]);
 
   async function handleClick() {
     const errorMessage = await field.validate();
     if (errorMessage) return;
 
-    if (!edit && eventType === "comment" && postId) {
+    if (!edit.status && edit.type === "reply") {
       mutation.mutate({
         content: field.getValue(),
-        postId,
+        commentId,
         whoCreator,
       });
     }
 
-    if (edit && eventType === "comment") {
+    if (edit.status && edit.type === "reply") {
       mutationUpdateComment.mutate(field.getValue());
     }
 
@@ -104,7 +104,7 @@ export default function TextareaComponent({
         color: "blue",
       });
       field.reset();
-      setEdit(false);
+      setEdit({ type: "nothing", status: false });
       return;
     }
     if (mutation.isError) {
@@ -143,11 +143,19 @@ export default function TextareaComponent({
           isPending={mutation.isPending || mutationUpdateComment.isPending}
           isValid={false}
           handleClick={handleClick}
-          target={edit ? editButtonTarget : buttonTarget}
-          targetPedding={edit ? editButtonPendingTarget : buttonPendingTarget}
+          target={
+            edit.status && edit.type === "reply"
+              ? editButtonTarget
+              : buttonTarget
+          }
+          targetPedding={
+            edit.status && edit.type === "reply"
+              ? editButtonPendingTarget
+              : buttonPendingTarget
+          }
           type="submit"
         />
-        {edit && (
+        {edit.status && edit.type === "reply" && (
           <Button onClick={cancelEdit} color="red">
             Cancelar
           </Button>
