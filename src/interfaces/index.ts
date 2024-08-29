@@ -111,7 +111,7 @@ export interface IPost {
   likes: number;
   admin: IEspecialInfoAdminOrCoordinator | null;
   coordinator: IEspecialInfoAdminOrCoordinator | null;
-  unlikes: number | null;
+  unlikes: number;
   favorite: boolean | null;
   adminId: number | null;
   coordinatorId: number | null;

@@ -10,10 +10,15 @@ import {
   rem,
   Divider,
 } from "@mantine/core";
-import { IconThumbUp, IconThumbDown } from "@tabler/icons-react";
+import {
+  IconThumbUp,
+  IconThumbUpFilled,
+  IconThumbDown,
+  IconThumbDownFilled,
+} from "@tabler/icons-react";
 
 import classes from "@/components/ArticleCardPost/styles.module.css";
-import { deletePost, getOnePost } from "@/server";
+import { addLikePost, addUnlikePost, deletePost, getOnePost } from "@/server";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonComponent from "@/components/Skeleton";
 import Image from "next/image";
@@ -23,20 +28,31 @@ import ModalEditPost from "@/components/ModalEditarPost";
 import { messegeDate } from "@/utils/index";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { useDeletePost } from "@/hooks/useDeletePost";
+import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
+import useReactions from "@/hooks/useReactions";
 
 interface ArticleCardPostProps {
   id: number;
+  likes: number;
+  unlikes: number;
 }
 
 export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   const theme = useMantineTheme();
   const { mutation } = useDeletePost(deletePost, "onePost");
+  const { mutation: mutationAddLike } = useAddLikeOrUnlike(addLikePost, id);
+  const { mutation: mutationAddUnlike } = useAddLikeOrUnlike(addUnlikePost, id);
 
   const handleDeletePost = () => mutation.mutate(id);
   const { data, error, isPending } = useQuery({
     queryKey: ["onePost"],
     queryFn: () => getOnePost(id),
   });
+  console.log("dataLIkes", data);
+  const { addLike, addUnlike, reacted, reactions } = useReactions(
+    data?.likes,
+    data?.unlikes
+  );
 
   if (isPending)
     return (
@@ -51,6 +67,15 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   console.log("data", data);
   if (error) return "Algo deu errado tente novamente: Post não encontrado";
 
+  function handleAddLike() {
+    addLike();
+    mutationAddLike.mutate(reactions.like);
+  }
+
+  function handleAddUnlike() {
+    addUnlike();
+    mutationAddUnlike.mutate(reactions.unlike);
+  }
   const { dateResult } = messegeDate(new Date(data.createdAt), new Date());
   return (
     <Card
@@ -105,22 +130,42 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
         <Group justify="space-between">
           <Group gap={2}>
             <ActionIcon variant="subtle" color="blue">
-              <IconThumbUp
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.blue[6]}
-                stroke={1.5}
-              />
+              {reacted.like ? (
+                <IconThumbUpFilled
+                  onClick={handleAddLike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.blue[6]}
+                  stroke={1.5}
+                />
+              ) : (
+                <IconThumbUp
+                  onClick={handleAddLike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.blue[6]}
+                  stroke={1.5}
+                />
+              )}
             </ActionIcon>
-            <span className="text-xs italic">{20}</span>
+            <span className="text-xs italic">{Math.abs(data.likes)}</span>
 
             <ActionIcon variant="subtle" color="red">
-              <IconThumbDown
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.red[6]}
-                stroke={1.5}
-              />
+              {reacted.unlike ? (
+                <IconThumbDownFilled
+                  onClick={handleAddUnlike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.red[6]}
+                  stroke={1.5}
+                />
+              ) : (
+                <IconThumbDown
+                  onClick={handleAddUnlike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.red[6]}
+                  stroke={1.5}
+                />
+              )}
             </ActionIcon>
-            <span className="text-xs italic">{30}</span>
+            <span className="text-xs italic">{Math.abs(data.unlikes)}</span>
           </Group>
           <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">

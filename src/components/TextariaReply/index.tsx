@@ -48,12 +48,9 @@ export default function TextareaReply({
     localStorage.getItem("whoCreator") as string
   ) as TWhoPosted;
   const field = useField({
-    mode: "controlled",
     initialValue: "",
     validate: (value) => (value.trim().length < 2 ? errorTarget : null),
   });
-
-  console.log("textareReply");
 
   function cancelEdit() {
     setEdit({ type: "nothing", status: false });
@@ -68,6 +65,7 @@ export default function TextareaReply({
         return;
       }
     }
+    () => setEdit({ type: "nothing", status: false });
   }, [reply, edit]);
 
   async function handleClick() {
@@ -93,8 +91,8 @@ export default function TextareaReply({
         position: "top-right",
         color: "blue",
       });
-      console.log("reply", mutation.data);
       field.reset();
+      setEdit({ type: "nothing", status: false });
       return;
     }
     if (mutationUpdateReply.isSuccess) {

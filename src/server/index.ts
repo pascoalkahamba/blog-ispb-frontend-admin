@@ -3,6 +3,7 @@ import {
   ICommentDataResult,
   ICreateCommentData,
   ICreatedReplyData,
+  ICreatePost,
   ILoginResponse,
   IPost,
   IReplyDataResult,
@@ -95,6 +96,67 @@ export async function editReply(content: string, id: number) {
   const replyUpdated = response.data;
 
   return replyUpdated;
+}
+
+export async function addLikePost(like: number, id: number) {
+  const response = await axios.post<IPost>(`/post/addLike/${id}`, {
+    like,
+  });
+
+  const postLiked = response.data;
+  return postLiked;
+}
+export async function addLikeReply(like: number, id: number) {
+  const response = await axios.post<IReplyDataResult>(`/reply/addLike/${id}`, {
+    like,
+  });
+
+  const replyLiked = response.data;
+  return replyLiked;
+}
+
+export async function addLikeComment(like: number, id: number) {
+  const response = await axios.post<ICommentDataResult>(
+    `/comment/addLike/${id}`,
+    {
+      like,
+    }
+  );
+
+  const commentLiked = response.data;
+  return commentLiked;
+}
+export async function addUnlikeComment(unlike: number, id: number) {
+  const response = await axios.post<ICommentDataResult>(
+    `/comment/addUnlike/${id}`,
+    {
+      unlike,
+    }
+  );
+
+  const commentUnliked = response.data;
+  return commentUnliked;
+}
+
+export async function addUnlikeReply(unlike: number, id: number) {
+  const response = await axios.post<IReplyDataResult>(
+    `/reply/addUnlike/${id}`,
+    {
+      unlike,
+    }
+  );
+
+  const replyUnliked = response.data;
+  return replyUnliked;
+}
+
+export async function addUnlikePost(unlike: number, id: number) {
+  const response = await axios.post<IPost>(`/post/addUnlike/${id}`, {
+    unlike,
+  });
+
+  const postUnliked = response.data;
+  return postUnliked;
 }
 
 export async function updatePost(formData: FormData, id: number) {

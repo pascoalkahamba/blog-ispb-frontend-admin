@@ -20,10 +20,13 @@ import { IEspecialInfoAdminOrCoordinator, IPicture } from "@/interfaces";
 import Link from "next/link";
 import Image from "next/image";
 import { useDeletePost } from "@/hooks/useDeletePost";
-import { deletePost } from "@/server";
+import { addLikePost, addUnlikePost, deletePost } from "@/server";
 import { notifications } from "@mantine/notifications";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { extractTextFromHTML, MAXLENGTH, messegeDate } from "@/utils";
+import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
+import { useState } from "react";
+import useReactions from "@/hooks/useReactions";
 
 const dateNow = new Date();
 interface EspecificPostProps {
@@ -32,10 +35,10 @@ interface EspecificPostProps {
   content: string;
   picture: IPicture;
   createdAt: typeof dateNow;
-  likes: number | null;
+  likes: number;
   admin: IEspecialInfoAdminOrCoordinator | null;
   coordinator: IEspecialInfoAdminOrCoordinator | null;
-  unlikes: number | null;
+  unlikes: number;
 }
 
 export default function EspecificPost({
@@ -51,15 +54,33 @@ export default function EspecificPost({
 }: EspecificPostProps) {
   const theme = useMantineTheme();
   const { mutation } = useDeletePost<number>(deletePost, "allPosts");
-
+  const { mutation: mutationLikePost } = useAddLikeOrUnlike(addLikePost, id);
+  const { mutation: mutationUnlikePost } = useAddLikeOrUnlike(
+    addUnlikePost,
+    id
+  );
   const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
   const whoCreator = !admin ? coordinator : admin;
   const plainText = extractTextFromHTML(content);
+  const { addLike, addUnlike, reacted, reactions } = useReactions(
+    likes,
+    unlikes
+  );
   const { dateResult } = messegeDate(new Date(createdAt), new Date());
   const truncated =
     plainText.length > MAXLENGTH
       ? plainText.substring(0, MAXLENGTH) + " Ler mais..."
       : plainText;
+
+  function handleAddLike() {
+    addLike();
+    mutationLikePost.mutate(reactions.like);
+  }
+
+  function handleAddUnlike() {
+    addUnlike();
+    mutationUnlikePost.mutate(reactions.unlike);
+  }
 
   function handleDeletePost() {
     mutation.mutate(id);
@@ -148,22 +169,42 @@ export default function EspecificPost({
       <Card.Section className={classes.footer}>
         <Group justify="space-between">
           <Text fz="xs" c="dimmed">
-            {likes ?? 0} people liked this
+            {Math.abs(likes)} pessoais que gostaram
           </Text>
           <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">
-              <IconThumbUp
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.blue[6]}
-                stroke={1.5}
-              />
+              {reacted.like ? (
+                <IconThumbUpFilled
+                  onClick={handleAddLike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.blue[6]}
+                  stroke={1.5}
+                />
+              ) : (
+                <IconThumbUp
+                  onClick={handleAddLike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.blue[6]}
+                  stroke={1.5}
+                />
+              )}
             </ActionIcon>
             <ActionIcon variant="subtle" color="gray">
-              <IconThumbDown
-                style={{ width: rem(20), height: rem(20) }}
-                color={theme.colors.yellow[6]}
-                stroke={1.5}
-              />
+              {reacted.unlike ? (
+                <IconThumbDownFilled
+                  onClick={handleAddUnlike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.yellow[6]}
+                  stroke={1.5}
+                />
+              ) : (
+                <IconThumbDown
+                  onClick={handleAddUnlike}
+                  style={{ width: rem(20), height: rem(20) }}
+                  color={theme.colors.yellow[6]}
+                  stroke={1.5}
+                />
+              )}
             </ActionIcon>
             <ModalDemoDelete
               typeModal="deletePost"

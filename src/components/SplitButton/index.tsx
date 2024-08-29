@@ -39,7 +39,6 @@ export function SplitButton({
     if (commentId && editType === "comment") {
       setComment({ id: commentId, content });
       setEdit({ type: "comment", status: true });
-      console.log("edit", edit);
       return;
     }
     if (replyId && editType === "reply") {
@@ -50,11 +49,12 @@ export function SplitButton({
   }
 
   function handleDelete() {
-    if (commentId) {
+    if (commentId && editType === "comment") {
+      console.log("commentId", commentId);
       mutation.mutate(commentId);
     }
 
-    if (replyId) {
+    if (replyId && editType === "reply") {
       mutationDeleteReply.mutate(replyId);
     }
     if (mutation.isSuccess || mutationDeleteReply.isSuccess) {
@@ -116,7 +116,7 @@ export function SplitButton({
           </Menu.Item>
           <ModalDemoDelete
             content={`Tem certeza que desejas eliminar ${
-              commentId ? " este comentário" : "esta resposta"
+              commentId ? "este comentário" : "esta resposta"
             } está acção irá eliminar permanente ${
               commentId ? "o comentário" : "a resposta"
             } da Vitrine online.`}

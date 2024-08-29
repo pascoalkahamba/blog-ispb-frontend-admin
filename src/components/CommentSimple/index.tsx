@@ -22,6 +22,8 @@ export default function CommentSimple({
   id,
   content,
   coordinator,
+  likes,
+  unlikes,
   replies,
   admin,
   createdAt,
@@ -79,7 +81,7 @@ export default function CommentSimple({
             stroke={1.5}
           />
         </ActionIcon>
-        <span className="text-xs italic">{20}</span>
+        <span className="text-xs italic">{likes}</span>
         <ActionIcon variant="subtle" color="red">
           <IconThumbDown
             style={{ width: rem(20), height: rem(20) }}
@@ -87,7 +89,7 @@ export default function CommentSimple({
             stroke={1.5}
           />
         </ActionIcon>
-        <span className="text-xs italic">{30}</span>
+        <span className="text-xs italic">{unlikes}</span>
         <Button
           className="text-xs font-bold ml-2"
           variant="transparent"
