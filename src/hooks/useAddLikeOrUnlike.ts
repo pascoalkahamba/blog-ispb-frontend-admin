@@ -8,15 +8,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 function set<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {}
 
 export function useAddLikeOrUnlike<T, K>(
-  mutationFunction: (value: T, id: number) => Promise<K>,
-  id: number,
+  mutationFunction: (reaction: T) => Promise<K>,
   queryKey?: string
 ) {
   const queryClient = useQueryClient();
   const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
 
   const mutation = useMutation({
-    mutationFn: (value: T) => mutationFunction(value, id),
+    mutationFn: (reaction: T) => mutationFunction(reaction),
     onSuccess: () => queryClient.refetchQueries(),
   });
 

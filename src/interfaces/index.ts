@@ -20,6 +20,8 @@ export interface ICommentDataResult {
   createdAt: Date;
   likes: number;
   unlikes: number;
+  statusLike: boolean;
+  statusUnlike: boolean;
   updatedAt: Date;
   content: string;
   replies: IReplyDataResult[];
@@ -36,6 +38,8 @@ export interface IReplyDataResult {
   createdAt: Date;
   likes: number;
   unlikes: number;
+  statusLike: boolean;
+  statusUnlike: boolean;
   updatedAt: Date;
   content: string;
   commentId: number;
@@ -69,11 +73,10 @@ export interface ILoginResponse {
   token: string;
 }
 
-export interface IEspecialInfoAdminOrCoordinator {
-  username: string;
-  role: TRole;
-  profile: IProfile;
-}
+// export interface  IUser extends IUser {
+//   username: string;
+//   profile: IProfile;
+// }
 
 export interface IDepartment {
   id: number;
@@ -109,9 +112,11 @@ export interface IPost {
   picture: IPicture;
   views: number;
   likes: number;
-  admin: IEspecialInfoAdminOrCoordinator | null;
-  coordinator: IEspecialInfoAdminOrCoordinator | null;
+  admin: IUser | null;
+  coordinator: IUser | null;
   unlikes: number;
+  statusLike: boolean;
+  statusUnlike: boolean;
   favorite: boolean | null;
   adminId: number | null;
   coordinatorId: number | null;
@@ -122,9 +127,34 @@ export interface ISimpleUser {
   photoUrl: string;
 }
 
+export interface IUseReactions {
+  like: number;
+  unlike: number;
+  statusLike: boolean;
+  statusUnlike: boolean;
+}
+
+export interface IAddLike {
+  id: number;
+  like: number;
+  statusLike: boolean;
+}
+export interface IAddUnlike {
+  id: number;
+  unlike: number;
+  statusUnlike: boolean;
+}
+
 export interface IEdit {
   type: TEventType;
   status: boolean;
+}
+
+export interface IAllUsers {
+  admin: IUser | null;
+  coordinator: IUser | null;
+  student: IUser | null;
+  currentUser: IUser;
 }
 
 export interface IReply {
@@ -132,6 +162,8 @@ export interface IReply {
   createdAt: Date;
   likes: number;
   unlikes: number;
+  statusLike: boolean;
+  statusUnlike: boolean;
   updatedAt: Date;
   content: string;
   admin: IUser | null;
@@ -152,7 +184,7 @@ export interface IUser {
   username: string;
   email: string;
   profile: IProfile;
-  role: string;
+  role: TRole;
   registrationNumber: string | null;
   contact: string;
 }

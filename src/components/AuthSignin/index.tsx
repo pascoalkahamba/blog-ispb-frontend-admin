@@ -55,8 +55,8 @@ export default function AuthSignin(props: PaperProps) {
       localStorage.setItem("token", JSON.stringify(data.token));
       localStorage.setItem("whoCreator", JSON.stringify(whoCreator));
 
-      console.log("user ", data);
       localStorage.setItem("userId", JSON.stringify(data.user.id));
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
       router.push("/dashboard");
       form.reset();
       return;
@@ -70,6 +70,7 @@ export default function AuthSignin(props: PaperProps) {
         position: "top-right",
       });
       localStorage.removeItem("token");
+      localStorage.removeItem("currentUser");
 
       return;
     }

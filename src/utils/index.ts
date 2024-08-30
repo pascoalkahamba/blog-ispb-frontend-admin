@@ -1,4 +1,4 @@
-import { IUser } from "@/interfaces";
+import { IAllUsers, IUser } from "@/interfaces";
 import { formatDistance } from "date-fns";
 import { pt } from "date-fns/locale/pt";
 
@@ -28,10 +28,29 @@ function extractTextFromHTML(html: string) {
   return doc.body.textContent || "";
 }
 
+function currentUserCanManagerfiles({
+  coordinator,
+  student,
+  currentUser,
+}: IAllUsers) {
+  if (currentUser.role === "ADMIN") return true;
+  if (
+    coordinator &&
+    currentUser.role === "COORDINATOR" &&
+    coordinator.id === currentUser.id
+  )
+    return true;
+  if (student && currentUser.role === "USER" && student.id === currentUser.id)
+    return true;
+
+  return false;
+}
+
 export {
   extractTextFromHTML,
   messegeDate,
   MAXLENGTH,
   lastData,
   showNameOfUser,
+  currentUserCanManagerfiles,
 };

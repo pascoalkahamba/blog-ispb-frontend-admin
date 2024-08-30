@@ -25,34 +25,48 @@ import Image from "next/image";
 import CommentSimple from "@/components/CommentSimple";
 import TextareaComment from "@/components/TextariaComment";
 import ModalEditPost from "@/components/ModalEditarPost";
-import { messegeDate } from "@/utils/index";
+import { currentUserCanManagerfiles, messegeDate } from "@/utils/index";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
 import useReactions from "@/hooks/useReactions";
+import { IUser } from "@/interfaces";
 
 interface ArticleCardPostProps {
   id: number;
   likes: number;
   unlikes: number;
+  statusLike: boolean;
+  statusUnlike: boolean;
 }
 
-export default function ArticleCardPost({ id }: ArticleCardPostProps) {
+export default function ArticleCardPost({
+  id,
+  likes,
+  statusLike,
+  statusUnlike,
+  unlikes,
+}: ArticleCardPostProps) {
   const theme = useMantineTheme();
   const { mutation } = useDeletePost(deletePost, "onePost");
-  const { mutation: mutationAddLike } = useAddLikeOrUnlike(addLikePost, id);
-  const { mutation: mutationAddUnlike } = useAddLikeOrUnlike(addUnlikePost, id);
+  const { mutation: mutationAddLike } = useAddLikeOrUnlike(addLikePost);
+  const { mutation: mutationAddUnlike } = useAddLikeOrUnlike(addUnlikePost);
+  const { addLike, addUnlike, reacted, reactions } = useReactions({
+    like: +likes,
+    unlike: +unlikes,
+    statusLike: Boolean(statusLike),
+    statusUnlike: Boolean(statusUnlike),
+  });
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUser") as string
+  ) as IUser;
 
   const handleDeletePost = () => mutation.mutate(id);
   const { data, error, isPending } = useQuery({
     queryKey: ["onePost"],
     queryFn: () => getOnePost(id),
   });
-  console.log("dataLIkes", data);
-  const { addLike, addUnlike, reacted, reactions } = useReactions(
-    data?.likes,
-    data?.unlikes
-  );
 
   if (isPending)
     return (
@@ -67,14 +81,28 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
   console.log("data", data);
   if (error) return "Algo deu errado tente novamente: Post não encontrado";
 
+  const isThisUserCanManagerFiles = currentUserCanManagerfiles({
+    admin: data?.admin,
+    coordinator: data?.coordinator,
+    student: null,
+    currentUser,
+  });
   function handleAddLike() {
     addLike();
-    mutationAddLike.mutate(reactions.like);
+    mutationAddLike.mutate({
+      id,
+      like: reactions.like,
+      statusLike: reacted.statusLike,
+    });
   }
 
   function handleAddUnlike() {
     addUnlike();
-    mutationAddUnlike.mutate(reactions.unlike);
+    mutationAddUnlike.mutate({
+      id,
+      unlike: reactions.unlike,
+      statusUnlike: reacted.statusUnlike,
+    });
   }
   const { dateResult } = messegeDate(new Date(data.createdAt), new Date());
   return (
@@ -130,7 +158,7 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
         <Group justify="space-between">
           <Group gap={2}>
             <ActionIcon variant="subtle" color="blue">
-              {reacted.like ? (
+              {reacted.statusLike ? (
                 <IconThumbUpFilled
                   onClick={handleAddLike}
                   style={{ width: rem(20), height: rem(20) }}
@@ -149,7 +177,7 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
             <span className="text-xs italic">{Math.abs(data.likes)}</span>
 
             <ActionIcon variant="subtle" color="red">
-              {reacted.unlike ? (
+              {reacted.statusUnlike ? (
                 <IconThumbDownFilled
                   onClick={handleAddUnlike}
                   style={{ width: rem(20), height: rem(20) }}
@@ -167,23 +195,26 @@ export default function ArticleCardPost({ id }: ArticleCardPostProps) {
             </ActionIcon>
             <span className="text-xs italic">{Math.abs(data.unlikes)}</span>
           </Group>
-          <Group gap={0}>
-            <ActionIcon variant="subtle" color="gray">
-              <ModalEditPost
-                content={data.content}
-                title={data.title}
-                id={id}
-                file={data.picture.name}
-                nameOfDepartment={data.department.name}
+          {isThisUserCanManagerFiles && (
+            <Group gap={0}>
+              <ActionIcon variant="subtle" color="gray">
+                <ModalEditPost
+                  content={data.content}
+                  title={data.title}
+                  id={id}
+                  file={data.picture.name}
+                  nameOfDepartment={data.department.name}
+                />
+              </ActionIcon>
+              <ModalDemoDelete
+                isThisUserCanDelete={isThisUserCanManagerFiles}
+                targetButton="Eliminar"
+                content="Você tem certeza que deseja eliminar este post esta acção irá eliminar o post da vetrine para sempre."
+                handleClick={handleDeletePost}
+                typeModal="deletePost"
               />
-            </ActionIcon>
-            <ModalDemoDelete
-              targetButton="Eliminar"
-              content="Você tem certeza que deseja eliminar este post esta acção irá eliminar o post da vetrine para sempre."
-              handleClick={handleDeletePost}
-              typeModal="deletePost"
-            />
-          </Group>
+            </Group>
+          )}
         </Group>
       </Card.Section>
       <Divider size="xs" className="mx-[-5rem]" />

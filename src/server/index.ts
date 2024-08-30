@@ -1,5 +1,7 @@
 import axios from "@/axios";
 import {
+  IAddLike,
+  IAddUnlike,
   ICommentDataResult,
   ICreateCommentData,
   ICreatedReplyData,
@@ -98,39 +100,47 @@ export async function editReply(content: string, id: number) {
   return replyUpdated;
 }
 
-export async function addLikePost(like: number, id: number) {
+export async function addLikePost({ id, like, statusLike }: IAddLike) {
   const response = await axios.post<IPost>(`/post/addLike/${id}`, {
     like,
+    statusLike,
   });
 
   const postLiked = response.data;
   return postLiked;
 }
-export async function addLikeReply(like: number, id: number) {
+export async function addLikeReply({ id, like, statusLike }: IAddLike) {
   const response = await axios.post<IReplyDataResult>(`/reply/addLike/${id}`, {
     like,
+    statusLike,
   });
 
   const replyLiked = response.data;
   return replyLiked;
 }
 
-export async function addLikeComment(like: number, id: number) {
+export async function addLikeComment({ id, like, statusLike }: IAddLike) {
   const response = await axios.post<ICommentDataResult>(
     `/comment/addLike/${id}`,
     {
       like,
+      statusLike,
     }
   );
 
   const commentLiked = response.data;
   return commentLiked;
 }
-export async function addUnlikeComment(unlike: number, id: number) {
+export async function addUnlikeComment({
+  id,
+  unlike,
+  statusUnlike,
+}: IAddUnlike) {
   const response = await axios.post<ICommentDataResult>(
     `/comment/addUnlike/${id}`,
     {
       unlike,
+      statusUnlike,
     }
   );
 
@@ -138,11 +148,12 @@ export async function addUnlikeComment(unlike: number, id: number) {
   return commentUnliked;
 }
 
-export async function addUnlikeReply(unlike: number, id: number) {
+export async function addUnlikeReply({ id, unlike, statusUnlike }: IAddUnlike) {
   const response = await axios.post<IReplyDataResult>(
     `/reply/addUnlike/${id}`,
     {
       unlike,
+      statusUnlike,
     }
   );
 
@@ -150,9 +161,10 @@ export async function addUnlikeReply(unlike: number, id: number) {
   return replyUnliked;
 }
 
-export async function addUnlikePost(unlike: number, id: number) {
+export async function addUnlikePost({ id, unlike, statusUnlike }: IAddUnlike) {
   const response = await axios.post<IPost>(`/post/addUnlike/${id}`, {
     unlike,
+    statusUnlike,
   });
 
   const postUnliked = response.data;
@@ -178,7 +190,7 @@ export async function updatePost(formData: FormData, id: number) {
 
 export async function signin({ email, password, terms }: ISignin) {
   const whichRoute = terms ? "admin" : "coordinator";
-  const response = await axios.post<ISignin>(
+  const response = await axios.post<ILoginResponse>(
     `/${whichRoute}/login`,
     {
       email,
@@ -187,7 +199,7 @@ export async function signin({ email, password, terms }: ISignin) {
     { withCredentials: true }
   );
 
-  const logged: ILoginResponse = response.data as unknown as ILoginResponse;
+  const logged = response.data;
 
   return logged;
 }

@@ -1,49 +1,66 @@
-import { useState } from "react";
+import { IUseReactions } from "@/interfaces";
+import { useEffect, useState } from "react";
 
-export default function useReactions(likes: number = 0, unlikes: number = 0) {
+export default function useReactions({
+  like,
+  statusLike,
+  statusUnlike,
+  unlike,
+}: IUseReactions) {
   const [reacted, setReacted] = useState({
-    like: false,
-    unlike: false,
+    statusLike,
+    statusUnlike,
   });
   const [reactions, setReactions] = useState({
-    like: likes,
-    unlike: unlikes,
+    like,
+    unlike,
   });
 
-  function addLike() {
-    setReacted((reacted) => ({ like: !reacted.like, unlike: false }));
-    if (reacted.like) {
+  const addLike = () =>
+    setReacted((reacted) => ({
+      statusLike: !reacted.statusLike,
+      statusUnlike: false,
+    }));
+
+  const addUnlike = () =>
+    setReacted((reacted) => ({
+      statusLike: false,
+      statusUnlike: !reacted.statusUnlike,
+    }));
+
+  useEffect(() => {
+    if (reacted.statusLike) {
       setReactions((reactions) => ({
         like: reactions.like++,
         unlike: reactions.unlike,
       }));
+      return;
     }
-    if (!reacted.like) {
+    if (!reacted.statusLike) {
       setReactions((reactions) => ({
         like: reactions.like--,
         unlike: reactions.unlike,
       }));
+      return;
     }
-  }
+  }, [reacted.statusLike]);
 
-  function addUnlike() {
-    setReacted((reacted) => ({
-      like: false,
-      unlike: !reacted.unlike,
-    }));
-
-    if (reacted.unlike) {
+  useEffect(() => {
+    if (reacted.statusUnlike) {
       setReactions((reactions) => ({
         like: reactions.like,
         unlike: reactions.unlike++,
       }));
-    } else {
+      return;
+    }
+    if (!reacted.statusUnlike) {
       setReactions((reactions) => ({
         like: reactions.like,
         unlike: reactions.unlike--,
       }));
+      return;
     }
-  }
+  }, [reacted.statusUnlike]);
 
   return { reacted, reactions, addLike, addUnlike };
 }

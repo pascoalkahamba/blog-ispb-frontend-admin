@@ -13,6 +13,7 @@ import { IconTrash } from "@tabler/icons-react";
 interface ModalDemoProps {
   targetButton?: string;
   content: string;
+  isThisUserCanDelete: boolean;
   trashTarget?: string;
   typeModal: TModal;
   handleClick: () => void;
@@ -21,6 +22,7 @@ interface ModalDemoProps {
 export default function ModalDemoDelete({
   targetButton,
   content,
+  isThisUserCanDelete,
   trashTarget,
   typeModal,
   handleClick,
@@ -45,7 +47,7 @@ export default function ModalDemoDelete({
       onConfirm: onConfirmFn,
     });
 
-  if (typeModal === "deletePost")
+  if (typeModal === "deletePost" && isThisUserCanDelete)
     return (
       <ActionIcon variant="subtle" color="gray" onClick={openModal}>
         <IconTrash

@@ -13,31 +13,36 @@ import {
   IconThumbUpFilled,
   IconThumbDown,
   IconThumbDownFilled,
-  IconTrash,
 } from "@tabler/icons-react";
 import classes from "@/components/EspecificPost/styles.module.css";
-import { IEspecialInfoAdminOrCoordinator, IPicture } from "@/interfaces";
+import { IPicture, IUser } from "@/interfaces";
 import Link from "next/link";
 import Image from "next/image";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { addLikePost, addUnlikePost, deletePost } from "@/server";
 import { notifications } from "@mantine/notifications";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
-import { extractTextFromHTML, MAXLENGTH, messegeDate } from "@/utils";
+import {
+  currentUserCanManagerfiles,
+  extractTextFromHTML,
+  MAXLENGTH,
+  messegeDate,
+} from "@/utils";
 import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
-import { useState } from "react";
 import useReactions from "@/hooks/useReactions";
 
 const dateNow = new Date();
 interface EspecificPostProps {
   id: number;
   title: string;
+  statusLike: boolean;
+  statusUnlike: boolean;
   content: string;
   picture: IPicture;
   createdAt: typeof dateNow;
   likes: number;
-  admin: IEspecialInfoAdminOrCoordinator | null;
-  coordinator: IEspecialInfoAdminOrCoordinator | null;
+  admin: IUser | null;
+  coordinator: IUser | null;
   unlikes: number;
 }
 
@@ -47,6 +52,8 @@ export default function EspecificPost({
   content,
   likes,
   unlikes,
+  statusLike,
+  statusUnlike,
   picture,
   coordinator,
   admin,
@@ -54,18 +61,28 @@ export default function EspecificPost({
 }: EspecificPostProps) {
   const theme = useMantineTheme();
   const { mutation } = useDeletePost<number>(deletePost, "allPosts");
-  const { mutation: mutationLikePost } = useAddLikeOrUnlike(addLikePost, id);
-  const { mutation: mutationUnlikePost } = useAddLikeOrUnlike(
-    addUnlikePost,
-    id
-  );
+  const { mutation: mutationLikePost } = useAddLikeOrUnlike(addLikePost);
+  const { mutation: mutationUnlikePost } = useAddLikeOrUnlike(addUnlikePost);
   const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUser") as string
+  ) as IUser;
+
+  const isThisUserCanManagerFiles = currentUserCanManagerfiles({
+    admin,
+    coordinator,
+    student: null,
+    currentUser,
+  });
+
   const whoCreator = !admin ? coordinator : admin;
   const plainText = extractTextFromHTML(content);
-  const { addLike, addUnlike, reacted, reactions } = useReactions(
-    likes,
-    unlikes
-  );
+  const { addLike, addUnlike, reacted, reactions } = useReactions({
+    like: likes,
+    unlike: unlikes,
+    statusLike,
+    statusUnlike,
+  });
   const { dateResult } = messegeDate(new Date(createdAt), new Date());
   const truncated =
     plainText.length > MAXLENGTH
@@ -74,12 +91,20 @@ export default function EspecificPost({
 
   function handleAddLike() {
     addLike();
-    mutationLikePost.mutate(reactions.like);
+    mutationLikePost.mutate({
+      id,
+      like: reactions.like,
+      statusLike: reacted.statusLike,
+    });
   }
 
   function handleAddUnlike() {
     addUnlike();
-    mutationUnlikePost.mutate(reactions.unlike);
+    mutationUnlikePost.mutate({
+      id,
+      unlike: Math.abs(reactions.unlike),
+      statusUnlike: reacted.statusUnlike,
+    });
   }
 
   function handleDeletePost() {
@@ -120,7 +145,12 @@ export default function EspecificPost({
       className={`${classes.card} w-[30%] flex-grow basis-64 h-[30%]`}
     >
       <Card.Section mb="sm">
-        <Link href={`post/${id}`} className="w-full">
+        <Link
+          href={`post/${id}/${Math.abs(likes)}/${Math.abs(
+            unlikes
+          )}/${statusLike}/${statusUnlike}`}
+          className="w-full"
+        >
           <Image
             src={
               picture?.url
@@ -136,7 +166,13 @@ export default function EspecificPost({
       </Card.Section>
 
       <Badge w="fit-content" variant="light">
-        <Link href={`post/${id}`}>{title}</Link>
+        <Link
+          href={`post/${id}/${Math.abs(likes)}/${Math.abs(
+            unlikes
+          )}/${statusLike}/${statusUnlike}`}
+        >
+          {title}
+        </Link>
       </Badge>
 
       <Text fw={700} className={classes.title} mt="xs">
@@ -173,7 +209,7 @@ export default function EspecificPost({
           </Text>
           <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">
-              {reacted.like ? (
+              {reacted.statusLike ? (
                 <IconThumbUpFilled
                   onClick={handleAddLike}
                   style={{ width: rem(20), height: rem(20) }}
@@ -190,7 +226,7 @@ export default function EspecificPost({
               )}
             </ActionIcon>
             <ActionIcon variant="subtle" color="gray">
-              {reacted.unlike ? (
+              {reacted.statusUnlike ? (
                 <IconThumbDownFilled
                   onClick={handleAddUnlike}
                   style={{ width: rem(20), height: rem(20) }}
@@ -207,6 +243,7 @@ export default function EspecificPost({
               )}
             </ActionIcon>
             <ModalDemoDelete
+              isThisUserCanDelete={isThisUserCanManagerFiles}
               typeModal="deletePost"
               handleClick={handleDeletePost}
               content="Você tem certeza que dejesas eliminar este post esta acção irá eliminar permantemente o post da vitrine online."

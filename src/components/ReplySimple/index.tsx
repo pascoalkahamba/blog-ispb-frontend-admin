@@ -8,9 +8,21 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { SplitButton } from "@/components/SplitButton";
-import { IconThumbDown, IconThumbUp } from "@tabler/icons-react";
-import { IReplyDataResult, ISimpleUser } from "@/interfaces";
-import { messegeDate, showNameOfUser } from "@/utils";
+import {
+  IconThumbDown,
+  IconThumbUp,
+  IconThumbDownFilled,
+  IconThumbUpFilled,
+} from "@tabler/icons-react";
+import { IReplyDataResult, ISimpleUser, IUser } from "@/interfaces";
+import {
+  currentUserCanManagerfiles,
+  messegeDate,
+  showNameOfUser,
+} from "@/utils";
+import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
+import { addLikeReply, addUnlikeReply } from "@/server";
+import useReactions from "@/hooks/useReactions";
 
 export default function ReplySimple({
   admin,
@@ -19,10 +31,49 @@ export default function ReplySimple({
   id,
   content,
   likes,
+  statusLike,
+  statusUnlike,
   unlikes,
   createdAt,
 }: IReplyDataResult) {
   const theme = useMantineTheme();
+  const { mutation: mutationAddLike } = useAddLikeOrUnlike(addLikeReply);
+  const { mutation: mutationAddUnlike } = useAddLikeOrUnlike(addUnlikeReply);
+  const { addLike, addUnlike, reacted, reactions } = useReactions({
+    like: likes,
+    unlike: unlikes,
+    statusLike,
+    statusUnlike,
+  });
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUser") as string
+  ) as IUser;
+
+  const isThisUserCanManagerFiles = currentUserCanManagerfiles({
+    admin,
+    coordinator,
+    student,
+    currentUser,
+  });
+
+  function handleAddLike() {
+    addLike();
+    mutationAddLike.mutate({
+      id,
+      like: reactions.like,
+      statusLike: reacted.statusLike,
+    });
+  }
+
+  function handleAddUnlike() {
+    addUnlike();
+    mutationAddUnlike.mutate({
+      id,
+      unlike: Math.abs(reactions.unlike),
+      statusUnlike: reacted.statusUnlike,
+    });
+  }
 
   const user = (
     !showNameOfUser(admin)
@@ -56,36 +107,58 @@ export default function ReplySimple({
               </Text>
             </div>
           </Group>
-          <SplitButton
-            commentId={null}
-            editType="reply"
-            content={content}
-            replyId={id}
-            editTarget="Editar Resposta"
-            trashTarget="Excluir Resposta"
-          />
+          {isThisUserCanManagerFiles && (
+            <SplitButton
+              commentId={null}
+              editType="reply"
+              content={content}
+              replyId={id}
+              editTarget="Editar Resposta"
+              trashTarget="Excluir Resposta"
+            />
+          )}
         </div>
         <Text pl={54} pt="sm" size="sm" mb={5}>
           {content}
         </Text>
         <Group gap={2} className="ml-14">
           <ActionIcon variant="subtle" color="blue">
-            <IconThumbUp
-              style={{ width: rem(20), height: rem(20) }}
-              color={theme.colors.blue[6]}
-              stroke={1.5}
-            />
+            {reacted.statusLike ? (
+              <IconThumbUpFilled
+                onClick={handleAddLike}
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.blue[6]}
+                stroke={1.5}
+              />
+            ) : (
+              <IconThumbUp
+                onClick={handleAddLike}
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.blue[6]}
+                stroke={1.5}
+              />
+            )}
           </ActionIcon>
-          <span className="text-xs italic">{likes}</span>
+          <span className="text-xs italic">{Math.abs(likes)}</span>
 
           <ActionIcon variant="subtle" color="red">
-            <IconThumbDown
-              style={{ width: rem(20), height: rem(20) }}
-              color={theme.colors.red[6]}
-              stroke={1.5}
-            />
+            {reacted.statusUnlike ? (
+              <IconThumbDownFilled
+                onClick={handleAddUnlike}
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.red[6]}
+                stroke={1.5}
+              />
+            ) : (
+              <IconThumbDown
+                onClick={handleAddUnlike}
+                style={{ width: rem(20), height: rem(20) }}
+                color={theme.colors.red[6]}
+                stroke={1.5}
+              />
+            )}
           </ActionIcon>
-          <span className="text-xs italic">{unlikes}</span>
+          <span className="text-xs italic">{Math.abs(unlikes)}</span>
         </Group>
 
         <Divider size="xs" className="mx-[-5rem]" />
