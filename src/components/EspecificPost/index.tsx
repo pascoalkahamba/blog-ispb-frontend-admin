@@ -184,7 +184,7 @@ export default function EspecificPost({
       </Text>
 
       <Group mt="lg">
-        <Link href={`profile/${userId}`}>
+        <Link href={`profile/${whoCreator?.id}`}>
           <Avatar
             src={
               whoCreator?.profile?.photo.url
@@ -194,7 +194,7 @@ export default function EspecificPost({
             radius="sm"
           />
         </Link>
-        <Link href={`profile/${userId}`}>
+        <Link href={`profile/${whoCreator?.id}/${whoCreator?.role}`}>
           <Text fw={500}>{whoCreator?.username}</Text>
           <Text fz="xs" c="dimmed">
             postado {dateResult}

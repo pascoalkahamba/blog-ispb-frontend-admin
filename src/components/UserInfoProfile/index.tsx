@@ -7,6 +7,7 @@ import {
   useMantineTheme,
   rem,
   Group,
+  Skeleton,
 } from "@mantine/core";
 import classes from "@/components/UserInfoProfile/styles.module.css";
 import { useRouter } from "next/navigation";
@@ -15,23 +16,59 @@ import {
   IconHeart,
   IconMessage,
   IconPhoneCall,
+  IconUser,
+  IconCircleLetterDFilled,
+  IconCirclesFilled,
+  IconAdjustments,
+  IconCertificate,
   IconStar,
+  IconNumber,
 } from "@tabler/icons-react";
-import { ModalDemo } from "@/components/ModalDemoDelete";
+import ModalDemoDelete from "@/components/ModalDemoDelete";
 import Link from "next/link";
+import useQueryUser from "@/hooks/useQueryUser";
+import { getOneUser } from "@/server";
+import { TRole } from "@/@types";
+import SkeletonComponent from "@/components/Skeleton";
+import { showRoleName } from "@/utils";
 
 interface UserInfoProfileProps {
   id: number;
+  role: TRole;
 }
 
-export function UserInfoProfile({ id }: UserInfoProfileProps) {
+export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
   const theme = useMantineTheme();
+  const {
+    query: { data, error, isPending },
+  } = useQueryUser(getOneUser, "getOneUser", {
+    id,
+    role,
+  });
   const router = useRouter();
   console.log("profile id", id);
 
   function handleDeleteAccount() {
     console.log("eliminar conta");
   }
+
+  if (isPending)
+    return (
+      <SkeletonComponent
+        isPending={isPending}
+        skeletons={[1]}
+        width={50}
+        height={300}
+      />
+    );
+  if (error)
+    return (
+      <p className="font-bold text-center">
+        Algo deu errado tente novamente: Usuário não encontrado
+      </p>
+    );
+  const showDepartment = data.role === "COORDINATOR" || data.role === "USER";
+  const showCourse = data.role === "USER";
   return (
     <Paper
       radius="md"
@@ -42,45 +79,66 @@ export function UserInfoProfile({ id }: UserInfoProfileProps) {
       data-aos-duration="160"
     >
       <Avatar
-        src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+        src={
+          data.profile?.photo.url
+            ? data.profile.photo.url
+            : "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
+        }
         size={150}
         radius={150}
         mx="auto"
       />
       <Group className="flex justify-center flex-col gap-1 items w-full">
         <Text ta="center" fz="lg" fw={500} mt="md">
-          Pascoal Kahamba
+          {data.username}
         </Text>
         <Group wrap="nowrap" gap={1}>
           <IconAt stroke={2} size="1rem" className={classes.icon} />
           <Text fz="sm" c="dimmed">
-            pascoalkahamba25@gmail.com
+            {data.email}
           </Text>
         </Group>
         <Group wrap="nowrap" gap={1}>
           <IconPhoneCall stroke={2} size="1rem" className={classes.icon} />
           <Text c="dimmed" fz="sm">
-            941900324/958633607
+            {data.contact}
           </Text>
         </Group>
         <Group wrap="nowrap" gap={1}>
-          <IconPhoneCall stroke={2} size="1rem" className={classes.icon} />
+          <IconCirclesFilled stroke={2} size="1rem" className={classes.icon} />
           <Text c="dimmed" fz="sm">
-            Administrador
+            {showRoleName(data.role)}
           </Text>
         </Group>
-        <Group wrap="nowrap" gap={1}>
-          <IconPhoneCall stroke={2} size="1rem" className={classes.icon} />
-          <Text c="dimmed" fz="sm">
-            Departamento: Engenharia
-          </Text>
-        </Group>
-        <Group wrap="nowrap" gap={1}>
-          <IconPhoneCall stroke={2} size="1rem" className={classes.icon} />
-          <Text c="dimmed" fz="sm">
-            Curso: Informatica
-          </Text>
-        </Group>
+        {showDepartment && (
+          <Group wrap="nowrap" gap={1}>
+            <IconCircleLetterDFilled
+              stroke={2}
+              size="1rem"
+              className={classes.icon}
+            />
+            <Text c="dimmed" fz="sm">
+              Departamento: {data.department.name}
+            </Text>
+          </Group>
+        )}
+        {showCourse && (
+          <Group wrap="nowrap" gap={1}>
+            <IconCertificate stroke={2} size="1rem" className={classes.icon} />
+            <Text c="dimmed" fz="sm">
+              Curso: {data.course}
+            </Text>
+          </Group>
+        )}
+
+        {showCourse && (
+          <Group wrap="nowrap" gap={1}>
+            <IconNumber stroke={2} size="1rem" className={classes.icon} />
+            <Text c="dimmed" fz="sm">
+              Número de Matricula: {data.registrationNumber}
+            </Text>
+          </Group>
+        )}
       </Group>
 
       <Group className="flex justify-center items-center gap-2 w-full">
@@ -95,7 +153,7 @@ export function UserInfoProfile({ id }: UserInfoProfileProps) {
             Meus Posts
           </Text>
         </Group>
-        <Group wrap="nowrap" gap={1}>
+        <Group wrap="nowrap" gap={1} className={classes.user}>
           <IconHeart
             style={{ width: rem(16), height: rem(16) }}
             color={theme.colors.red[6]}
@@ -107,7 +165,7 @@ export function UserInfoProfile({ id }: UserInfoProfileProps) {
             Meus comentarios
           </Text>
         </Group>
-        <Group wrap="nowrap" gap={1}>
+        <Group wrap="nowrap" gap={1} className={classes.user}>
           <IconStar
             style={{ width: rem(16), height: rem(16) }}
             color={theme.colors.yellow[6]}
@@ -126,7 +184,8 @@ export function UserInfoProfile({ id }: UserInfoProfileProps) {
         <Button variant="gradient" className="px-5">
           Editar Informações
         </Button>
-        <ModalDemo
+        <ModalDemoDelete
+          isThisUserCanDelete={true}
           targetButton="Eliminar conta"
           typeModal="deleteAccount"
           handleClick={handleDeleteAccount}

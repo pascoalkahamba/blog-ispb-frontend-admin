@@ -1,3 +1,4 @@
+import { TRole } from "@/@types";
 import axios from "@/axios";
 import {
   IAddLike,
@@ -6,11 +7,14 @@ import {
   ICreateCommentData,
   ICreatedReplyData,
   ICreatePost,
+  IGetOneUser,
   ILoginResponse,
   IPost,
   IReplyDataResult,
   ISignin,
+  IUser,
 } from "@/interfaces";
+import { showEspecialRoute } from "@/utils";
 
 export async function createPost(formData: FormData) {
   const response = await axios.post<IPost>(
@@ -146,6 +150,14 @@ export async function addUnlikeComment({
 
   const commentUnliked = response.data;
   return commentUnliked;
+}
+
+export async function getOneUser({ id, role }: IGetOneUser) {
+  const whatRoute = showEspecialRoute(role);
+  const response = await axios<IUser>(`/${whatRoute}/getOneUser/${id}`);
+  const user = response.data;
+
+  return user;
 }
 
 export async function addUnlikeReply({ id, unlike, statusUnlike }: IAddUnlike) {

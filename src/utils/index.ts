@@ -1,3 +1,4 @@
+import { TRole } from "@/@types";
 import { IAllUsers, IUser } from "@/interfaces";
 import { formatDistance } from "date-fns";
 import { pt } from "date-fns/locale/pt";
@@ -12,6 +13,22 @@ function messegeDate(datePosted: typeof date, dateNow: typeof date) {
     locale: pt,
   });
   return { dateResult };
+}
+
+function showEspecialRoute(role: TRole) {
+  if (role === "ADMIN") return "admin";
+  if (role === "COORDINATOR") return "coordinator";
+  if (role === "USER") return "student";
+
+  return "routeNotFound";
+}
+
+function showRoleName(role: TRole) {
+  if (role === "ADMIN") return "Administrador";
+  if (role === "COORDINATOR") return "Cordenador";
+  if (role === "USER") return "Estudante";
+
+  return "Usuário não definido";
 }
 
 function showNameOfUser(user: null | IUser) {
@@ -52,5 +69,7 @@ export {
   MAXLENGTH,
   lastData,
   showNameOfUser,
+  showEspecialRoute,
+  showRoleName,
   currentUserCanManagerfiles,
 };

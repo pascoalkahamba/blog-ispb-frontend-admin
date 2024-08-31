@@ -68,6 +68,11 @@ export interface ISignin {
   terms: boolean;
 }
 
+export interface IGetOneUser {
+  id: number;
+  role: TRole;
+}
+
 export interface ILoginResponse {
   user: IUser;
   token: string;
@@ -182,6 +187,8 @@ export interface ICreateCommentData {
 export interface IUser {
   id: number;
   username: string;
+  course: string;
+  department: IDepartment;
   email: string;
   profile: IProfile;
   role: TRole;
