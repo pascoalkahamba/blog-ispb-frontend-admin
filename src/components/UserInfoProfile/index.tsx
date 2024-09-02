@@ -30,7 +30,8 @@ import useQueryUser from "@/hooks/useQueryUser";
 import { getOneUser } from "@/server";
 import { TRole } from "@/@types";
 import SkeletonComponent from "@/components/Skeleton";
-import { showRoleName } from "@/utils";
+import { showEspecialRoute, showRoleName } from "@/utils";
+import ModalEditUserProfile from "../ModalEditUserProfile";
 
 interface UserInfoProfileProps {
   id: number;
@@ -78,16 +79,7 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
       data-aos="fade-right"
       data-aos-duration="160"
     >
-      <Avatar
-        src={
-          data.profile?.photo.url
-            ? data.profile.photo.url
-            : "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
-        }
-        size={150}
-        radius={150}
-        mx="auto"
-      />
+      <Avatar src={data.profile?.photo.url} size={150} radius={150} mx="auto" />
       <Group className="flex justify-center flex-col gap-1 items w-full">
         <Text ta="center" fz="lg" fw={500} mt="md">
           {data.username}
@@ -141,6 +133,10 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
         )}
       </Group>
 
+      <Text c="dimmed" fz="sm" className="text-center py-2">
+        {data.profile.bio}
+      </Text>
+
       <Group className="flex justify-center items-center gap-2 w-full">
         <Group wrap="nowrap" gap={1} className={classes.user}>
           <IconMessage
@@ -181,9 +177,12 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
         <Button variant="gradient" className="px-5">
           Activo
         </Button>
-        <Button variant="gradient" className="px-5">
-          Editar Informações
-        </Button>
+        <ModalEditUserProfile
+          editorUser={data.role}
+          title={`Editar informações do ${showRoleName(data.role)}`}
+          content="Vamos editar"
+          targetButton="Editar informações"
+        />
         <ModalDemoDelete
           isThisUserCanDelete={true}
           targetButton="Eliminar conta"

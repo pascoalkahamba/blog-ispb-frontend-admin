@@ -7,14 +7,11 @@ import { TTypeInput } from "@/@types";
 interface InputWithIconProps {
   label: string;
   placeholder: string;
-  type: TTypeInput;
   target: string;
   errorMessage: string;
   title: string;
-  nameOfDepartament: string;
   className: string;
   setTitle: Dispatch<SetStateAction<string>>;
-  setDepartament: Dispatch<SetStateAction<string>>;
 }
 
 export default function InputWithIcon({
@@ -23,14 +20,10 @@ export default function InputWithIcon({
   target,
   className,
   title,
-  nameOfDepartament,
-  type,
-  setDepartament,
   setTitle,
 }: InputWithIconProps) {
   function handleChangeValue(value: string) {
-    if (type === "title") setTitle(value);
-    if (type === "departament") setDepartament(value);
+    setTitle(value);
   }
   const rightSection = (
     <Tooltip
@@ -57,11 +50,7 @@ export default function InputWithIcon({
     },
     validateOnBlur: true,
     validate: (value) =>
-      value.trim().length < 6
-        ? `${
-            type === "title" ? "Titulo" : "Nome do departamento"
-          } deve ter mais de seis caracteres`
-        : null,
+      value.trim().length < 6 && "Titulo de ter mais de seis caracteres.",
   });
 
   return (
@@ -70,7 +59,7 @@ export default function InputWithIcon({
       rightSection={rightSection}
       required
       maxLength={30}
-      value={type === "title" ? title : nameOfDepartament}
+      value={title}
       label={`${label}`}
       className={`${className}`}
       placeholder={`${placeholder}`}

@@ -63,7 +63,6 @@ export default function EspecificPost({
   const { mutation } = useDeletePost<number>(deletePost, "allPosts");
   const { mutation: mutationLikePost } = useAddLikeOrUnlike(addLikePost);
   const { mutation: mutationUnlikePost } = useAddLikeOrUnlike(addUnlikePost);
-  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
   const currentUser = JSON.parse(
     localStorage.getItem("currentUser") as string
   ) as IUser;
@@ -185,14 +184,7 @@ export default function EspecificPost({
 
       <Group mt="lg">
         <Link href={`profile/${whoCreator?.id}`}>
-          <Avatar
-            src={
-              whoCreator?.profile?.photo.url
-                ? whoCreator.profile.photo.url
-                : "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
-            }
-            radius="sm"
-          />
+          <Avatar src={whoCreator?.profile.photo.url} radius="sm" />
         </Link>
         <Link href={`profile/${whoCreator?.id}/${whoCreator?.role}`}>
           <Text fw={500}>{whoCreator?.username}</Text>

@@ -7,6 +7,7 @@ import {
   ICreateCommentData,
   ICreatedReplyData,
   ICreatePost,
+  IDepartmentData,
   IGetOneUser,
   ILoginResponse,
   IPost,
@@ -31,6 +32,15 @@ export async function createPost(formData: FormData) {
   const posted = response.data;
 
   return posted;
+}
+
+export async function getAllDepartments() {
+  const response = await axios<IDepartmentData[]>(
+    "/department/getAllDepartments"
+  );
+  const allDepartments = response.data;
+
+  return allDepartments;
 }
 
 export async function createComment({
@@ -217,8 +227,8 @@ export async function signin({ email, password, terms }: ISignin) {
 }
 
 export async function getAllPost() {
-  const response = await axios.get("/post/allPosts");
-  const allPosts = response.data as IPost[];
+  const response = await axios.get<IPost[]>("/post/allPosts");
+  const allPosts = response.data;
 
   return allPosts;
 }

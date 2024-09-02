@@ -7,9 +7,8 @@ import {
   errorAtom,
   selectFileAtom,
   titleAtom,
-  nameOfDepartamentAtom,
   contentAtom,
-  fetchDoneAtom,
+  departmentIdAtom,
 } from "@/storage/atom";
 import { Button, Group } from "@mantine/core";
 import { useAtom, useSetAtom } from "jotai";
@@ -22,9 +21,7 @@ export default function DashboardChild() {
   const { mutation } = useMutationPost<FormData, IPost>(createPost, "allPosts");
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
-  const [nameOfDepartment, setNameOfDepartment] = useAtom(
-    nameOfDepartamentAtom
-  );
+  const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
   const [file, setFile] = useAtom(selectFileAtom);
   const setError = useSetAtom(errorAtom);
   const whoCreator = JSON.parse(localStorage.getItem("whoCreator") as string);
@@ -33,7 +30,7 @@ export default function DashboardChild() {
   function cancelPost() {
     setContent("");
     setTitle("");
-    setNameOfDepartment("");
+    setDepartmentId(null);
     setFile("");
     setError(false);
   }
@@ -41,7 +38,7 @@ export default function DashboardChild() {
   function handlePost() {
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("nameOfDepartment", nameOfDepartment);
+    formData.append("departmentId", `${departmentId}`);
     formData.append("whoPosted", whoCreator);
     formData.append("file", file);
     setError(true);
@@ -74,8 +71,6 @@ export default function DashboardChild() {
           <RichTextDemo
             content={content}
             title={title}
-            nameOfDepartamnet={nameOfDepartment}
-            setNameOfDepartament={setNameOfDepartment}
             setContent={setContent}
             setTitle={setTitle}
           />

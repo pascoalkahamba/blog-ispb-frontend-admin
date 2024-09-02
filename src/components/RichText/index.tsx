@@ -12,28 +12,39 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { IconColorPicker } from "@tabler/icons-react";
 import InputWithIcon from "../InputWithIcon";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { ComboboxItem, Select } from "@mantine/core";
 
-import { useAtomValue } from "jotai";
-import { errorAtom } from "@/storage/atom";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { departmentIdAtom, errorAtom } from "@/storage/atom";
+import useQueryPost from "@/hooks/useQueryPost";
+import { getAllDepartments } from "@/server";
+import { useField } from "@mantine/form";
 
 interface RichTextDemoProps {
   title: string;
   content: string;
-  nameOfDepartamnet: string;
   setTitle: Dispatch<SetStateAction<string>>;
-  setNameOfDepartament: Dispatch<SetStateAction<string>>;
   setContent: Dispatch<SetStateAction<string>>;
 }
 export default function RichTextDemo({
   content,
   setTitle,
   setContent,
-  setNameOfDepartament,
   title,
-  nameOfDepartamnet,
 }: RichTextDemoProps) {
   const error = useAtomValue(errorAtom);
+  const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
+  const {
+    query: { data },
+  } = useQueryPost(getAllDepartments, "allDepartments");
+
+  const field = useField({
+    initialValue: 0,
+    onValueChange: (value) => setDepartmentId(value),
+    validateOnBlur: true,
+    validate: (value) => !value && "Escolha um departamento antes de postar.",
+  });
 
   const editor = useEditor({
     extensions: [
@@ -63,7 +74,6 @@ export default function RichTextDemo({
   return (
     <section className="max-w-[70%] mt-0 flex flex-col gap-3 justify-center items-center">
       <InputWithIcon
-        type="title"
         errorMessage="Digite o titulo"
         label="Titulo:"
         placeholder="Escreva o titulo"
@@ -71,22 +81,21 @@ export default function RichTextDemo({
         className="self-start w-full"
         setTitle={setTitle}
         title={title}
-        setDepartament={setNameOfDepartament}
-        nameOfDepartament={nameOfDepartamnet}
       />
 
-      <InputWithIcon
-        type="departament"
-        errorMessage="Digite o nome do departamento"
-        label="Nome do departamento:"
-        placeholder="Escreva o titulo"
-        target="Titulo interessante"
+      <Select
+        required
+        label="Nome do Departamento"
+        {...field.getInputProps()}
+        value={`${departmentId}`}
+        placeholder="Escolha um departamento"
         className="self-start w-full"
-        setTitle={setTitle}
-        title={title}
-        setDepartament={setNameOfDepartament}
-        nameOfDepartament={nameOfDepartamnet}
+        data={data?.map(({ id, name }) => ({ value: `${id}`, label: name }))}
+        withAsterisk
+        clearable
+        searchable
       />
+
       <label htmlFor="content" className="self-start">
         Descrição:
       </label>

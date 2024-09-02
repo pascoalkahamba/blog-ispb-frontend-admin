@@ -2,7 +2,7 @@ import { TEventType, TRole, TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
   title: string;
-  nameOfDepartment: string;
+  departmentId: number | null;
 }
 
 export interface IFile {
@@ -66,6 +66,16 @@ export interface ISignin {
   email: string;
   password: string;
   terms: boolean;
+}
+
+export interface IAdminUpdateProfile {
+  email: string;
+  departmentId?: number;
+  registrationNumber?: string;
+  password: string;
+  contact: string;
+  bio: string;
+  username: string;
 }
 
 export interface IGetOneUser {
@@ -182,6 +192,25 @@ export interface ICreateCommentData {
   content: string;
   postId: number;
   whoCreator: TWhoPosted;
+}
+
+export interface ISubjects {
+  id?: number;
+  name: string;
+}
+
+export interface ICourse {
+  id?: number;
+  name: string;
+  subjects: ISubjects[];
+}
+
+export interface IDepartmentData {
+  id: number;
+  name: string;
+  coordinators: IUser[];
+  courses: ICourse[];
+  posts: IPost[];
 }
 
 export interface IUser {

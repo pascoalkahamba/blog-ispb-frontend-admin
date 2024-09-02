@@ -7,6 +7,7 @@ import {
   rem,
   TextInput,
   Group,
+  Select,
 } from "@mantine/core";
 import { IconPencilMinus } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
@@ -18,26 +19,27 @@ import { useAtom, useSetAtom } from "jotai";
 import {
   contentAtom,
   errorAtom,
-  nameOfDepartamentAtom,
+  departmentIdAtom,
   selectFileAtom,
 } from "@/storage/atom";
-import { updatePost } from "@/server";
+import { getAllDepartments, updatePost } from "@/server";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
 import { notifications } from "@mantine/notifications";
 import { TWhoPosted } from "@/@types";
 import { ButtonProgress } from "../ButtonProcess";
+import useQueryPost from "@/hooks/useQueryPost";
 
 interface ModalEditPostProps {
   title: string;
   content: string;
   id: number;
   file: string;
-  nameOfDepartment: string;
+  departmentId: number | null;
 }
 
 export default function ModalEditPost({
   content,
-  nameOfDepartment,
+  departmentId,
   title,
   id,
 }: ModalEditPostProps) {
@@ -45,8 +47,11 @@ export default function ModalEditPost({
   const theme = useMantineTheme();
   const [currentContent, setCurrentContent] = useAtom(contentAtom);
   const [currentFile, setCurrentFile] = useAtom(selectFileAtom);
-  const setCurrentNameOfDepartment = useSetAtom(nameOfDepartamentAtom);
+  const setDepartmentId = useSetAtom(departmentIdAtom);
   const setCurrentTitle = useSetAtom(selectFileAtom);
+  const {
+    query: { data },
+  } = useQueryPost(getAllDepartments, "allDepartments");
   const setError = useSetAtom(errorAtom);
   const { mutation } = useUpdatePost(updatePost, id, "postUpdated");
   const whoCreator = JSON.parse(
@@ -57,7 +62,7 @@ export default function ModalEditPost({
     mode: "uncontrolled",
     initialValues: {
       title,
-      nameOfDepartment,
+      departmentId,
     },
     validate: zodResolver(postInfoEditSchema),
   });
@@ -72,7 +77,7 @@ export default function ModalEditPost({
   function cancelPost() {
     setCurrentContent("");
     setCurrentTitle("");
-    setCurrentNameOfDepartment("");
+    setDepartmentId(null);
     setError(false);
     setCurrentFile("");
   }
@@ -91,7 +96,7 @@ export default function ModalEditPost({
 
     formData.append("title", value.title);
     formData.append("content", currentContent);
-    formData.append("nameOfDepartment", value.nameOfDepartment);
+    formData.append("departmentId", `${value.departmentId}`);
     formData.append("whoPosted", whoCreator);
     formData.append("file", currentFile);
 
@@ -141,14 +146,24 @@ export default function ModalEditPost({
             error={form.errors.title}
             {...form.getInputProps("title")}
           />
-          <TextInput
+
+          <Select
+            required
+            label="Nome do Departamento"
+            placeholder="Escolha um departamento"
+            key={form.key("departmentId")}
+            error={form.errors.departmentId}
+            {...form.getInputProps("departmentId")}
+            className="self-start w-full"
+            data={data?.map(({ id, name }) => ({
+              value: `${id}`,
+              label: name,
+            }))}
             withAsterisk
-            label="Nome do departamento"
-            placeholder="Escreva novo nome do departamento"
-            key={form.key("nameOfDepartment")}
-            error={form.errors.nameOfDepartment}
-            {...form.getInputProps("nameOfDepartment")}
+            clearable
+            searchable
           />
+
           <div className="self-center">
             <ButtonProgress targetButton="Carregar uma nova imagem" />
           </div>

@@ -9,9 +9,13 @@ import { DropzoneFile } from "../DropzoneFile";
 
 interface ButtonProgressProps {
   targetButton: string;
+  className?: string;
 }
 
-export function ButtonProgress({ targetButton }: ButtonProgressProps) {
+export function ButtonProgress({
+  targetButton,
+  className,
+}: ButtonProgressProps) {
   const theme = useMantineTheme();
   const [progress, setProgress] = useState(0);
   const [dropzone, setDropzone] = useAtom(dropzoneAtom);
@@ -45,10 +49,8 @@ export function ButtonProgress({ targetButton }: ButtonProgressProps) {
     setDropzone(true);
     setSelectFile("");
   }
-  console.log("process", progress);
-  console.log("selectFile", selectFile);
   return (
-    <section>
+    <section className={className}>
       <Button
         className={classes.button}
         onClick={chooseFile}
@@ -62,9 +64,9 @@ export function ButtonProgress({ targetButton }: ButtonProgressProps) {
       >
         <div className={classes.label}>
           {progress !== 0 && progress !== 100
-            ? "Carregando ficheiro"
+            ? "Carregando imagem"
             : selectFile
-            ? "Ficheiro carregado"
+            ? "Imagem carregada"
             : targetButton}
         </div>
         {progress !== 0 && (

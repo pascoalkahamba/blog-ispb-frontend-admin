@@ -31,6 +31,7 @@ import { useDeletePost } from "@/hooks/useDeletePost";
 import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
 import useReactions from "@/hooks/useReactions";
 import { IUser } from "@/interfaces";
+import Link from "next/link";
 
 interface ArticleCardPostProps {
   id: number;
@@ -73,8 +74,8 @@ export default function ArticleCardPost({
       <SkeletonComponent
         isPending={isPending}
         skeletons={[1]}
-        width={50}
-        height={500}
+        width={100}
+        height={700}
       />
     );
 
@@ -87,6 +88,8 @@ export default function ArticleCardPost({
     student: null,
     currentUser,
   });
+
+  const whoCreator = !data.admin ? data.coordinator : data.admin;
   function handleAddLike() {
     addLike();
     mutationAddLike.mutate({
@@ -138,19 +141,16 @@ export default function ArticleCardPost({
       ></Text>
 
       <Group mt="lg">
-        <Avatar
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png"
-          radius="sm"
-        />
+        <Link href={`/profile/${whoCreator?.id}/${whoCreator?.role}`} replace>
+          <Avatar src={whoCreator?.profile.photo.url} radius="sm" />
+        </Link>
         <div>
-          <Text fw={500}>
-            {data.admin?.username
-              ? data.admin.username
-              : data.coordinator?.username}
-          </Text>
-          <Text fz="xs" c="dimmed">
-            postado {dateResult}
-          </Text>
+          <Link href={`/profile/${whoCreator?.id}/${whoCreator?.role}`} replace>
+            <Text fw={500}>{whoCreator?.username}</Text>
+            <Text fz="xs" c="dimmed">
+              postado {dateResult}
+            </Text>
+          </Link>
         </div>
       </Group>
 
@@ -203,7 +203,7 @@ export default function ArticleCardPost({
                   title={data.title}
                   id={id}
                   file={data.picture.name}
-                  nameOfDepartment={data.department.name}
+                  departmentId={data.department.id}
                 />
               </ActionIcon>
               <ModalDemoDelete

@@ -71,13 +71,13 @@ export function DropzoneFile() {
             </Group>
 
             <Text ta="center" fw={700} fz="lg" mt="xl">
-              <Dropzone.Accept>Carrega aqui o ficheiro</Dropzone.Accept>
+              <Dropzone.Accept>Carrega aqui a imagem</Dropzone.Accept>
               <Dropzone.Reject>Apenas arquivos menos de 30mb</Dropzone.Reject>
-              <Dropzone.Idle>Carrega o ficheiro</Dropzone.Idle>
+              <Dropzone.Idle>Carrega a imagem</Dropzone.Idle>
             </Text>
             <Text ta="center" fz="sm" mt="xs" c="dimmed">
-              Carrega aqui sua imagem ou ficheiro apenas imagem do tipo{" "}
-              <i>jpg</i> e <i>png</i> ficheiro <i>pdf</i>.
+              Carrega aqui sua imagem apenas imagem do tipo <i>jpg</i> e{" "}
+              <i>png</i> imagem <i>pdf</i>.
             </Text>
           </div>
         </Dropzone>
@@ -89,7 +89,7 @@ export function DropzoneFile() {
           radius="xl"
           onClick={() => openRef.current?.()}
         >
-          Selecione o ficheiro
+          Selecione a imagem
         </Button>
       </div>
     </div>
