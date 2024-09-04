@@ -4,15 +4,18 @@ import {
   IAddLike,
   IAddUnlike,
   ICommentDataResult,
+  ICourse,
   ICreateCommentData,
   ICreatedReplyData,
   ICreatePost,
+  ICustomUpdateProfile,
   IDepartmentData,
   IGetOneUser,
   ILoginResponse,
   IPost,
   IReplyDataResult,
   ISignin,
+  IUpdateUserProfile,
   IUser,
 } from "@/interfaces";
 import { showEspecialRoute } from "@/utils";
@@ -41,6 +44,14 @@ export async function getAllDepartments() {
   const allDepartments = response.data;
 
   return allDepartments;
+}
+export async function getAllCoursesFromDepartment(id?: number) {
+  const response = await axios<ICourse[]>(
+    `/department/getAllCoursesFromDepartment/${id}`
+  );
+  const allCourses = response.data;
+
+  return allCourses;
 }
 
 export async function createComment({
@@ -168,6 +179,26 @@ export async function getOneUser({ id, role }: IGetOneUser) {
   const user = response.data;
 
   return user;
+}
+
+export async function updateUserProfile({
+  formdata,
+  role,
+  id,
+}: ICustomUpdateProfile) {
+  const whatRoute = showEspecialRoute(role);
+  const response = await axios.post<IUser>(
+    `/${whatRoute}/updateInfoProfile/${id}`,
+    formdata,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  const updatedUser = response.data;
+
+  return updatedUser;
 }
 
 export async function addUnlikeReply({ id, unlike, statusUnlike }: IAddUnlike) {

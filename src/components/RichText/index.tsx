@@ -12,7 +12,7 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { IconColorPicker } from "@tabler/icons-react";
 import InputWithIcon from "../InputWithIcon";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ComboboxItem, Select } from "@mantine/core";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -38,6 +38,13 @@ export default function RichTextDemo({
   const {
     query: { data },
   } = useQueryPost(getAllDepartments, "allDepartments");
+
+  const allDepartments = useMemo(() => {
+    return data?.map(({ id, name }) => ({
+      value: `${id}`,
+      label: name,
+    }));
+  }, [data]);
 
   const field = useField({
     initialValue: 0,
@@ -90,7 +97,7 @@ export default function RichTextDemo({
         value={`${departmentId}`}
         placeholder="Escolha um departamento"
         className="self-start w-full"
-        data={data?.map(({ id, name }) => ({ value: `${id}`, label: name }))}
+        data={allDepartments}
         withAsterisk
         clearable
         searchable

@@ -30,7 +30,7 @@ import useQueryUser from "@/hooks/useQueryUser";
 import { getOneUser } from "@/server";
 import { TRole } from "@/@types";
 import SkeletonComponent from "@/components/Skeleton";
-import { showEspecialRoute, showRoleName } from "@/utils";
+import { showRoleName } from "@/utils";
 import ModalEditUserProfile from "../ModalEditUserProfile";
 
 interface UserInfoProfileProps {
@@ -68,8 +68,8 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
         Algo deu errado tente novamente: Usuário não encontrado
       </p>
     );
-  const showDepartment = data.role === "COORDINATOR" || data.role === "USER";
-  const showCourse = data.role === "USER";
+  const showDepartmentAndCourse =
+    data.role === "COORDINATOR" || data.role === "USER";
   return (
     <Paper
       radius="md"
@@ -102,7 +102,7 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
             {showRoleName(data.role)}
           </Text>
         </Group>
-        {showDepartment && (
+        {showDepartmentAndCourse && (
           <Group wrap="nowrap" gap={1}>
             <IconCircleLetterDFilled
               stroke={2}
@@ -114,20 +114,11 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
             </Text>
           </Group>
         )}
-        {showCourse && (
+        {showDepartmentAndCourse && (
           <Group wrap="nowrap" gap={1}>
             <IconCertificate stroke={2} size="1rem" className={classes.icon} />
             <Text c="dimmed" fz="sm">
-              Curso: {data.course}
-            </Text>
-          </Group>
-        )}
-
-        {showCourse && (
-          <Group wrap="nowrap" gap={1}>
-            <IconNumber stroke={2} size="1rem" className={classes.icon} />
-            <Text c="dimmed" fz="sm">
-              Número de Matricula: {data.registrationNumber}
+              Sou cordenador do curso de {data.course?.name}
             </Text>
           </Group>
         )}
@@ -177,12 +168,7 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
         <Button variant="gradient" className="px-5">
           Activo
         </Button>
-        <ModalEditUserProfile
-          editorUser={data.role}
-          title={`Editar informações do ${showRoleName(data.role)}`}
-          content="Vamos editar"
-          targetButton="Editar informações"
-        />
+        <ModalEditUserProfile user={data} targetButton="Editar informações" />
         <ModalDemoDelete
           isThisUserCanDelete={true}
           targetButton="Eliminar conta"

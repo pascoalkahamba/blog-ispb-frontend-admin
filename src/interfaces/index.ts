@@ -68,12 +68,20 @@ export interface ISignin {
   terms: boolean;
 }
 
-export interface IAdminUpdateProfile {
+export interface ICustomUpdateProfile {
+  id: number;
+  formdata: FormData;
+  role: TRole;
+}
+
+export interface IUpdateUserProfile {
   email: string;
   departmentId?: number;
   registrationNumber?: string;
   password: string;
   contact: string;
+  photo?: IPicture;
+  courseId?: number;
   bio: string;
   username: string;
 }
@@ -202,6 +210,9 @@ export interface ISubjects {
 export interface ICourse {
   id?: number;
   name: string;
+  studentId: number | null;
+  departmentId: number;
+  coordinatorId: number | null;
   subjects: ISubjects[];
 }
 
@@ -216,7 +227,7 @@ export interface IDepartmentData {
 export interface IUser {
   id: number;
   username: string;
-  course: string;
+  course: ICourse;
   department: IDepartment;
   email: string;
   profile: IProfile;

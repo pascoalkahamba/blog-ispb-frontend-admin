@@ -35,19 +35,21 @@ const signinSchema = zod.object({
 });
 
 const updateProfileSchema = zod.object({
-  email: zod.string().email({ message: "email invalido" }),
+  email: zod.string().email({ message: "Email invalido" }),
   departmentId: zod
-    .number()
-    .min(2, { message: "Escolha um departamento" })
+    .number({
+      message: "Este campo é obrigatorio e deve ser um número valido.",
+    })
     .optional(),
-  registrationNumber: zod
-    .string()
-    .min(2, { message: "Digite no minimo dois digitos." })
+  courseId: zod
+    .number({
+      message: "Este campo é obrigatorio e deve ser um número valido.",
+    })
     .optional(),
   contact: zod
     .string()
-    .min(9, { message: "Número deve ter no minimo 9 números." })
-    .max(9, { message: "Número deve ter no maximo 9 números." }),
+    .min(9, { message: "Número deve ter no minimo 9 digitos." })
+    .max(9, { message: "Número deve ter no maximo 9 digitos." }),
   username: zod
     .string()
     .min(6, { message: "Nome deve ter mais de seis caracteres." }),
