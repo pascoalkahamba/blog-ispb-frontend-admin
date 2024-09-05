@@ -13,6 +13,7 @@ export type TRole = "USER" | "ADMIN" | "COORDINATOR";
 export type TEventType = "comment" | "reply" | "nothing";
 export type TModal =
   | "deletePost"
+  | "deleteAccountOnHeader"
   | "deleteAccount"
   | "deleteComment"
   | "deleteReply";

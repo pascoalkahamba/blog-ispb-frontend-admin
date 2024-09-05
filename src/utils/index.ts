@@ -1,5 +1,5 @@
 import { TRole } from "@/@types";
-import { IAllUsers, IUser } from "@/interfaces";
+import { IAllUsers, IGetOneUser, IUser } from "@/interfaces";
 import { formatDistance } from "date-fns";
 import { pt } from "date-fns/locale/pt";
 
@@ -45,6 +45,23 @@ function extractTextFromHTML(html: string) {
   return doc.body.textContent || "";
 }
 
+function showButtonSigniOut({ id, role }: IGetOneUser, currentUser: IUser) {
+  if (role === currentUser.role && id === currentUser.id) return true;
+
+  return false;
+}
+
+function currentUserCanManagerProfile(
+  { id, role }: IGetOneUser,
+  currentUser: IUser
+) {
+  if (currentUser.role === "ADMIN") return true;
+  if (role === "COORDINATOR" && id === currentUser.id) return true;
+  if (role === "USER" && id === currentUser.id) return true;
+
+  return false;
+}
+
 function currentUserCanManagerfiles({
   coordinator,
   student,
@@ -69,6 +86,8 @@ export {
   MAXLENGTH,
   lastData,
   showNameOfUser,
+  showButtonSigniOut,
+  currentUserCanManagerProfile,
   showEspecialRoute,
   showRoleName,
   currentUserCanManagerfiles,

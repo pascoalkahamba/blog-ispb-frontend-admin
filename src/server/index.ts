@@ -54,6 +54,13 @@ export async function getAllCoursesFromDepartment(id?: number) {
   return allCourses;
 }
 
+export async function deleteUser({ id, role }: IGetOneUser) {
+  const whatRoute = showEspecialRoute(role);
+  const response = await axios.delete<IUser>(`/${whatRoute}/deleteUser/${id}`);
+  const deletedUser = response.data;
+
+  return deletedUser;
+}
 export async function createComment({
   content,
   postId,

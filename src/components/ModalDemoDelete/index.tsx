@@ -12,6 +12,7 @@ import { IconTrash } from "@tabler/icons-react";
 
 interface ModalDemoProps {
   targetButton?: string;
+  editOnHeader: boolean;
   content: string;
   isThisUserCanDelete: boolean;
   trashTarget?: string;
@@ -22,6 +23,7 @@ interface ModalDemoProps {
 export default function ModalDemoDelete({
   targetButton,
   content,
+  editOnHeader,
   isThisUserCanDelete,
   trashTarget,
   typeModal,
@@ -29,11 +31,8 @@ export default function ModalDemoDelete({
 }: ModalDemoProps) {
   const theme = useMantineTheme();
 
-  function onCancelFn() {
-    console.log("confirm");
-  }
+  function onCancelFn() {}
   function onConfirmFn() {
-    console.log("cancel");
     handleClick();
   }
 
@@ -83,5 +82,11 @@ export default function ModalDemoDelete({
       >
         {trashTarget}
       </Menu.Item>
+    );
+  if (editOnHeader && typeModal === "deleteAccountOnHeader")
+    return (
+      <span onClick={openModal} className="w-full">
+        {targetButton}
+      </span>
     );
 }

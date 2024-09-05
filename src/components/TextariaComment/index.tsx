@@ -35,10 +35,16 @@ export default function TextareaComment({
   buttonTarget,
   labelTarget,
 }: TextareaCommentProps) {
-  const { mutation } = useCreateComment(createComment);
+  const { mutation } = useCreateComment(
+    createComment,
+    showNotificationCreateOnSuccess,
+    showNotificationCreateOnError
+  );
   const comment = useAtomValue(commentAtom);
   const { mutation: mutationUpdateComment } = useUpdatePost(
     editComment,
+    showNotificationEditOnSuccess,
+    showNotificationEditOnError,
     comment.id,
     "UpdateComment"
   );
@@ -52,12 +58,47 @@ export default function TextareaComment({
     validate: (value) => (value.trim().length < 2 ? errorTarget : null),
   });
 
-  console.log("textareaComment");
-
   function cancelEdit() {
     setEdit({ type: "nothing", status: false });
     console.log("edit", edit);
     field.reset();
+  }
+
+  function showNotificationCreateOnSuccess() {
+    notifications.show({
+      title: "Criação de comentário",
+      message: "Comentário criado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+    setEdit({ type: "nothing", status: false });
+    field.reset();
+  }
+  function showNotificationEditOnSuccess() {
+    notifications.show({
+      title: "Edição de comentário",
+      message: "Comentário editado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+    field.reset();
+    setEdit({ type: "nothing", status: false });
+  }
+  function showNotificationCreateOnError() {
+    notifications.show({
+      title: "Criação de comentário",
+      message: "Comentário não criado algo deu errado.",
+      position: "top-right",
+      color: "red",
+    });
+  }
+  function showNotificationEditOnError() {
+    notifications.show({
+      title: "Edição de comentário",
+      message: "Comentário não editado algo deu errado.",
+      position: "top-right",
+      color: "red",
+    });
   }
 
   useEffect(() => {
@@ -85,47 +126,6 @@ export default function TextareaComment({
 
     if (edit.status) {
       mutationUpdateComment.mutate(field.getValue());
-    }
-
-    if (mutation.isSuccess) {
-      notifications.show({
-        title: "Criação de comentário",
-        message: "Comentário criado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      setEdit({ type: "nothing", status: false });
-      field.reset();
-      return;
-    }
-    if (mutationUpdateComment.isSuccess) {
-      notifications.show({
-        title: "Edição de comentário",
-        message: "Comentário editado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      field.reset();
-      setEdit({ type: "nothing", status: false });
-      return;
-    }
-    if (mutation.isError) {
-      notifications.show({
-        title: "Criação de comentário",
-        message: "Comentário não criado algo deu errado.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
-    }
-    if (mutationUpdateComment.isError) {
-      notifications.show({
-        title: "Edição de comentário",
-        message: "Comentário não editado algo deu errado.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
     }
   }
   return (

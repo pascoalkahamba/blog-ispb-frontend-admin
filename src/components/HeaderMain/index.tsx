@@ -26,22 +26,67 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import classes from "@/components/HeaderMain/styles.module.css";
-import { tabs, user, searchData } from "@/mocks";
+import { tabs, searchData } from "@/mocks";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { IUser } from "@/interfaces";
+import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
+import { deleteUser, getOneUser } from "@/server";
+import { notifications } from "@mantine/notifications";
+import { showRoleName } from "@/utils";
+import ModalDemoDelete from "../ModalDemoDelete";
+import useQueryUser from "@/hooks/useQueryUser";
 
 export default function HeaderMain() {
   const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
-  const router = useRouter();
-  const pathname = usePathname();
+  const user = JSON.parse(
+    localStorage.getItem("currentUser") as string
+  ) as IUser;
+
+  const { id, role } = user;
+  const {
+    query: { data: currentUser },
+  } = useQueryUser(getOneUser, `getOneUser-${role}-${id}`, {
+    id,
+    role,
+  });
+  const { mutation } = useDeleteCommentOrReply(
+    deleteUser,
+    showNotificationOnSuccess,
+    showNotificationOnError,
+    `deleteUser-${role}-${id}`
+  );
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab} key={tab}>
       {tab}
     </Tabs.Tab>
   ));
+
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: `Exclusão da conta ${showRoleName(role)}`,
+      message: `Senhor ${showRoleName(role)} sua conta foi eliminda.`,
+      position: "top-right",
+      color: "blue",
+    });
+    router.replace("/signin");
+  }
+
+  function showNotificationOnError() {
+    notifications.show({
+      title: `Exclusão da conta ${showRoleName(role)}`,
+      message: `Senhor ${showRoleName(
+        role
+      )} sua conta não foi eliminda verifique os dados e tente novamente.`,
+      position: "top-right",
+      color: "red",
+    });
+  }
+
+  const router = useRouter();
+  const handleDeleteAccount = () => mutation.mutate({ id, role });
 
   return (
     <div className={classes.header}>
@@ -66,13 +111,13 @@ export default function HeaderMain() {
               >
                 <Group gap={7}>
                   <Avatar
-                    src={user.image}
-                    alt={user.name}
+                    src={currentUser?.profile.photo.url}
+                    alt={currentUser?.username}
                     radius="xl"
                     size={20}
                   />
                   <Text fw={500} size="sm" lh={1} mr={3}>
-                    {user.name}
+                    {currentUser?.username}
                   </Text>
                   <IconChevronDown
                     style={{ width: rem(12), height: rem(12) }}
@@ -125,7 +170,7 @@ export default function HeaderMain() {
                   />
                 }
               >
-                <Link href={`/profile/${userId}`}>Definições da conta</Link>
+                <Link href={`/profile/${id}/${role}`}>Definições da conta</Link>
               </Menu.Item>
 
               <Menu.Item
@@ -151,7 +196,17 @@ export default function HeaderMain() {
                   />
                 }
               >
-                Eliminar conta
+                <ModalDemoDelete
+                  isThisUserCanDelete={false}
+                  editOnHeader
+                  targetButton="Eliminar conta"
+                  typeModal="deleteAccountOnHeader"
+                  handleClick={handleDeleteAccount}
+                  content={`Carissimo ${showRoleName(
+                    role
+                  )}, tem certesa que deseja mesmo eliminar sua conta está acção irá
+            eliminar permantemente a sua conta da vitrine online.`}
+                />
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

@@ -60,12 +60,29 @@ export default function EspecificPost({
   createdAt,
 }: EspecificPostProps) {
   const theme = useMantineTheme();
-  const { mutation } = useDeletePost<number>(deletePost, "allPosts");
   const { mutation: mutationLikePost } = useAddLikeOrUnlike(addLikePost);
   const { mutation: mutationUnlikePost } = useAddLikeOrUnlike(addUnlikePost);
   const currentUser = JSON.parse(
     localStorage.getItem("currentUser") as string
   ) as IUser;
+
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: "Post eliminado",
+      message: "Post eliminado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+  }
+
+  function showNotificationOnError() {
+    notifications.show({
+      title: "Post não eliminado",
+      message: "Algo deu errado tente novamente.",
+      position: "top-right",
+      color: "red",
+    });
+  }
 
   const isThisUserCanManagerFiles = currentUserCanManagerfiles({
     admin,
@@ -83,6 +100,12 @@ export default function EspecificPost({
     statusUnlike,
   });
   const { dateResult } = messegeDate(new Date(createdAt), new Date());
+  const { mutation } = useDeletePost(
+    deletePost,
+    showNotificationOnSuccess,
+    showNotificationOnError,
+    "allPosts"
+  );
   const truncated =
     plainText.length > MAXLENGTH
       ? plainText.substring(0, MAXLENGTH) + " Ler mais..."
@@ -106,36 +129,8 @@ export default function EspecificPost({
     });
   }
 
-  function handleDeletePost() {
-    mutation.mutate(id);
+  const handleDeletePost = () => mutation.mutate(id);
 
-    if (mutation.isSuccess) {
-      notifications.show({
-        title: "Post eliminado",
-        message: "Post eliminado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      return;
-    }
-    if (mutation.isPending) {
-      notifications.show({
-        title: "Carregando para eliminar",
-        message: "O Post esta no processo de eliminação.",
-        position: "top-right",
-        color: "orange",
-      });
-    }
-    if (mutation.isError) {
-      notifications.show({
-        title: "Post não eliminado",
-        message: "Algo deu errado tente novamente.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
-    }
-  }
   return (
     <Card
       withBorder
@@ -235,6 +230,7 @@ export default function EspecificPost({
               )}
             </ActionIcon>
             <ModalDemoDelete
+              editOnHeader={false}
               isThisUserCanDelete={isThisUserCanManagerFiles}
               typeModal="deletePost"
               handleClick={handleDeletePost}

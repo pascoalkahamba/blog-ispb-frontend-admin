@@ -9,6 +9,8 @@ function set<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {}
 
 export function useUpdateUser<T, K>(
   mutationFunction: (value: T) => Promise<K>,
+  notificationOnSuccess: () => void,
+  notificationOnError: () => void,
   queryKey?: string
 ) {
   const queryClient = useQueryClient();
@@ -16,7 +18,11 @@ export function useUpdateUser<T, K>(
 
   const mutation = useMutation({
     mutationFn: (value: T) => mutationFunction(value),
-    onSuccess: () => queryClient.refetchQueries(),
+    onSuccess: () => {
+      queryClient.refetchQueries();
+      notificationOnSuccess();
+    },
+    onError: () => notificationOnError(),
   });
 
   return { mutation };

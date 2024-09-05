@@ -49,13 +49,15 @@ export default function ModalEditUserProfile({
 }: ModalDemoProps) {
   const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
-  const { mutation } = useUpdateUser(updateUserProfile);
+  const { mutation } = useUpdateUser(
+    updateUserProfile,
+    showNotificationOnSuccess,
+    showNotificationOnError
+  );
   const {
     query: { data: departments },
   } = useQueryPost(getAllDepartments, "allDepartments");
   const currentFile = useAtomValue(selectFileAtom);
-
-  console.log("user", user);
 
   const { role, username, contact, course, department, email, id, profile } =
     user;
@@ -72,6 +74,26 @@ export default function ModalEditUserProfile({
     },
     validate: zodResolver(updateProfileSchema),
   });
+
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: "Edição do perfil.",
+      message: "Seu perfil foi editado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+    form.reset();
+    close();
+  }
+  function showNotificationOnError() {
+    notifications.show({
+      title: "Edição do perfil.",
+      message:
+        "Seu perfil não foi editado verifique os dados e tente novamente.",
+      position: "top-right",
+      color: "red",
+    });
+  }
 
   const {
     query: { data: courses },
@@ -95,8 +117,6 @@ export default function ModalEditUserProfile({
     }));
   }, [courses]);
 
-  console.log("course", courses);
-
   function handleEditProfile(values: IUpdateUserProfile) {
     formdata.append("username", values.username);
     formdata.append("bio", values.bio);
@@ -111,27 +131,6 @@ export default function ModalEditUserProfile({
     }
 
     mutation.mutate({ formdata, id, role });
-
-    if (mutation.isSuccess) {
-      notifications.show({
-        title: "Edição do perfil.",
-        message: "Seu perfil foi editado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      form.reset();
-      close();
-    }
-
-    if (mutation.isError) {
-      notifications.show({
-        title: "Edição do perfil.",
-        message:
-          "Seu perfil não foi editado verifique os dados e tente novamente.",
-        position: "top-right",
-        color: "red",
-      });
-    }
   }
 
   function onCancelFn() {

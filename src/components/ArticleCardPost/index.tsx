@@ -32,6 +32,8 @@ import { useAddLikeOrUnlike } from "@/hooks/useAddLikeOrUnlike";
 import useReactions from "@/hooks/useReactions";
 import { IUser } from "@/interfaces";
 import Link from "next/link";
+import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 
 interface ArticleCardPostProps {
   id: number;
@@ -49,7 +51,6 @@ export default function ArticleCardPost({
   unlikes,
 }: ArticleCardPostProps) {
   const theme = useMantineTheme();
-  const { mutation } = useDeletePost(deletePost, "onePost");
   const { mutation: mutationAddLike } = useAddLikeOrUnlike(addLikePost);
   const { mutation: mutationAddUnlike } = useAddLikeOrUnlike(addUnlikePost);
   const { addLike, addUnlike, reacted, reactions } = useReactions({
@@ -59,9 +60,37 @@ export default function ArticleCardPost({
     statusUnlike: Boolean(statusUnlike),
   });
 
+  const router = useRouter();
   const currentUser = JSON.parse(
     localStorage.getItem("currentUser") as string
   ) as IUser;
+
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: "Post eliminado",
+      message: "Post eliminado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+
+    router.replace("/dashboard");
+  }
+
+  function showNotificationOnError() {
+    notifications.show({
+      title: "Post não eliminado",
+      message: "Algo deu errado tente novamente.",
+      position: "top-right",
+      color: "red",
+    });
+  }
+
+  const { mutation } = useDeletePost(
+    deletePost,
+    showNotificationOnSuccess,
+    showNotificationOnError,
+    "onePost"
+  );
 
   const handleDeletePost = () => mutation.mutate(id);
   const { data, error, isPending } = useQuery({
@@ -207,6 +236,7 @@ export default function ArticleCardPost({
                 />
               </ActionIcon>
               <ModalDemoDelete
+                editOnHeader={false}
                 isThisUserCanDelete={isThisUserCanManagerFiles}
                 targetButton="Eliminar"
                 content="Você tem certeza que deseja eliminar este post esta acção irá eliminar o post da vetrine para sempre."

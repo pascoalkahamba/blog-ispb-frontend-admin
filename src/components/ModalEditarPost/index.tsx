@@ -46,6 +46,13 @@ export default function ModalEditPost({
   const [opened, { open, close }] = useDisclosure(false);
   const theme = useMantineTheme();
   const [currentContent, setCurrentContent] = useAtom(contentAtom);
+  const { mutation } = useUpdatePost(
+    updatePost,
+    showNotificationOnSuccess,
+    showNotificationOnError,
+    id,
+    "postUpdated"
+  );
   const [currentFile, setCurrentFile] = useAtom(selectFileAtom);
   const setDepartmentId = useSetAtom(departmentIdAtom);
   const setCurrentTitle = useSetAtom(selectFileAtom);
@@ -53,7 +60,6 @@ export default function ModalEditPost({
     query: { data },
   } = useQueryPost(getAllDepartments, "allDepartments");
   const setError = useSetAtom(errorAtom);
-  const { mutation } = useUpdatePost(updatePost, id, "postUpdated");
   const whoCreator = JSON.parse(
     localStorage.getItem("whoCreator") as string
   ) as TWhoPosted;
@@ -72,6 +78,25 @@ export default function ModalEditPost({
   function onCancelEdit() {
     close();
     cancelPost();
+  }
+
+  function showNotificationOnSuccess() {
+    close();
+    cancelPost();
+    notifications.show({
+      title: "Edição do post",
+      message: "Post editado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+  }
+  function showNotificationOnError() {
+    notifications.show({
+      title: "Edição do post",
+      message: "Post não editado verifique os dados e tente novamente.",
+      position: "top-right",
+      color: "red",
+    });
   }
 
   function cancelPost() {
@@ -101,28 +126,6 @@ export default function ModalEditPost({
     formData.append("file", currentFile);
 
     mutation.mutate(formData);
-
-    if (mutation.isSuccess) {
-      close();
-      cancelPost();
-      notifications.show({
-        title: "Edição do post",
-        message: "Post editado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      return;
-    }
-
-    if (mutation.error) {
-      notifications.show({
-        title: "Edição do post",
-        message: "Post não editado.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
-    }
   }
 
   return (

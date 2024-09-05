@@ -12,6 +12,8 @@ function set<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {}
 
 export function useDeletePost<T>(
   mutationFunction: (value: T) => Promise<IPost>,
+  notificationOnSuccess: () => void,
+  notificationOnError: () => void,
   queryKey?: string
 ) {
   const queryClient = useQueryClient();
@@ -23,8 +25,10 @@ export function useDeletePost<T>(
         [queryKey, `${userId}`],
         (oldData = []) => oldData.filter((post) => post.id !== deletedPost.id)
       );
+      notificationOnSuccess();
       queryClient.refetchQueries();
     },
+    onError: () => notificationOnError(),
   });
 
   return { mutation };

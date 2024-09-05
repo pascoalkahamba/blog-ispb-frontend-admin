@@ -1,6 +1,4 @@
-import { fetchDoneAtom, fetchErrorAtom } from "@/storage/atom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSetAtom } from "jotai";
 
 // interface UserMutationPostProps {
 //   mutationFunction: (data: T) => Promise<K>;
@@ -11,6 +9,8 @@ function set<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {}
 
 export function useMutationPost<T, K>(
   mutationFunction: (value: T) => Promise<K>,
+  notificationOnSuccess: () => void,
+  notificationOnError: () => void,
   queryKey?: string
 ) {
   const queryClient = useQueryClient();
@@ -23,7 +23,9 @@ export function useMutationPost<T, K>(
         ...oldData,
         data,
       ]);
+      notificationOnSuccess();
     },
+    onError: () => notificationOnError(),
   });
 
   return { mutation };

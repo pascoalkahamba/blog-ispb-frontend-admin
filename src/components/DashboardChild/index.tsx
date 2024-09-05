@@ -18,7 +18,6 @@ import { IPost } from "@/interfaces";
 import { useMutationPost } from "@/hooks/useMutationPost";
 
 export default function DashboardChild() {
-  const { mutation } = useMutationPost<FormData, IPost>(createPost, "allPosts");
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
   const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
@@ -35,6 +34,31 @@ export default function DashboardChild() {
     setError(false);
   }
 
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: "Criação de post",
+      message: "Post criado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+    cancelPost();
+  }
+  function showNotificationOnError() {
+    notifications.show({
+      title: "Criação de post",
+      message: "Algo deu errado verifique os dados e tente novamente.",
+      position: "top-right",
+      color: "red",
+    });
+  }
+
+  const { mutation } = useMutationPost<FormData, IPost>(
+    createPost,
+    showNotificationOnSuccess,
+    showNotificationOnError,
+    "allPosts"
+  );
+
   function handlePost() {
     formData.append("title", title);
     formData.append("content", content);
@@ -43,25 +67,6 @@ export default function DashboardChild() {
     formData.append("file", file);
     setError(true);
     mutation.mutate(formData);
-    if (mutation.isSuccess) {
-      notifications.show({
-        title: "Post criado",
-        message: "Post criado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      cancelPost();
-    }
-
-    if (mutation.error) {
-      notifications.show({
-        title: "Post não criado",
-        message: "Algo deu errado verifique os dados e tente novamente.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
-    }
   }
 
   return (

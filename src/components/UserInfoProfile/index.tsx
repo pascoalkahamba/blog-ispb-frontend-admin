@@ -27,11 +27,20 @@ import {
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import Link from "next/link";
 import useQueryUser from "@/hooks/useQueryUser";
-import { getOneUser } from "@/server";
+import { deleteUser, getOneUser } from "@/server";
 import { TRole } from "@/@types";
 import SkeletonComponent from "@/components/Skeleton";
-import { showRoleName } from "@/utils";
-import ModalEditUserProfile from "../ModalEditUserProfile";
+import {
+  currentUserCanManagerfiles,
+  currentUserCanManagerProfile,
+  showButtonSigniOut,
+  showNameOfUser,
+  showRoleName,
+} from "@/utils";
+import ModalEditUserProfile from "@/components/ModalEditUserProfile";
+import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
+import { notifications } from "@mantine/notifications";
+import { IUser } from "@/interfaces";
 
 interface UserInfoProfileProps {
   id: number;
@@ -40,18 +49,45 @@ interface UserInfoProfileProps {
 
 export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
   const theme = useMantineTheme();
+  const { mutation } = useDeleteCommentOrReply(
+    deleteUser,
+    showNotificationOnSuccess,
+    showNotificationOnError,
+    `deleteUser-${role}-${id}`
+  );
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUser") as string
+  ) as IUser;
   const {
     query: { data, error, isPending },
-  } = useQueryUser(getOneUser, "getOneUser", {
+  } = useQueryUser(getOneUser, `getOneUser-${role}-${id}`, {
     id,
     role,
   });
-  const router = useRouter();
-  console.log("profile id", id);
 
-  function handleDeleteAccount() {
-    console.log("eliminar conta");
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: `Exclusão da conta ${showRoleName(role)}`,
+      message: `Senhor ${showRoleName(role)} sua conta foi eliminda.`,
+      position: "top-right",
+      color: "blue",
+    });
+    route.replace("/signin");
   }
+
+  function showNotificationOnError() {
+    notifications.show({
+      title: `Exclusão da conta ${showRoleName(role)}`,
+      message: `Senhor ${showRoleName(
+        role
+      )} sua conta não foi eliminda verifique os dados e tente novamente.`,
+      position: "top-right",
+      color: "red",
+    });
+  }
+
+  const route = useRouter();
+  const handleDeleteAccount = () => mutation.mutate({ id, role });
 
   if (isPending)
     return (
@@ -70,6 +106,20 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
     );
   const showDepartmentAndCourse =
     data.role === "COORDINATOR" || data.role === "USER";
+
+  const isThisUserCanManagerProfile = currentUserCanManagerProfile(
+    { id: data?.id, role: data?.role },
+    currentUser
+  );
+
+  const seeButtonSigniOut = showButtonSigniOut(
+    { id: data.id, role: data.role },
+    currentUser
+  );
+
+  const showOnlyButtonActive =
+    !isThisUserCanManagerProfile && !seeButtonSigniOut;
+
   return (
     <Paper
       radius="md"
@@ -165,22 +215,34 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
         </Group>
       </Group>
       <Group className="flex justify-center items-center gap-5 w-full mt-3">
-        <Button variant="gradient" className="px-5">
+        <Button
+          variant="gradient"
+          className={showOnlyButtonActive ? "px-16" : "px-5"}
+          size={showOnlyButtonActive ? "md" : ""}
+        >
           Activo
         </Button>
-        <ModalEditUserProfile user={data} targetButton="Editar informações" />
-        <ModalDemoDelete
-          isThisUserCanDelete={true}
-          targetButton="Eliminar conta"
-          typeModal="deleteAccount"
-          handleClick={handleDeleteAccount}
-          content="Tem certesa que deseja mesmo eliminar sua conta está acção irá
-          eliminar permantemente a sua conta da vitrine online.
-"
-        />
-        <Button variant="default" className="px-5">
-          <Link href="/signin">Sair</Link>
-        </Button>
+        {isThisUserCanManagerProfile && (
+          <ModalEditUserProfile user={data} targetButton="Editar informações" />
+        )}
+        {isThisUserCanManagerProfile && (
+          <ModalDemoDelete
+            editOnHeader={false}
+            isThisUserCanDelete={false}
+            targetButton="Eliminar conta"
+            typeModal="deleteAccount"
+            handleClick={handleDeleteAccount}
+            content={`Carissimo ${showRoleName(
+              role
+            )}, tem certesa que deseja mesmo eliminar sua conta está acção irá
+          eliminar permantemente a sua conta da vitrine online.`}
+          />
+        )}
+        {seeButtonSigniOut && (
+          <Button variant="default" className="px-5">
+            <Link href="/signin">Sair</Link>
+          </Button>
+        )}
       </Group>
     </Paper>
   );

@@ -35,10 +35,16 @@ export default function TextareaReply({
   buttonTarget,
   labelTarget,
 }: TextareaReplyProps) {
-  const { mutation } = useCreateComment(createReply);
+  const { mutation } = useCreateComment(
+    createReply,
+    showNotificationCreateOnSuccess,
+    showNotificationCreateOnError
+  );
   const reply = useAtomValue(replyAtom);
   const { mutation: mutationUpdateReply } = useUpdatePost(
     editReply,
+    showNotificationEditOnSuccess,
+    showNotificationEditOnError,
     reply.id,
     "UpdateReply"
   );
@@ -56,6 +62,43 @@ export default function TextareaReply({
     setEdit({ type: "nothing", status: false });
     console.log("edit", edit);
     field.reset();
+  }
+
+  function showNotificationCreateOnSuccess() {
+    notifications.show({
+      title: "Criação de resposta",
+      message: "Resposta criado com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+    field.reset();
+    setEdit({ type: "nothing", status: false });
+  }
+  function showNotificationEditOnSuccess() {
+    notifications.show({
+      title: "Edição de resposta",
+      message: "Resposta editada com sucesso.",
+      position: "top-right",
+      color: "blue",
+    });
+    field.reset();
+    setEdit({ type: "nothing", status: false });
+  }
+  function showNotificationCreateOnError() {
+    notifications.show({
+      title: "Criação de resposta",
+      message: "Resposta não criado algo deu errado.",
+      position: "top-right",
+      color: "red",
+    });
+  }
+  function showNotificationEditOnError() {
+    notifications.show({
+      title: "Edição de resposta",
+      message: "Resposta não editada algo deu errado.",
+      position: "top-right",
+      color: "red",
+    });
   }
 
   useEffect(() => {
@@ -82,47 +125,6 @@ export default function TextareaReply({
 
     if (edit.status) {
       mutationUpdateReply.mutate(field.getValue());
-    }
-
-    if (mutation.isSuccess) {
-      notifications.show({
-        title: "Criação de resposta",
-        message: "Resposta criado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      field.reset();
-      setEdit({ type: "nothing", status: false });
-      return;
-    }
-    if (mutationUpdateReply.isSuccess) {
-      notifications.show({
-        title: "Edição de resposta",
-        message: "Resposta editado com sucesso.",
-        position: "top-right",
-        color: "blue",
-      });
-      field.reset();
-      setEdit({ type: "nothing", status: false });
-      return;
-    }
-    if (mutation.isError) {
-      notifications.show({
-        title: "Criação de resposta",
-        message: "Resposta não criado algo deu errado.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
-    }
-    if (mutationUpdateReply.isError) {
-      notifications.show({
-        title: "Edição de resposta",
-        message: "Resposta não editado algo deu errado.",
-        position: "top-right",
-        color: "red",
-      });
-      return;
     }
   }
   return (

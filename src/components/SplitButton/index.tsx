@@ -28,12 +28,19 @@ export function SplitButton({
   commentId,
 }: SplitButtonProps) {
   const theme = useMantineTheme();
-  const { mutation } = useDeleteCommentOrReply(deleteComment);
-  const { mutation: mutationDeleteReply } =
-    useDeleteCommentOrReply(deleteReply);
+  const { mutation } = useDeleteCommentOrReply(
+    deleteComment,
+    showNotificationOnSuccess,
+    showNotificationOnError
+  );
+  const { mutation: mutationDeleteReply } = useDeleteCommentOrReply(
+    deleteReply,
+    showNotificationOnSuccess,
+    showNotificationOnError
+  );
   const setComment = useSetAtom(commentAtom);
   const setReply = useSetAtom(replyAtom);
-  const [edit, setEdit] = useAtom(editAtom);
+  const setEdit = useSetAtom(editAtom);
 
   function handleEdit() {
     if (commentId && editType === "comment") {
@@ -48,6 +55,28 @@ export function SplitButton({
     }
   }
 
+  function showNotificationOnSuccess() {
+    notifications.show({
+      title: `Eliminar ${commentId ? "comentário" : "resposta"}`,
+      message: `${
+        commentId ? "Comentário" : "Resposta"
+      } eliminado com sucesso.`,
+      position: "top-right",
+      color: "blue",
+    });
+  }
+
+  function showNotificationOnError() {
+    notifications.show({
+      title: `Eliminar ${commentId ? "comentário" : "resposta"}`,
+      message: `${
+        commentId ? "Comentário" : "Resposta"
+      } "não eliminado algo deu errado tente novamente."`,
+      position: "top-right",
+      color: "red",
+    });
+  }
+
   function handleDelete() {
     if (commentId && editType === "comment") {
       console.log("commentId", commentId);
@@ -56,29 +85,6 @@ export function SplitButton({
 
     if (replyId && editType === "reply") {
       mutationDeleteReply.mutate(replyId);
-    }
-    if (mutation.isSuccess || mutationDeleteReply.isSuccess) {
-      notifications.show({
-        title: `Eliminar ${commentId ? "comentário" : "resposta"}`,
-        message: `${
-          commentId ? "Comentário" : "Resposta"
-        } eliminado com sucesso.`,
-        position: "top-right",
-        color: "blue",
-      });
-      return;
-    }
-
-    if (mutation.isError || mutationDeleteReply.isError) {
-      notifications.show({
-        title: `Eliminar ${commentId ? "comentário" : "resposta"}`,
-        message: `${
-          commentId ? "Comentário" : "Resposta"
-        } "não eliminado algo deu errado tente novamente."`,
-        position: "top-right",
-        color: "red",
-      });
-      return;
     }
   }
 
@@ -115,6 +121,8 @@ export function SplitButton({
             {editTarget}
           </Menu.Item>
           <ModalDemoDelete
+            editOnHeader={false}
+            isThisUserCanDelete={false}
             content={`Tem certeza que desejas eliminar ${
               commentId ? "este comentário" : "esta resposta"
             } está acção irá eliminar permanente ${
