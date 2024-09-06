@@ -8,7 +8,7 @@ import {
   selectFileAtom,
   titleAtom,
   contentAtom,
-  departmentIdAtom,
+  departmentSelectIdAtom,
 } from "@/storage/atom";
 import { Button, Group } from "@mantine/core";
 import { useAtom, useSetAtom } from "jotai";
@@ -20,7 +20,9 @@ import { useMutationPost } from "@/hooks/useMutationPost";
 export default function DashboardChild() {
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
-  const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
+  const [departmentSelectId, setDepartmentSelectId] = useAtom(
+    departmentSelectIdAtom
+  );
   const [file, setFile] = useAtom(selectFileAtom);
   const setError = useSetAtom(errorAtom);
   const whoCreator = JSON.parse(localStorage.getItem("whoCreator") as string);
@@ -29,7 +31,7 @@ export default function DashboardChild() {
   function cancelPost() {
     setContent("");
     setTitle("");
-    setDepartmentId(null);
+    setDepartmentSelectId(null);
     setFile("");
     setError(false);
   }
@@ -62,7 +64,7 @@ export default function DashboardChild() {
   function handlePost() {
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("departmentId", `${departmentId}`);
+    formData.append("departmentSelectId", `${departmentSelectId}`);
     formData.append("whoPosted", whoCreator);
     formData.append("file", file);
     setError(true);

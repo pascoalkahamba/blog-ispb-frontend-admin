@@ -1,17 +1,15 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export default function useQueryPost<T>(
-  queryFunction: (id?: number) => Promise<T[]>,
+  queryFunction: (id: number | null) => Promise<T[]>,
   queryKey: string,
-  id?: number
+  id: number | null
 ) {
-  const queryClient = useQueryClient();
-  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
   const query = useQuery({
-    queryKey: [queryKey, `${userId}`],
+    queryKey: [queryKey, id],
     queryFn: () => queryFunction(id),
+    staleTime: 5000,
   });
 
-  if (query.isSuccess) queryClient.refetchQueries();
   return { query };
 }

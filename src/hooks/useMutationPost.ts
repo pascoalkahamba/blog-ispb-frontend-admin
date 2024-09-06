@@ -19,7 +19,7 @@ export function useMutationPost<T, K>(
   const mutation = useMutation({
     mutationFn: (data: T) => mutationFunction(data),
     onSuccess: (data) => {
-      queryClient.setQueryData<K[]>([queryKey, `${userId}`], (oldData = []) => [
+      queryClient.setQueryData<K[]>([queryKey, `${null}`], (oldData = []) => [
         ...oldData,
         data,
       ]);

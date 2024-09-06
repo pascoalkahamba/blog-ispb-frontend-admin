@@ -9,6 +9,7 @@ const commentAtom = atom({ id: 0, content: "" });
 const replyAtom = atom({ id: 0, content: "" });
 const contentAtom = atom("");
 const departmentIdAtom = atom<number | null>(null);
+const departmentSelectIdAtom = atom<number | null>(null);
 const fetchErrorAtom = atom(false);
 const fetchDoneAtom = atom(false);
 const errorAtom = atom(false);
@@ -23,9 +24,10 @@ export {
   titleAtom,
   contentAtom,
   editAtom,
+  departmentIdAtom,
   commentAtom,
   fetchDoneAtom,
   fetchErrorAtom,
   replyAtom,
-  departmentIdAtom,
+  departmentSelectIdAtom,
 };

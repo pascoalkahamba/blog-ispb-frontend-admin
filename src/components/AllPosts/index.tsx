@@ -1,13 +1,15 @@
-import React from "react";
+"use client";
 import EspecificPost from "@/components/EspecificPost";
 import { getAllPost } from "@/server";
-import { IPost } from "@/interfaces";
 import SkeletonComponent from "@/components/Skeleton";
 import useQueryPost from "@/hooks/useQueryPost";
+import { useAtomValue } from "jotai";
+import { departmentIdAtom } from "@/storage/atom";
 
 export default function AllPosts() {
+  const departmentId = useAtomValue(departmentIdAtom);
   const lastData = [1, 2, 3, 3, 2, 1, 2, 2, 1, 4, 3, 2, 4, 3, 2];
-  const { query } = useQueryPost<IPost>(getAllPost, "allPosts");
+  const { query } = useQueryPost(getAllPost, "allPosts", departmentId);
 
   if (query.isPending)
     return (
@@ -20,6 +22,7 @@ export default function AllPosts() {
     );
 
   console.log("allPosts", query.data);
+  console.log("departmentid", departmentId);
   if (query.error)
     return <p>Algo deu errado tente novamente: </p> + query.error.message;
 

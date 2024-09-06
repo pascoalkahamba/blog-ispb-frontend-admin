@@ -16,7 +16,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ComboboxItem, Select } from "@mantine/core";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { departmentIdAtom, errorAtom } from "@/storage/atom";
+import { departmentSelectIdAtom, errorAtom } from "@/storage/atom";
 import useQueryPost from "@/hooks/useQueryPost";
 import { getAllDepartments } from "@/server";
 import { useField } from "@mantine/form";
@@ -34,10 +34,12 @@ export default function RichTextDemo({
   title,
 }: RichTextDemoProps) {
   const error = useAtomValue(errorAtom);
-  const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
+  const [departmentSelectId, setDepartmentSelectId] = useAtom(
+    departmentSelectIdAtom
+  );
   const {
     query: { data },
-  } = useQueryPost(getAllDepartments, "allDepartments");
+  } = useQueryPost(getAllDepartments, "allDepartments", null);
 
   const allDepartments = useMemo(() => {
     return data?.map(({ id, name }) => ({
@@ -48,7 +50,7 @@ export default function RichTextDemo({
 
   const field = useField({
     initialValue: 0,
-    onValueChange: (value) => setDepartmentId(value),
+    onValueChange: (value) => setDepartmentSelectId(value),
     validateOnBlur: true,
     validate: (value) => !value && "Escolha um departamento antes de postar.",
   });
@@ -94,7 +96,7 @@ export default function RichTextDemo({
         required
         label="Nome do Departamento"
         {...field.getInputProps()}
-        value={`${departmentId}`}
+        value={`${departmentSelectId}`}
         placeholder="Escolha um departamento"
         className="self-start w-full"
         data={allDepartments}

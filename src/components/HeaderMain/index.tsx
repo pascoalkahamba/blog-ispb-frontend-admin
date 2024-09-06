@@ -26,21 +26,40 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import classes from "@/components/HeaderMain/styles.module.css";
-import { tabs, searchData } from "@/mocks";
-import { useRouter, usePathname } from "next/navigation";
+import { searchData } from "@/mocks";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IUser } from "@/interfaces";
 import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
-import { deleteUser, getOneUser } from "@/server";
+import {
+  deleteUser,
+  getAllDepartments,
+  getAllPost,
+  getOneUser,
+} from "@/server";
 import { notifications } from "@mantine/notifications";
 import { showRoleName } from "@/utils";
 import ModalDemoDelete from "../ModalDemoDelete";
 import useQueryUser from "@/hooks/useQueryUser";
+import useQueryPost from "@/hooks/useQueryPost";
+import { departmentIdAtom } from "@/storage/atom";
+import { useAtom } from "jotai";
 
 export default function HeaderMain() {
   const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
+  const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const {
+    query: { data },
+  } = useQueryPost(getAllPost, "allPosts", departmentId);
+
+  const {
+    query: { data: departments },
+  } = useQueryPost(getAllDepartments, "allDepartments", null);
+  console.log("posts cursos", data);
+  console.log("departmentId", departmentId);
+
   const user = JSON.parse(
     localStorage.getItem("currentUser") as string
   ) as IUser;
@@ -58,9 +77,9 @@ export default function HeaderMain() {
     showNotificationOnError,
     `deleteUser-${role}-${id}`
   );
-  const items = tabs.map((tab) => (
-    <Tabs.Tab value={tab} key={tab}>
-      {tab}
+  const allDepartments = departments?.map(({ id, name }) => (
+    <Tabs.Tab value={name} key={id} onClick={() => setDepartmentId(id)}>
+      {name}
     </Tabs.Tab>
   ));
 
@@ -224,7 +243,14 @@ export default function HeaderMain() {
           }}
         >
           <Tabs.List>
-            {items}
+            <Tabs.Tab
+              value="Página inicial"
+              onClick={() => setDepartmentId(null)}
+            >
+              <Link href="/dashboard">Página inicial</Link>
+            </Tabs.Tab>
+
+            {allDepartments}
 
             <Autocomplete
               placeholder="Search"

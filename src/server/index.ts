@@ -53,6 +53,14 @@ export async function getAllCoursesFromDepartment(id?: number) {
 
   return allCourses;
 }
+export async function getAllPostsFromDepartment(departmentId: number | null) {
+  const response = await axios<IPost[]>(
+    `/post/allPostsFromDepartment/${departmentId}`
+  );
+  const allPosts = response.data;
+
+  return allPosts;
+}
 
 export async function deleteUser({ id, role }: IGetOneUser) {
   const whatRoute = showEspecialRoute(role);
@@ -264,8 +272,8 @@ export async function signin({ email, password, terms }: ISignin) {
   return logged;
 }
 
-export async function getAllPost() {
-  const response = await axios.get<IPost[]>("/post/allPosts");
+export async function getAllPost(departmentId: number | null) {
+  const response = await axios.get<IPost[]>(`/post/allPosts/${departmentId}`);
   const allPosts = response.data;
 
   return allPosts;
