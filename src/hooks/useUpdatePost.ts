@@ -15,7 +15,6 @@ export function useUpdatePost<T, K>(
   queryKey?: string
 ) {
   const queryClient = useQueryClient();
-  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
 
   const mutation = useMutation({
     mutationFn: (value: T) => mutationFunction(value, id),
