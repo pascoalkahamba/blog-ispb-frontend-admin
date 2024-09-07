@@ -12,7 +12,6 @@ export function useAddLikeOrUnlike<T, K>(
   queryKey?: string
 ) {
   const queryClient = useQueryClient();
-  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
 
   const mutation = useMutation({
     mutationFn: (reaction: T) => mutationFunction(reaction),

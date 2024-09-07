@@ -1,7 +1,5 @@
 import { IPost } from "@/interfaces";
-import { fetchDoneAtom, fetchErrorAtom } from "@/storage/atom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSetAtom } from "jotai";
 
 // interface UserMutationPostProps {
 //   mutationFunction: (data: T) => Promise<K>;
@@ -21,9 +19,8 @@ export function useDeletePost<T>(
   const mutation = useMutation({
     mutationFn: (postId: T) => mutationFunction(postId),
     onSuccess: (deletedPost) => {
-      queryClient.setQueryData<IPost[]>(
-        [queryKey, `${userId}`],
-        (oldData = []) => oldData.filter((post) => post.id !== deletedPost.id)
+      queryClient.setQueryData<IPost[]>([queryKey, userId], (oldData = []) =>
+        oldData.filter((post) => post.id !== deletedPost.id)
       );
       notificationOnSuccess();
       queryClient.refetchQueries();

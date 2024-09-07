@@ -11,31 +11,32 @@ const tabs = ["Página inicial", "Engenharia", "Educação", "Gestão", "Saúde"
 
 const data = [
   {
-    title: "About",
+    title: "Direção",
     links: [
-      { label: "Features", link: "#" },
-      { label: "Pricing", link: "#" },
-      { label: "Support", link: "#" },
-      { label: "Forums", link: "#" },
+      { label: "Presidente", link: "#" },
+      { label: "V. Presidente da aria ciêntifica", link: "#" },
+      { label: "V. Presidente da aria academica", link: "#" },
     ],
   },
   {
-    title: "Project",
+    title: "Departamentos",
     links: [
-      { label: "Contribute", link: "#" },
-      { label: "Media assets", link: "#" },
-      { label: "Changelog", link: "#" },
-      { label: "Releases", link: "#" },
+      { label: "Engenharia", link: "#" },
+      { label: "Educação", link: "#" },
+      { label: "Gestão", link: "#" },
+      { label: "Saúde", link: "#" },
     ],
   },
   {
-    title: "Community",
+    title: "Contactos",
     links: [
-      { label: "Join Discord", link: "/post/fala" },
-      { label: "Follow on Twitter", link: "#" },
-      { label: "Email newsletter", link: "#" },
-      { label: "GitHub discussions", link: "#" },
+      { label: "Secretaria Geral", link: "#" },
+      { label: "Direção", link: "#" },
     ],
+  },
+  {
+    title: "Localização",
+    links: [{ label: "Benguela, mar sol", link: "#" }],
   },
 ];
 

@@ -278,6 +278,12 @@ export async function getAllPost(departmentId: number | null) {
 
   return allPosts;
 }
+export async function getAllCourses() {
+  const response = await axios<ICourse[]>("/department/getAllCourses");
+  const allCourses = response.data;
+
+  return allCourses;
+}
 
 export async function getOnePost(id: number) {
   const response = await axios.get(`/post/onePost/${id}`);

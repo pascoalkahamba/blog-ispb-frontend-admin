@@ -5,12 +5,15 @@ import {
   IconBrandYoutube,
   IconBrandInstagram,
 } from "@tabler/icons-react";
-import classes from "./styles.module.css";
+import classes from "@/components/FooterMain/styles.module.css";
 import { data } from "@/mocks";
-import { ActionToggle } from "../ActionToggle";
+import { ActionToggle } from "@/components/ActionToggle";
+import Link from "next/link";
+import useQueryPost from "@/hooks/useQueryPost";
+import { getAllDepartments } from "@/server";
 
 export default function FooterMain() {
-  const groups = data.map((group) => {
+   const groups = data.map((group) => {
     const links = group.links.map((link, index) => (
       <Text<"a">
         key={index}
@@ -30,6 +33,7 @@ export default function FooterMain() {
       </div>
     );
   });
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className={classes.footer}>
@@ -37,14 +41,17 @@ export default function FooterMain() {
         <div className={classes.logo}>
           <h1 className="text-xl font-bold">ISPB</h1>
           <Text size="xs" c="dimmed" className={classes.description}>
-            Build fully functional accessible web applications faster than ever
+            Projetado e desenvolvido por
+            <Link href="https://pascoalkahamba.vercel.app/pt" target="_blank">
+              Pascoal Kahamba
+            </Link>
           </Text>
         </div>
         <div className={classes.groups}>{groups}</div>
       </Container>
       <Container className={classes.afterFooter}>
         <Text c="dimmed" size="sm">
-          © 2020 mantine.dev. All rights reserved.
+          © {currentYear} ISPB. Todos os direitos reservados.
         </Text>
 
         <Group

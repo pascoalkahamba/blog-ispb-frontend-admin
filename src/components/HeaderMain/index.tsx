@@ -33,6 +33,7 @@ import { IUser } from "@/interfaces";
 import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
 import {
   deleteUser,
+  getAllCourses,
   getAllDepartments,
   getAllPost,
   getOneUser,
@@ -50,15 +51,14 @@ export default function HeaderMain() {
   const [opened, { toggle }] = useDisclosure(false);
   const [departmentId, setDepartmentId] = useAtom(departmentIdAtom);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const {} = useQueryPost(getAllPost, "allPosts", departmentId);
   const {
-    query: { data },
-  } = useQueryPost(getAllPost, "allPosts", departmentId);
+    query: { data: courses },
+  } = useQueryPost(getAllCourses, "allCourses", null);
 
   const {
     query: { data: departments },
   } = useQueryPost(getAllDepartments, "allDepartments", null);
-  console.log("posts cursos", data);
-  console.log("departmentId", departmentId);
 
   const user = JSON.parse(
     localStorage.getItem("currentUser") as string
@@ -105,6 +105,7 @@ export default function HeaderMain() {
   }
 
   const router = useRouter();
+  const allCourses = courses?.map(({ name }) => name);
   const handleDeleteAccount = () => mutation.mutate({ id, role });
 
   return (
@@ -253,14 +254,14 @@ export default function HeaderMain() {
             {allDepartments}
 
             <Autocomplete
-              placeholder="Search"
+              placeholder="Pesquisar por curso"
               leftSection={
                 <IconSearch
                   style={{ width: rem(16), height: rem(16) }}
                   stroke={1.5}
                 />
               }
-              data={searchData}
+              data={allCourses}
               visibleFrom="xs"
             />
           </Tabs.List>

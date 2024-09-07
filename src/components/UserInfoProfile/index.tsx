@@ -22,7 +22,6 @@ import {
   IconAdjustments,
   IconCertificate,
   IconStar,
-  IconNumber,
 } from "@tabler/icons-react";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import Link from "next/link";
@@ -64,6 +63,8 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
     id,
     role,
   });
+
+  console.log("profile", data);
 
   function showNotificationOnSuccess() {
     notifications.show({

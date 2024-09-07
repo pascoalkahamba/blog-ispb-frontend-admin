@@ -21,8 +21,6 @@ export default function AllPosts() {
       />
     );
 
-  console.log("allPosts", query.data);
-  console.log("departmentid", departmentId);
   if (query.error)
     return <p>Algo deu errado tente novamente: </p> + query.error.message;
 
