@@ -51,6 +51,16 @@ function showButtonSigniOut({ id, role }: IGetOneUser, currentUser: IUser) {
   return false;
 }
 
+function creatorUser(
+  admin: IUser | null,
+  coordinator: IUser | null,
+  student: IUser | null
+) {
+  if (admin) return admin;
+  if (coordinator) return coordinator;
+  if (student) return student;
+}
+
 function currentUserCanManagerProfile(
   { id, role }: IGetOneUser,
   currentUser: IUser
@@ -86,6 +96,7 @@ export {
   MAXLENGTH,
   lastData,
   showNameOfUser,
+  creatorUser,
   showButtonSigniOut,
   currentUserCanManagerProfile,
   showEspecialRoute,

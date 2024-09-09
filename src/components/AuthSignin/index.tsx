@@ -13,7 +13,6 @@ import {
   Divider,
   Checkbox,
   Stack,
-  Button,
 } from "@mantine/core";
 import Link from "next/link";
 import { signinSchemas } from "@/schemas";
@@ -22,7 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { signin } from "@/server";
 import { ISignin } from "@/interfaces";
-import CustomButton from "../CustomButton";
+import CustomButton from "@/components/CustomButton";
 
 export default function AuthSignin(props: PaperProps) {
   const { data, isPending, mutate, error, status } = useMutation({

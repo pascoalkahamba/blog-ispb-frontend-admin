@@ -26,7 +26,6 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import classes from "@/components/HeaderMain/styles.module.css";
-import { searchData } from "@/mocks";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IUser } from "@/interfaces";

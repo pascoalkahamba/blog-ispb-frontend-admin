@@ -56,7 +56,7 @@ export default function ModalEditUserProfile({
   );
   const {
     query: { data: departments },
-  } = useQueryPost(getAllDepartments, "allDepartments");
+  } = useQueryPost(getAllDepartments, "allDepartments", null);
   const currentFile = useAtomValue(selectFileAtom);
 
   const { role, username, contact, course, department, email, id, profile } =

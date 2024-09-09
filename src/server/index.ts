@@ -45,7 +45,7 @@ export async function getAllDepartments() {
 
   return allDepartments;
 }
-export async function getAllCoursesFromDepartment(id?: number) {
+export async function getAllCoursesFromDepartment(id: number | null) {
   const response = await axios<ICourse[]>(
     `/department/getAllCoursesFromDepartment/${id}`
   );

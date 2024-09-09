@@ -23,6 +23,7 @@ import { addLikePost, addUnlikePost, deletePost } from "@/server";
 import { notifications } from "@mantine/notifications";
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import {
+  creatorUser,
   currentUserCanManagerfiles,
   extractTextFromHTML,
   MAXLENGTH,
@@ -91,7 +92,7 @@ export default function EspecificPost({
     currentUser,
   });
 
-  const whoCreator = !admin ? coordinator : admin;
+  const whoCreator = creatorUser(admin, coordinator, null);
   const plainText = extractTextFromHTML(content);
   const { addLike, addUnlike, reacted, reactions } = useReactions({
     like: likes,
@@ -178,7 +179,7 @@ export default function EspecificPost({
       </Text>
 
       <Group mt="lg">
-        <Link href={`profile/${whoCreator?.id}`}>
+        <Link href={`profile/${whoCreator?.id}/${whoCreator?.role}`}>
           <Avatar src={whoCreator?.profile.photo.url} radius="sm" />
         </Link>
         <Link href={`profile/${whoCreator?.id}/${whoCreator?.role}`}>
