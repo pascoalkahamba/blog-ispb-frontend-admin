@@ -13,6 +13,7 @@ import {
   Divider,
   Checkbox,
   Stack,
+  Anchor,
 } from "@mantine/core";
 import Link from "next/link";
 import { signinSchemas } from "@/schemas";
@@ -139,12 +140,17 @@ export default function AuthSignin(props: PaperProps) {
             target="Entrar"
             targetPedding="Entrando"
             isPending={isPending}
-            isDirty={form.isDirty("email") && form.isDirty("password")}
-            isValid={false}
             size="sm"
             radius="lg"
             type="submit"
           />
+        </Group>
+        <Group justify="space-between" mt="xl">
+          <Link href="/createAccount">
+            <Anchor component="button" type="button" c="dimmed" size="xs">
+              Não tenho uma conta? Cadastrar
+            </Anchor>
+          </Link>
         </Group>
       </form>
     </Paper>

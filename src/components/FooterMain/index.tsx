@@ -13,7 +13,7 @@ import useQueryPost from "@/hooks/useQueryPost";
 import { getAllDepartments } from "@/server";
 
 export default function FooterMain() {
-   const groups = data.map((group) => {
+  const groups = data.map((group) => {
     const links = group.links.map((link, index) => (
       <Text<"a">
         key={index}
@@ -41,7 +41,7 @@ export default function FooterMain() {
         <div className={classes.logo}>
           <h1 className="text-xl font-bold">ISPB</h1>
           <Text size="xs" c="dimmed" className={classes.description}>
-            Projetado e desenvolvido por
+            Projetado e desenvolvido por{" "}
             <Link href="https://pascoalkahamba.vercel.app/pt" target="_blank">
               Pascoal Kahamba
             </Link>

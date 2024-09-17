@@ -115,6 +115,15 @@ export interface IProfile {
   coordinatorId: number | null;
 }
 
+export interface ICreateCoordinator {
+  username: string;
+  password: string;
+  departmentId: number;
+  courseId: number;
+  contact: string;
+  email: string;
+}
+
 export interface IPicture {
   id: number;
   name: string;

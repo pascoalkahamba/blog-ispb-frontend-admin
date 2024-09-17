@@ -1,4 +1,4 @@
-"use-client";
+"use client";
 
 import {
   Paper,
@@ -18,6 +18,10 @@ import classes from "./styles.module.css";
 import Link from "next/link";
 
 export function AuthForgotPassword() {
+  function handleSubmit() {
+    alert("Good");
+  }
+
   return (
     <Container
       size={460}
@@ -37,7 +41,13 @@ export function AuthForgotPassword() {
           placeholder="pascoalkahamba25@gmail.com"
           required
         />
-        <Group justify="space-between" mt="lg" className={classes.controls}>
+        <Group
+          justify="space-between"
+          mt="lg"
+          className={classes.controls}
+          component="form"
+          onSubmit={handleSubmit}
+        >
           <Anchor c="dimmed" size="sm" className={classes.control}>
             <Center inline>
               <IconArrowLeft
@@ -52,7 +62,9 @@ export function AuthForgotPassword() {
               </Link>
             </Center>
           </Anchor>
-          <Button className={classes.control}>Recupera sua senha</Button>
+          <Button className={classes.control} type="submit">
+            Recupera sua senha
+          </Button>
         </Group>
       </Paper>
     </Container>

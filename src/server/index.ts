@@ -6,6 +6,7 @@ import {
   ICommentDataResult,
   ICourse,
   ICreateCommentData,
+  ICreateCoordinator,
   ICreatedReplyData,
   ICreatePost,
   ICustomUpdateProfile,
@@ -186,6 +187,16 @@ export async function addUnlikeComment({
 
   const commentUnliked = response.data;
   return commentUnliked;
+}
+
+export async function createAccount(coordinatorData: ICreateCoordinator) {
+  const response = await axios.post<IUser>(
+    "/coordinator/create",
+    coordinatorData
+  );
+  const coordinator = response.data;
+
+  return coordinator;
 }
 
 export async function getOneUser({ id, role }: IGetOneUser) {

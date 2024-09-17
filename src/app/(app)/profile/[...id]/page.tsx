@@ -10,7 +10,7 @@ interface ProfileProps {
 }
 
 export const metadata: Metadata = {
-  title: "Vitrine-ISPB | Fazer Login",
+  title: "Vitrine-ISPB | Perfil",
   description: "Page to user creates your account on the website.",
 };
 

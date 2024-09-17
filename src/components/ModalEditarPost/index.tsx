@@ -58,7 +58,7 @@ export default function ModalEditPost({
   const setCurrentTitle = useSetAtom(selectFileAtom);
   const {
     query: { data },
-  } = useQueryPost(getAllDepartments, "allDepartments");
+  } = useQueryPost(getAllDepartments, "allDepartments", id);
   const setError = useSetAtom(errorAtom);
   const whoCreator = JSON.parse(
     localStorage.getItem("whoCreator") as string

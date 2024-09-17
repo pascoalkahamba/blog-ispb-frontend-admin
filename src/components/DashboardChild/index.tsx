@@ -64,7 +64,7 @@ export default function DashboardChild() {
   function handlePost() {
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("departmentSelectId", `${departmentSelectId}`);
+    formData.append("departmentId", `${departmentSelectId}`);
     formData.append("whoPosted", whoCreator);
     formData.append("file", file);
     setError(true);

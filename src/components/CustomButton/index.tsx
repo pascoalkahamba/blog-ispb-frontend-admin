@@ -8,8 +8,6 @@ interface CustomButtonProps {
   radius?: MantineRadius;
   size?: MantineSize;
   target: string;
-  isDirty: boolean;
-  isValid: boolean;
   type: TTypeButton;
 }
 

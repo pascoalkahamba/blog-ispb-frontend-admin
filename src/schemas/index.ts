@@ -20,8 +20,31 @@ const postInfoEditSchema = zod.object({
   }),
 });
 
-const signinSchemas = zod.object({
+const createCoordinatorSchema = zod.object({
   email: zod.string().email({ message: "email invalido" }),
+  firstPassword: zod
+    .string()
+    .min(6, { message: "Senha deve ter mais de 6 caracteres." }),
+  secondPassword: zod
+    .string()
+    .min(6, { message: "Senha deve ter mais de 6 caracteres." }),
+  username: zod
+    .string()
+    .min(6, { message: "Nome deve ter mais de 6 caracteres." }),
+  contact: zod
+    .string()
+    .min(9, { message: "Número deve ter no minimo 9 digitos." })
+    .max(9, { message: "Número deve ter no maximo 9 digitos." }),
+  courseId: zod.number(),
+  departmentId: zod.number(),
+});
+
+const forgetPasswordSchema = zod.object({
+  email: zod.string().email({ message: "Email invalido" }),
+});
+
+const signinSchemas = zod.object({
+  email: zod.string().email({ message: "Email invalido" }),
   password: zod
     .string()
     .min(6, { message: "Senha deve ter mais de 6 caracteres." }),
@@ -65,6 +88,8 @@ export {
   postInfoSchema,
   signinSchemas,
   signinSchema,
+  forgetPasswordSchema,
+  createCoordinatorSchema,
   postInfoEditSchema,
   updateProfileSchema,
 };

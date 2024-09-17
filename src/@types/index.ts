@@ -1,4 +1,8 @@
-import { signinSchemas, postInfoSchema } from "@/schemas";
+import {
+  signinSchemas,
+  postInfoSchema,
+  createCoordinatorSchema,
+} from "@/schemas";
 import { FormEventHandler } from "react";
 import { z as zod } from "zod";
 
@@ -7,6 +11,9 @@ export type HandleChangePostProps =
   | undefined;
 export type TSigninProps = zod.infer<typeof signinSchemas>;
 export type TCreatePost = zod.infer<typeof postInfoSchema>;
+export type TCreateCoordinatorAccount = zod.infer<
+  typeof createCoordinatorSchema
+>;
 export type TWhoPosted = "admin" | "coordinator" | "student";
 export type TTypeInput = "title" | "departament";
 export type TRole = "USER" | "ADMIN" | "COORDINATOR";
