@@ -92,11 +92,17 @@ export default function AuthCreateAccount(props: PaperProps) {
   }, [departments]);
 
   const allCourses = useMemo(() => {
-    return courses?.map(({ id, name }) => ({
-      value: `${id}`,
-      label: name,
-    }));
+    return (
+      courses
+        ?.filter((course) => !course.coordinatorId)
+        .map(({ id, name }) => ({
+          value: `${id}`,
+          label: name,
+        })) || []
+    );
   }, [courses]);
+
+  console.log("allCourese", allCourses);
 
   async function handleSubmit(values: TCreateCoordinatorAccount) {
     const {

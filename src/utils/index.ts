@@ -66,8 +66,7 @@ function currentUserCanManagerProfile(
   currentUser: IUser
 ) {
   if (currentUser.role === "ADMIN") return true;
-  if (role === "COORDINATOR" && id === currentUser.id) return true;
-  if (role === "USER" && id === currentUser.id) return true;
+  if (role === currentUser.role && id === currentUser.id) return true;
 
   return false;
 }

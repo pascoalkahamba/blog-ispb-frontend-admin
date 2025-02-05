@@ -7,27 +7,21 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 //  type a = Data["name"]
 function set<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {}
 
-export function useMutationPost<T, K>(
+export function useVerifyCode<T, K>(
   mutationFunction: (value: T) => Promise<K>,
   notificationOnSuccess: () => void,
-  notificationOnError: () => void,
-  queryKey?: string
+  notificationOnError: () => void
 ) {
   const queryClient = useQueryClient();
-  const userId = JSON.parse(localStorage.getItem("userId") as string) as number;
 
   const mutation = useMutation({
-    mutationFn: (data: T) => mutationFunction(data),
-    onSuccess: (data) => {
-      queryClient.setQueryData<K[]>([queryKey, `${null}`], (oldData = []) => [
-        ...oldData,
-        data,
-      ]);
+    mutationFn: (value: T) => mutationFunction(value),
+    onSuccess: () => {
       queryClient.refetchQueries();
       notificationOnSuccess();
     },
     onError: () => notificationOnError(),
   });
 
-  return { mutation };
+  return { ...mutation };
 }

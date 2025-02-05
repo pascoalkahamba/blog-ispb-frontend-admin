@@ -23,11 +23,16 @@ import { notifications } from "@mantine/notifications";
 import { signin } from "@/server";
 import { ISignin } from "@/interfaces";
 import CustomButton from "@/components/CustomButton";
+import { useSetAtom } from "jotai";
+import { whoCreatorAtom } from "@/storage/atom";
+import { useEffect } from "react";
 
 export default function AuthSignin(props: PaperProps) {
   const { data, isPending, mutate, error, status } = useMutation({
     mutationFn: (newUser: ISignin) => signin(newUser),
   });
+
+  const setWhoCreator = useSetAtom(whoCreatorAtom);
 
   const router = useRouter();
   const form = useForm({
@@ -38,6 +43,10 @@ export default function AuthSignin(props: PaperProps) {
     },
     validate: zodResolver(signinSchemas),
   });
+
+  useEffect(() => {
+    setWhoCreator(form.values.terms ? "admin" : "coordinator");
+  }, [form.values.terms]);
 
   const handleSubmit = async ({ email, password, terms }: TSigninProps) => {
     console.log("Clicked.");
@@ -54,7 +63,6 @@ export default function AuthSignin(props: PaperProps) {
       const whoCreator = terms ? "admin" : "coordinator";
       localStorage.setItem("token", JSON.stringify(data.token));
       localStorage.setItem("whoCreator", JSON.stringify(whoCreator));
-
       localStorage.setItem("userId", JSON.stringify(data.user.id));
       localStorage.setItem("currentUser", JSON.stringify(data.user));
       router.push("/dashboard");

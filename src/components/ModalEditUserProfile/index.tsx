@@ -37,6 +37,7 @@ import { notifications } from "@mantine/notifications";
 import { showRoleName } from "@/utils";
 import useQueryPost from "@/hooks/useQueryPost";
 import { useMemo } from "react";
+import CustomButton from "../CustomButton";
 
 interface ModalDemoProps {
   targetButton: string;
@@ -111,11 +112,17 @@ export default function ModalEditUserProfile({
   }, [departments]);
 
   const allCourses = useMemo(() => {
-    return courses?.map(({ id, name }) => ({
-      value: `${id}`,
-      label: name,
-    }));
+    return (
+      courses
+        ?.filter((course) => !course.coordinatorId)
+        .map(({ id, name }) => ({
+          value: `${id}`,
+          label: name,
+        })) || []
+    );
   }, [courses]);
+
+  console.log("allCourses", allCourses);
 
   function handleEditProfile(values: IUpdateUserProfile) {
     formdata.append("username", values.username);
@@ -250,9 +257,12 @@ export default function ModalEditUserProfile({
                 <Button onClick={onCancelFn} variant="outline">
                   Cancelar
                 </Button>
-                <Button variant="gradient" type="submit">
-                  Salvar
-                </Button>
+                <CustomButton
+                  target="Salvar"
+                  targetPedding="Salvando"
+                  isPending={mutation.isPending}
+                  type="submit"
+                />
               </div>
             </Stack>
           </form>

@@ -39,8 +39,12 @@ const createCoordinatorSchema = zod.object({
   departmentId: zod.number(),
 });
 
-const forgetPasswordSchema = zod.object({
+const forgotPasswordSchema = zod.object({
   email: zod.string().email({ message: "Email invalido" }),
+  password: zod
+    .string()
+    .min(6, { message: "Senha deve ter mais de 6 caracteres." })
+    .optional(),
 });
 
 const signinSchemas = zod.object({
@@ -55,6 +59,12 @@ const signinSchema = zod.object({
   password: zod
     .string()
     .min(6, { message: "Senha deve ter mais de 6 caracteres." }),
+});
+const verificationCodeSchema = zod.object({
+  email: zod.string().email({ message: "email invalido" }),
+  code: zod
+    .string()
+    .min(6, { message: "Código deve ter mais de 6 caracteres." }),
 });
 
 const updateProfileSchema = zod.object({
@@ -88,7 +98,8 @@ export {
   postInfoSchema,
   signinSchemas,
   signinSchema,
-  forgetPasswordSchema,
+  verificationCodeSchema,
+  forgotPasswordSchema,
   createCoordinatorSchema,
   postInfoEditSchema,
   updateProfileSchema,

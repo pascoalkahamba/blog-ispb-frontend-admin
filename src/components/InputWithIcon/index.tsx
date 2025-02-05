@@ -58,7 +58,7 @@ export default function InputWithIcon({
       {...field.getInputProps()}
       rightSection={rightSection}
       required
-      maxLength={30}
+      maxLength={40}
       value={title}
       label={`${label}`}
       className={`${className}`}

@@ -2,6 +2,8 @@ import {
   signinSchemas,
   postInfoSchema,
   createCoordinatorSchema,
+  forgotPasswordSchema,
+  verificationCodeSchema,
 } from "@/schemas";
 import { FormEventHandler } from "react";
 import { z as zod } from "zod";
@@ -10,7 +12,10 @@ export type HandleChangePostProps =
   | FormEventHandler<HTMLDivElement>
   | undefined;
 export type TSigninProps = zod.infer<typeof signinSchemas>;
+export type TVerificationCodeProps = zod.infer<typeof verificationCodeSchema>;
+export type TOperation = "resetPassword" | "deleteAccount";
 export type TCreatePost = zod.infer<typeof postInfoSchema>;
+export type TForgotPassword = zod.infer<typeof forgotPasswordSchema>;
 export type TCreateCoordinatorAccount = zod.infer<
   typeof createCoordinatorSchema
 >;

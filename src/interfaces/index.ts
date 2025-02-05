@@ -1,4 +1,4 @@
-import { TEventType, TRole, TWhoPosted } from "@/@types";
+import { TEventType, TOperation, TRole, TWhoPosted } from "@/@types";
 
 export interface ICreatePost {
   title: string;
@@ -122,6 +122,32 @@ export interface ICreateCoordinator {
   courseId: number;
   contact: string;
   email: string;
+}
+
+export interface IRequestVerificationCode {
+  email: string;
+  operation: TOperation;
+}
+
+export interface IVerificationCodeResult {
+  message: string;
+  code: string;
+}
+
+export interface IForgotPassword {
+  email: string;
+  password: string;
+  whoUser: TWhoPosted;
+}
+
+export interface IVerifyCodeAndProceed {
+  email: string;
+  operation: TOperation;
+  code: string;
+}
+
+export interface IVerifyCodeAndProceedResult {
+  message: string;
 }
 
 export interface IPicture {

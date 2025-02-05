@@ -15,11 +15,15 @@ const fetchDoneAtom = atom(false);
 const errorAtom = atom(false);
 const whoCreatorAtom = atom<TWhoPosted>("admin");
 const selectFileAtom = atom<FileWithPath | string>("");
+const showModalVerificationCodeAtom = atom(false);
+const codeSentFromEmailAcceptAtom = atom(false);
 
 export {
   dropzoneAtom,
   selectFileAtom,
   errorAtom,
+  showModalVerificationCodeAtom,
+  codeSentFromEmailAcceptAtom,
   whoCreatorAtom,
   titleAtom,
   contentAtom,
