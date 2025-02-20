@@ -60,6 +60,13 @@ const signinSchema = zod.object({
     .string()
     .min(6, { message: "Senha deve ter mais de 6 caracteres." }),
 });
+const registrationSchema = zod.object({
+  registrationNumber: zod
+    .string()
+    .min(5, "Numero de matricula deve ter no minimo 5 digitos.")
+    .regex(/^[0-9]+$/, "Numero de matricula deve conter apenas numeros."),
+});
+
 const verificationCodeSchema = zod.object({
   email: zod.string().email({ message: "email invalido" }),
   code: zod
@@ -100,6 +107,7 @@ export {
   signinSchema,
   verificationCodeSchema,
   forgotPasswordSchema,
+  registrationSchema,
   createCoordinatorSchema,
   postInfoEditSchema,
   updateProfileSchema,

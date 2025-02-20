@@ -5,6 +5,7 @@ import {
   IAddUnlike,
   ICommentDataResult,
   ICourse,
+  ICreateCodeStudent,
   ICreateCommentData,
   ICreateCoordinator,
   ICreatedReplyData,
@@ -17,8 +18,10 @@ import {
   IReplyDataResult,
   IRequestVerificationCode,
   ISignin,
+  IUpdateCodeStudent,
   IUser,
   IVerificationCodeResult,
+  IVerificationCodeStudent,
   IVerifyCodeAndProceed,
   IVerifyCodeAndProceedResult,
 } from "@/interfaces";
@@ -258,6 +261,57 @@ export async function forgotPassword({
   const userPasswordUpdated = response.data;
 
   return userPasswordUpdated;
+}
+
+export async function getOneCodeStudent(id: number) {
+  const response = await axios<IVerificationCodeStudent>(
+    `/verificationCodeStudent/getCodeStudent/${id}`
+  );
+  const oneCodeStudent = response.data;
+  return oneCodeStudent;
+}
+
+export async function deleteCodeStudent(id: number) {
+  const response = await axios.delete<IVerificationCodeStudent>(
+    `/verificationCodeStudent/deleteCodeStudent/${id}`
+  );
+  const deletedCodeStudent = response.data;
+  return deletedCodeStudent;
+}
+
+export async function createCodeStudent({ code, email }: ICreateCodeStudent) {
+  const response = await axios.post<IVerificationCodeStudent>(
+    "/verificationCodeStudent/addCodeStudent",
+    {
+      code,
+      email,
+    }
+  );
+  const createdCodeStudent = response.data;
+  return createdCodeStudent;
+}
+
+export async function getAllCodeStudent() {
+  const response = await axios.get<IVerificationCodeStudent[]>(
+    "/verificationCodeStudent/getAllCodeStudent"
+  );
+  const allCodeStudent = response.data;
+
+  return allCodeStudent;
+}
+
+export async function updateCodeStudent({
+  codeForStudent,
+  id,
+}: IUpdateCodeStudent) {
+  const response = await axios.post<IVerificationCodeStudent>(
+    `/verificationCodeStudent/updateCodeStudent/${id}`,
+    {
+      codeForStudent,
+    }
+  );
+  const updatedCodeStudent = response.data;
+  return updatedCodeStudent;
 }
 
 export async function updateUserProfile({

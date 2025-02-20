@@ -26,7 +26,7 @@ import {
 import ModalDemoDelete from "@/components/ModalDemoDelete";
 import Link from "next/link";
 import useQueryUser from "@/hooks/useQueryUser";
-import { deleteUser, getOneUser } from "@/server";
+import { deleteUser, getAllCodeStudent, getOneUser } from "@/server";
 import { TRole } from "@/@types";
 import SkeletonComponent from "@/components/Skeleton";
 import {
@@ -40,6 +40,9 @@ import ModalEditUserProfile from "@/components/ModalEditUserProfile";
 import { useDeleteCommentOrReply } from "@/hooks/useDeleteCommentOrReply";
 import { notifications } from "@mantine/notifications";
 import { IUser } from "@/interfaces";
+import { useState } from "react";
+import RegistrationModal from "../RegistrationModal";
+import { useQuery } from "@tanstack/react-query";
 
 interface UserInfoProfileProps {
   id: number;
@@ -48,6 +51,8 @@ interface UserInfoProfileProps {
 
 export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
   const theme = useMantineTheme();
+  const [opened, setOpened] = useState(false);
+
   const { mutation } = useDeleteCommentOrReply(
     deleteUser,
     showNotificationOnSuccess,
@@ -223,6 +228,11 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
         >
           Activo
         </Button>
+        {currentUser.role === "ADMIN" && (
+          <Button variant="gradient" onClick={() => setOpened(true)}>
+            Matrícula do estudante
+          </Button>
+        )}
         {isThisUserCanManagerProfile && (
           <ModalEditUserProfile user={data} targetButton="Editar informações" />
         )}
@@ -239,6 +249,7 @@ export function UserInfoProfile({ id, role }: UserInfoProfileProps) {
           eliminar permantemente a sua conta da vitrine online.`}
           />
         )}
+        <RegistrationModal opened={opened} onClose={() => setOpened(false)} />
         {seeButtonSigniOut && (
           <Button variant="default" className="px-5">
             <Link href="/signin">Sair</Link>

@@ -140,6 +140,22 @@ export interface IForgotPassword {
   whoUser: TWhoPosted;
 }
 
+export interface IVerificationCodeStudent {
+  id: string;
+  createdAt: string;
+  code: string;
+}
+
+export interface ICreateCodeStudent {
+  email: string;
+  code: string;
+}
+
+export interface IUpdateCodeStudent {
+  id: number;
+  codeForStudent: string;
+}
+
 export interface IVerifyCodeAndProceed {
   email: string;
   operation: TOperation;
