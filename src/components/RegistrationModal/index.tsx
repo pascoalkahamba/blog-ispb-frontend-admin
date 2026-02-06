@@ -97,7 +97,7 @@ export default function RegistrationModal({
   });
 
   const currentUser = JSON.parse(
-    localStorage.getItem("currentUser") as string
+    localStorage.getItem("currentUser") as string,
   ) as IUser;
   const {
     mutate: mutateUpdateRegistration,
@@ -147,7 +147,7 @@ export default function RegistrationModal({
   // Filtered registrations based on search
   const filteredRegistrations = useMemo(() => {
     return registrations?.filter((reg) =>
-      reg.code.toLowerCase().includes(search.toLowerCase())
+      reg.code.toLowerCase().includes(search.toLowerCase()),
     );
   }, [registrations, search]);
 
@@ -221,6 +221,7 @@ export default function RegistrationModal({
             <Stack spacing="sm">
               <TextInput
                 label="Numero de matricula"
+                type="number"
                 placeholder="Digite o numero de matricula"
                 required
                 {...form.getInputProps("registrationNumber")}
@@ -246,7 +247,6 @@ export default function RegistrationModal({
           </form>
         </Card>
 
-        {/* List Section */}
         <Stack spacing="sm">
           {isPending ? (
             <div className="w-full flex justify-center items-center">

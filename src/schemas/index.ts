@@ -63,15 +63,18 @@ const signinSchema = zod.object({
 const registrationSchema = zod.object({
   registrationNumber: zod
     .string()
-    .min(5, "Numero de matricula deve ter no minimo 5 digitos.")
-    .regex(/^[0-9]+$/, "Numero de matricula deve conter apenas numeros."),
+    .length(9, "Numero de matricula deve ter exatamente 9 digitos.")
+    .regex(/^[0-9]+$/, "Numero de matricula deve conter apenas numeros.")
+    .refine((val) => val.split("")[0] !== "0", {
+      message: "Número de matricula não pode começar com zero.",
+    }),
 });
 
 const verificationCodeSchema = zod.object({
   email: zod.string().email({ message: "email invalido" }),
   code: zod
     .string()
-    .min(6, { message: "Código deve ter mais de 6 caracteres." }),
+    .length(9, { message: "Código deve ter exatamente de 9 caracteres." }),
 });
 
 const updateProfileSchema = zod.object({
