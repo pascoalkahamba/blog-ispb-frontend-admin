@@ -46,7 +46,7 @@ function extractTextFromHTML(html: string) {
 }
 
 function showButtonSigniOut({ id, role }: IGetOneUser, currentUser: IUser) {
-  if (role === currentUser.role && id === currentUser.id) return true;
+  if (role === currentUser?.role && id === currentUser.id) return true;
 
   return false;
 }
@@ -54,7 +54,7 @@ function showButtonSigniOut({ id, role }: IGetOneUser, currentUser: IUser) {
 function creatorUser(
   admin: IUser | null,
   coordinator: IUser | null,
-  student: IUser | null
+  student: IUser | null,
 ) {
   if (admin) return admin;
   if (coordinator) return coordinator;
@@ -63,10 +63,10 @@ function creatorUser(
 
 function currentUserCanManagerProfile(
   { id, role }: IGetOneUser,
-  currentUser: IUser
+  currentUser: IUser,
 ) {
-  if (currentUser.role === "ADMIN") return true;
-  if (role === currentUser.role && id === currentUser.id) return true;
+  if (currentUser?.role === "ADMIN") return true;
+  if (role === currentUser?.role && id === currentUser.id) return true;
 
   return false;
 }
@@ -76,14 +76,14 @@ function currentUserCanManagerfiles({
   student,
   currentUser,
 }: IAllUsers) {
-  if (currentUser.role === "ADMIN") return true;
+  if (currentUser?.role === "ADMIN") return true;
   if (
     coordinator &&
-    currentUser.role === "COORDINATOR" &&
+    currentUser?.role === "COORDINATOR" &&
     coordinator.id === currentUser.id
   )
     return true;
-  if (student && currentUser.role === "USER" && student.id === currentUser.id)
+  if (student && currentUser?.role === "USER" && student.id === currentUser.id)
     return true;
 
   return false;
