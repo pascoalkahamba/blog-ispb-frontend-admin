@@ -47,6 +47,8 @@ interface EspecificPostProps {
   unlikes: number;
 }
 
+import { useState, useEffect } from "react";
+
 export default function EspecificPost({
   id,
   title,
@@ -63,9 +65,14 @@ export default function EspecificPost({
   const theme = useMantineTheme();
   const { mutation: mutationLikePost } = useAddLikeOrUnlike(addLikePost);
   const { mutation: mutationUnlikePost } = useAddLikeOrUnlike(addUnlikePost);
-  const currentUser = JSON.parse(
-    localStorage.getItem("currentUser") as string
-  ) as IUser;
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("currentUser");
+    if (userData) {
+      setCurrentUser(JSON.parse(userData));
+    }
+  }, []);
 
   function showNotificationOnSuccess() {
     notifications.show({
@@ -89,7 +96,7 @@ export default function EspecificPost({
     admin,
     coordinator,
     student: null,
-    currentUser,
+    currentUser: currentUser as IUser,
   });
 
   const whoCreator = creatorUser(admin, coordinator, null);
@@ -105,7 +112,7 @@ export default function EspecificPost({
     deletePost,
     showNotificationOnSuccess,
     showNotificationOnError,
-    "allPosts"
+    "allPosts",
   );
   const truncated =
     plainText.length > MAXLENGTH
@@ -142,7 +149,7 @@ export default function EspecificPost({
       <Card.Section mb="sm">
         <Link
           href={`post/${id}/${Math.abs(likes)}/${Math.abs(
-            unlikes
+            unlikes,
           )}/${statusLike}/${statusUnlike}`}
           className="w-full"
         >
@@ -163,7 +170,7 @@ export default function EspecificPost({
       <Badge w="fit-content" variant="light">
         <Link
           href={`post/${id}/${Math.abs(likes)}/${Math.abs(
-            unlikes
+            unlikes,
           )}/${statusLike}/${statusUnlike}`}
         >
           {title}

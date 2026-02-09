@@ -17,15 +17,24 @@ import AllPosts from "@/components/AllPosts";
 import { IPost } from "@/interfaces";
 import { useMutationPost } from "@/hooks/useMutationPost";
 
+import { useEffect, useState } from "react";
+
 export default function DashboardChild() {
+  const [whoCreator, setWhoCreator] = useState<string>("");
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
   const [departmentSelectId, setDepartmentSelectId] = useAtom(
-    departmentSelectIdAtom
+    departmentSelectIdAtom,
   );
   const [file, setFile] = useAtom(selectFileAtom);
   const setError = useSetAtom(errorAtom);
-  const whoCreator = JSON.parse(localStorage.getItem("whoCreator") as string);
+
+  useEffect(() => {
+    const whoCreatorData = localStorage.getItem("whoCreator");
+    if (whoCreatorData) {
+      setWhoCreator(JSON.parse(whoCreatorData));
+    }
+  }, []);
   const formData = new FormData();
 
   function cancelPost() {
@@ -58,7 +67,7 @@ export default function DashboardChild() {
     createPost,
     showNotificationOnSuccess,
     showNotificationOnError,
-    "allPosts"
+    "allPosts",
   );
 
   function handlePost() {
